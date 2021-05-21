@@ -1,0 +1,8 @@
+{
+  "templates": [
+      {
+          "templateFile": "./main.ts"
+      }
+  ],
+  "compileTypeScript": true
+}
