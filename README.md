@@ -16,6 +16,9 @@ yarn
 2. Delete the README and replace with the npm package [README file](https://github.com/OneSignal/onesignal-react/blob/main/README.md)
 3. `npm publish .`
 
+## Cleaning
+You can clean the generated '.js' files by running `yarn clean`
+
 ---
 
 # Dev Environment
