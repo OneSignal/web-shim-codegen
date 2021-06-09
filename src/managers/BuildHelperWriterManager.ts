@@ -1,23 +1,24 @@
 import { CodeWriter } from "@yellicode/core";
 import { BABELRC_CONFIG } from "../snippets/babelrc";
 import { NPM_IGNORE } from "../snippets/npmIgnore";
-import { PACKAGE_JSON } from "../snippets/packageJson";
-import { ROLLUP_CONFIG } from "../snippets/rollupConfig";
+import { ReaderManager } from "./ReaderManager";
 
 /**
  * Writes files needed for building
  */
 export class BuildHelperWriterManager extends CodeWriter {
-  public writeRollupConfigFile(): void {
-    this.writeLine(ROLLUP_CONFIG);
+  public async writePackageJsonFile(): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + '/../snippets/package.json');
+    this.writeLine(fileContents);
+  }
+
+  public async writeRollupConfigFile(): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + '/../snippets/rollupConfig.ts');
+    this.writeLine(fileContents);
   }
 
   public writeBabelRcConfigFile(): void {
     this.writeLine(BABELRC_CONFIG);
-  }
-
-  public writePackageJsonFile(): void {
-    this.writeLine(PACKAGE_JSON);
   }
 
   public writeNpmIgnoreFile(): void {

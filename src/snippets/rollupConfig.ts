@@ -1,4 +1,5 @@
-export const ROLLUP_CONFIG = `import typescript from 'rollup-plugin-typescript2';
+// file written in pure JS
+import typescript from 'rollup-plugin-typescript2';
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import external from 'rollup-plugin-peer-deps-external';
@@ -35,4 +36,3 @@ export default {
     commonjs(),
   ],
 };
-`;
