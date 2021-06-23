@@ -3,8 +3,9 @@ const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const MODULE_ID = 'onesignal-module';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/OneSignalSDK.js';
 const ONESIGNAL_NOT_SETUP_ERROR = 'OneSignal is not setup correctly.';
-const ONESIGNAL_NOT_SETUP_YET = 'OneSignal is not setup yet.'
-const REACT_ONESIGNAL_FUNCTION_QUEUE = [];
+const ONESIGNAL_NOT_SETUP_YET = 'OneSignal is not setup yet'
+const reactOneSignalFunctionQueue = [];
+const MAX_TIMEOUT = 30;
 
 const buildEventListeners = (eventsArr) => {
   let returnStr = '';
@@ -52,24 +53,16 @@ const injectModuleScript = (appId, options= {}, events = []) => {
   });
 };
 
-const getOneSignalInstance = () => {
-    const OneSignal = window['OneSignal'];
-
-    if (OneSignal?.initialized) {
-      return OneSignal;
-    }
-
-    return null;
-};
-
 const processQueuedOneSignalFunctions = () => {
-  REACT_ONESIGNAL_FUNCTION_QUEUE.forEach(element => {
-    const { name, args } = element;
-    eval(name)(...args);
+  reactOneSignalFunctionQueue.forEach(element => {
+    const { name, args, promiseResolver } = element;
+    OneSignalReact[name](...args).then(result => {
+      promiseResolver(result);
+    });
   });
 }
 
-const initialize = (appId, options, events = []) => new Promise((resolve, reject) => {
+const initialize = (appId, options, events = []) => new Promise(resolve => {
   if (!appId) {
     throw new Error('You need to provide your OneSignal appId.');
   }
@@ -79,22 +72,13 @@ const initialize = (appId, options, events = []) => new Promise((resolve, reject
   injectSDKScript();
   injectModuleScript(appId, options, events);
 
-  let i = 0;
-  const interval = setInterval(() => {
-    i++;
-    if (i === 10) {
-      clearInterval(interval);
-      reject(new Error(ONESIGNAL_NOT_SETUP_ERROR));
-    }
+  const timeout = setTimeout(() => {
+    console.error(ONESIGNAL_NOT_SETUP_ERROR);
+  }, MAX_TIMEOUT * 1_000);
 
-    const oneSignal = getOneSignalInstance();
-
-    if (oneSignal) {
-      clearInterval(interval);
-      processQueuedOneSignalFunctions();
-      resolve();
-    }
-
-    console.info(ONESIGNAL_NOT_SETUP_YET + `(try ${i})`);
-  }, 1_000);
+  OneSignal.push(() => {
+    clearTimeout(timeout);
+    processQueuedOneSignalFunctions();
+    resolve();
+  });
 });
