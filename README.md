@@ -1,7 +1,7 @@
 # OneSignal React Code Generator
 
 ## NPM Package
-https://github.com/OneSignal/onesignal-react
+https://github.com/OneSignal/react-onesignal
 
 ## Start
 `npm install`
@@ -12,8 +12,8 @@ cd build
 yarn
 ```
 ## Publishing
-1. Copy the entire contents of the build folder to the final package directory: `cp -r build/. ../onesignal-react`
-2. Delete the README and replace with the npm package [README file](https://github.com/OneSignal/onesignal-react/blob/main/README.md)
+1. Copy the entire contents of the build folder to the final package directory: `cp -r build/. ../react-onesignal`
+2. Delete the README and replace with the npm package [README file](https://github.com/OneSignal/react-onesignal/blob/main/README.md)
 3. `npm publish .`
 
 ## Cleaning
@@ -38,7 +38,7 @@ In your test app, modify the package.json so that that the package points to the
 
 ```json
 "dependencies": {
-  "onesignal-react": "file:../react-code-generator/build",
+  "react-onesignal": "file:../react-code-generator/build",
 }
 ```
 
@@ -46,7 +46,7 @@ In your test app, modify the package.json so that that the package points to the
 `yarn`
 
 ## Rebuilding to test changes to package
-`rm -rf node_modules/onesignal-react && rm yarn.lock && yarn && yarn build`
+`rm -rf node_modules/react-onesignal && rm yarn.lock && yarn && yarn build`
 
 ## Troubleshooting
 ### Changes not showing?
