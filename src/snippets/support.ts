@@ -3,28 +3,14 @@ const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const MODULE_ID = 'onesignal-module';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/OneSignalSDK.js';
 const ONESIGNAL_NOT_SETUP_ERROR = 'OneSignal is not setup correctly.';
-const ONESIGNAL_NOT_SETUP_YET = 'OneSignal is not setup yet'
 const reactOneSignalFunctionQueue = [];
 const MAX_TIMEOUT = 30;
 
-const buildEventListeners = (eventsArr) => {
-  let returnStr = '';
-
-  if (Array.isArray(eventsArr) && eventsArr.length) {
-    eventsArr.forEach((event) => {
-      event.listener = event.listener || 'on';
-      returnStr += `OneSignal.${event.listener}('${event.event}', ${event.callback});`;
-    });
-  }
-  return returnStr;
-};
-
-const getModuleScriptBody = (appId, options = {}, events = []) => {
+const getModuleScriptBody = (appId, options = {}) => {
     const mappedOptions = JSON.stringify(options, null, 2);
-    const listeners = buildEventListeners(events);
 
     return `var OneSignal = window.OneSignal || [];
-      OneSignal.push(function() {${listeners}OneSignal.init({appId: '${appId}', promptOptions: ${mappedOptions}});});`;
+      OneSignal.push(function() {OneSignal.init({appId: '${appId}', promptOptions: ${mappedOptions}});});`;
 };
 
 const injectScript = (id, buildScript) => {
@@ -45,9 +31,9 @@ const injectSDKScript = () => {
     });
 };
 
-const injectModuleScript = (appId, options= {}, events = []) => {
+const injectModuleScript = (appId, options= {}) => {
   injectScript(MODULE_ID, (script) => {
-    script.innerHTML = getModuleScriptBody(appId, options, events);
+    script.innerHTML = getModuleScriptBody(appId, options);
     script.async = true;
     return script;
   });
@@ -62,7 +48,7 @@ const processQueuedOneSignalFunctions = () => {
   });
 }
 
-const initialize = (appId, options, events = []) => new Promise(resolve => {
+const init = (appId, options) => new Promise(resolve => {
   if (!appId) {
     throw new Error('You need to provide your OneSignal appId.');
   }
@@ -70,7 +56,7 @@ const initialize = (appId, options, events = []) => new Promise(resolve => {
     return;
   }
   injectSDKScript();
-  injectModuleScript(appId, options, events);
+  injectModuleScript(appId, options);
 
   const timeout = setTimeout(() => {
     console.error(ONESIGNAL_NOT_SETUP_ERROR);
