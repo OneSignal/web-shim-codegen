@@ -1,4 +1,4 @@
-export const PACKAGE_JSON = `{
+{
   "name": "onesignal-react",
   "version": "1.0.0",
   "description": "React OneSignal Module: Make it easy to integrate OneSignal with your React App!",
@@ -73,4 +73,4 @@ export const PACKAGE_JSON = `{
     "push notification",
     "react"
   ]
-}`;
+}

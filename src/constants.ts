@@ -32,3 +32,5 @@ export const INITIALIZE_FUNCTION_SIG = {
   ],
   returnType: "Promise<void>"
 } as IFunctionSignature;
+
+export const FILE_WRITTEN_IN_PURE_JS = "// file written in pure JS";

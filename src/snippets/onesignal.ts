@@ -1,19 +1,26 @@
 import { spreadArgs } from "../utils";
 
 export const oneSignalFunctionTemplate = (name: string, args: string[]) => (`
-const ${name} = (${spreadArgs(args)}) => new Promise((resolve, reject) => {
-  const oneSignal = getOneSignalInstance();
+function ${name}(${spreadArgs(args)}) {
+  return new Promise((resolve, reject) => {
+    const oneSignal = window["OneSignal"] || null;
+    if (!oneSignal) {
+      reactOneSignalFunctionQueue.push({
+        name: "${name}",
+        args: arguments,
+        promiseResolver: resolve,
+      });
+      return;
+    }
 
-  if (!oneSignal) {
-    reject(new Error(ONESIGNAL_NOT_SETUP_ERROR));
-    return;
-  }
-
-  try {
-    oneSignal.${name}(${spreadArgs(args)})
-      .then((value) => resolve(value))
-      .catch((error) => reject(error));
-  } catch (error) {
-    reject(error);
-  }
-});`);
+    try {
+      OneSignal.push(() => {
+        OneSignal.${name}(${spreadArgs(args)})
+          .then((value) => resolve(value))
+          .catch((error) => reject(error));
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};`);

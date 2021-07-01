@@ -14,9 +14,9 @@ export class CodeGenManager {
   }
 
   public writeIndexFile(): void {
-    Generator.generate({outputFile: './build/index.js'}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: './build/index.js'}, async (writer: TextWriter) => {
       const oneSignalWriter = new OneSignalWriterManager(writer);
-      oneSignalWriter.writeSupportCode();
+      await oneSignalWriter.writeSupportCode();
       this.writeOneSignalFunctions(oneSignalWriter);
       const functionNames = this.oneSignalFunctions.map(sig => (sig.name));
       oneSignalWriter.writeExportCode(["initialize", ...functionNames]);
@@ -31,18 +31,25 @@ export class CodeGenManager {
   }
 
   public writeBuildHelperFiles(): void {
+    this.writePackageJsonFile();
     this.writeRollupConfigFile();
     this.writeBabelRcConfigFile();
-    this.writePackageJsonFile();
     this.writeNpmIgnoreFile();
   }
 
   /* P R I V A T E */
+  private writePackageJsonFile(): void {
+    Generator.generateAsync({ outputFile: './build/package.json' }, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writePackageJsonFile();
+    });
+  }
+
 
   private writeRollupConfigFile(): void {
-    Generator.generate({outputFile: './build/rollup.config.js'}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: './build/rollup.config.js'}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      buildHelperWriter.writeRollupConfigFile();
+      await buildHelperWriter.writeRollupConfigFile();
     });
   }
 
@@ -50,13 +57,6 @@ export class CodeGenManager {
     Generator.generate({outputFile: './build/.babelrc'}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       buildHelperWriter.writeBabelRcConfigFile();
-    });
-  }
-
-  private writePackageJsonFile(): void {
-    Generator.generate({outputFile: './build/package.json'}, async (writer: TextWriter) => {
-      const buildHelperWriter = new BuildHelperWriterManager(writer);
-      buildHelperWriter.writePackageJsonFile();
     });
   }
 

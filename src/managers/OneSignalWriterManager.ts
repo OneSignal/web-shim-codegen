@@ -1,29 +1,14 @@
 import { CodeWriter } from '@yellicode/core';
 import { oneSignalFunctionTemplate } from '../snippets/onesignal';
-import {
-  eventListenersTemplate,
-  initOneSignalTemplate,
-  injectModuleScriptTemplate,
-  injectOneSignalSDKScriptTemplate,
-  injectScriptTemplate,
-  moduleScriptTemplate,
-  oneSignalInstanceScriptTemplate,
-  scriptConstantsTemplate } from '../snippets/support';
-
+import { ReaderManager } from './ReaderManager';
 export class OneSignalWriterManager extends CodeWriter {
   public writeOneSignalFunction(name: string, args: string[]): void {
     this.writeLine(oneSignalFunctionTemplate(name, args));
   }
 
-  public writeSupportCode(): void {
-    this.writeConstants();
-    this.writeEventListenersFunction();
-    this.writeGetModuleScript();
-    this.writeInjectScript();
-    this.writeOneSignalSDKScript();
-    this.writeModuleScript();
-    this.writeOneSignalInstanceGetter();
-    this.writeOneSignalInit();
+  public async writeSupportCode(): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + '/../snippets/support.ts');
+    this.writeLine(fileContents);
   }
 
   public writeExportCode(exportFunctions: string[]): void {
@@ -33,37 +18,5 @@ export class OneSignalWriterManager extends CodeWriter {
     })
     this.writeLine("};");
     this.writeLine("export default OneSignalReact");
-  }
-
-  private writeConstants(): void {
-    this.writeLine(scriptConstantsTemplate());
-  }
-
-  private writeEventListenersFunction(): void {
-    this.writeLine(eventListenersTemplate());
-  }
-
-  private writeGetModuleScript(): void {
-    this.writeLine(moduleScriptTemplate());
-  }
-
-  private writeInjectScript(): void {
-    this.writeLine(injectScriptTemplate())
-  }
-
-  private writeOneSignalSDKScript(): void {
-    this.writeLine(injectOneSignalSDKScriptTemplate());
-  }
-
-  private writeModuleScript(): void {
-    this.writeLine(injectModuleScriptTemplate());
-  }
-
-  private writeOneSignalInit(): void {
-    this.writeLine(initOneSignalTemplate());
-  }
-
-  private writeOneSignalInstanceGetter(): void {
-    this.writeLine(oneSignalInstanceScriptTemplate());
   }
 }
