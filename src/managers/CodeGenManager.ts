@@ -5,12 +5,14 @@ import { IFunctionSignature } from "../models/FunctionSignature";
 import { BuildHelperWriterManager } from "./BuildHelperWriterManager";
 import { OneSignalWriterManager } from "./OneSignalWriterManager";
 import { TypingsWriterManager } from "./TypingsWriterManager";
+import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../functionSignatures";
 
 export class CodeGenManager {
   private oneSignalFunctions: IFunctionSignature[];
 
   public async fetchOneSignalFunctions(): Promise<void> {
     this.oneSignalFunctions = await FileFetchManager.getFunctions();
+    this.oneSignalFunctions.unshift(INIT_FUNCTION_SIG, ON_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG);
   }
 
   public writeIndexFile(): void {
@@ -19,7 +21,7 @@ export class CodeGenManager {
       await oneSignalWriter.writeSupportCode();
       this.writeOneSignalFunctions(oneSignalWriter);
       const functionNames = this.oneSignalFunctions.map(sig => (sig.name));
-      oneSignalWriter.writeExportCode(["initialize", ...functionNames]);
+      oneSignalWriter.writeExportCode([...functionNames]);
     });
   }
 
