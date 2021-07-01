@@ -1,0 +1,21 @@
+{
+  "name": "react-code-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm main.js && cd src && find . -type f -name '*.js' -delete && cd .. && echo 'Done.'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^15.3.0",
+    "@yellicode/core": "^1.5.0",
+    "@yellicode/templating": "^1.8.0"
+  },
+  "dependencies": {
+    "curlrequest": "^1.0.1"
+  }
+}
