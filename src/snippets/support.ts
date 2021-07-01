@@ -42,9 +42,14 @@ const injectModuleScript = (appId, options= {}) => {
 const processQueuedOneSignalFunctions = () => {
   reactOneSignalFunctionQueue.forEach(element => {
     const { name, args, promiseResolver } = element;
-    OneSignalReact[name](...args).then(result => {
-      promiseResolver(result);
-    });
+
+    if (!!promiseResolver) {
+      OneSignalReact[name](...args).then(result => {
+        promiseResolver(result);
+      });
+    } else {
+      OneSignalReact[name](...args);
+    }
   });
 }
 

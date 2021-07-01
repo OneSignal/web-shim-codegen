@@ -1,9 +1,13 @@
 import { CodeWriter } from '@yellicode/core';
-import { oneSignalFunctionTemplate } from '../snippets/onesignal';
+import { oneSignalAsyncFunctionTemplate, oneSignalFunctionTemplate } from '../snippets/onesignal';
 import { ReaderManager } from './ReaderManager';
 export class OneSignalWriterManager extends CodeWriter {
-  public writeOneSignalFunction(name: string, args: string[]): void {
-    this.writeLine(oneSignalFunctionTemplate(name, args));
+  public writeOneSignalFunction(name: string, args: string[], isAsync: boolean): void {
+    if (isAsync) {
+      this.writeLine(oneSignalAsyncFunctionTemplate(name, args));
+    } else {
+      this.writeLine(oneSignalFunctionTemplate(name, args));
+    }
   }
 
   public async writeSupportCode(): Promise<void> {

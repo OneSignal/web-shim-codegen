@@ -76,7 +76,7 @@ export class CodeGenManager {
       if (!!signature.arguments) {
        argNames = signature.arguments.map(arg => arg.name);
       }
-      writer.writeOneSignalFunction(signature.name, argNames);
+      writer.writeOneSignalFunction(signature.name, argNames, signature.isAsync);
     });
   }
 }
