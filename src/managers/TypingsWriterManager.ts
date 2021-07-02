@@ -1,5 +1,4 @@
 import { CodeWriter } from "@yellicode/core";
-import { INITIALIZE_FUNCTION_SIG } from "../constants";
 import { IFunctionSignature } from "../models/FunctionSignature";
 import { ACTION,
   AUTO_PROMPT_OPTIONS,
@@ -16,7 +15,7 @@ export class TypingsWriterManager extends CodeWriter {
     this.writeLine("declare module 'onesignal-react' {");
     this.writeInterfaces();
     this.writeLine("\n\tinterface OneSignalReact {");
-    [INITIALIZE_FUNCTION_SIG, ...functions].forEach(func => {
+    [...functions].forEach(func => {
       this.writeLine(`\t\t${this.getFunctionSignatureString(func)}`);
     });
     this.writeLine("\t}\n\tconst OneSignalReact: OneSignalReact;\n\texport default OneSignalReact;");

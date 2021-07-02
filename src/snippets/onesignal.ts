@@ -1,6 +1,6 @@
 import { spreadArgs } from "../utils";
 
-export const oneSignalFunctionTemplate = (name: string, args: string[]) => (`
+export const oneSignalAsyncFunctionTemplate = (name: string, args: string[]) => (`
 function ${name}(${spreadArgs(args)}) {
   return new Promise((resolve, reject) => {
     const oneSignal = window["OneSignal"] || null;
@@ -22,5 +22,21 @@ function ${name}(${spreadArgs(args)}) {
     } catch (error) {
       reject(error);
     }
+  });
+};`);
+
+export const oneSignalFunctionTemplate = (name: string, args: string[]) => (`
+function ${name}(${spreadArgs(args)}) {
+  const oneSignal = window["OneSignal"] || null;
+  if (!oneSignal) {
+    reactOneSignalFunctionQueue.push({
+      name: "${name}",
+      args: arguments,
+    });
+    return;
+  }
+
+  OneSignal.push(() => {
+    OneSignal.${name}(${spreadArgs(args)})
   });
 };`);
