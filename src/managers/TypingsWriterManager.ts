@@ -12,7 +12,7 @@ import { ACTION,
 
 export class TypingsWriterManager extends CodeWriter {
   public writeOneSignalInterface(functions: IFunctionSignature[]): void {
-    this.writeLine("declare module 'onesignal-react' {");
+    this.writeLine("declare module 'react-onesignal' {");
     this.writeInterfaces();
     this.writeLine("\n\tinterface OneSignalReact {");
     [...functions].forEach(func => {
