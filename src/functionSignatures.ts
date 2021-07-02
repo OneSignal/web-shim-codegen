@@ -5,11 +5,6 @@ export const INIT_FUNCTION_SIG = {
   isAsync: true,
   arguments: [
     {
-      name: "appId",
-      type: "string",
-      optional: false
-    },
-    {
       name: "options",
       type: "any",
       optional: true

@@ -6,11 +6,15 @@ const ONESIGNAL_NOT_SETUP_ERROR = 'OneSignal is not setup correctly.';
 const reactOneSignalFunctionQueue = [];
 const MAX_TIMEOUT = 30;
 
-const getModuleScriptBody = (appId, options = {}) => {
+const getModuleScriptBody = (options = {}) => {
     const mappedOptions = JSON.stringify(options, null, 2);
 
-    return `var OneSignal = window.OneSignal || [];
-      OneSignal.push(function() {OneSignal.init({appId: '${appId}', promptOptions: ${mappedOptions}});});`;
+    return `
+      var OneSignal = window.OneSignal || [];
+      OneSignal.push(function() {
+        OneSignal.init(${mappedOptions});
+      });
+    `;
 };
 
 const injectScript = (id, buildScript) => {
@@ -31,9 +35,9 @@ const injectSDKScript = () => {
     });
 };
 
-const injectModuleScript = (appId, options= {}) => {
+const injectModuleScript = (options= {}) => {
   injectScript(MODULE_ID, (script) => {
-    script.innerHTML = getModuleScriptBody(appId, options);
+    script.innerHTML = getModuleScriptBody(options);
     script.async = true;
     return script;
   });
@@ -53,15 +57,15 @@ const processQueuedOneSignalFunctions = () => {
   });
 }
 
-const init = (appId, options) => new Promise(resolve => {
-  if (!appId) {
+const init = (options) => new Promise(resolve => {
+  if (!options || !options.appId) {
     throw new Error('You need to provide your OneSignal appId.');
   }
   if (!document) {
     return;
   }
   injectSDKScript();
-  injectModuleScript(appId, options);
+  injectModuleScript(options);
 
   const timeout = setTimeout(() => {
     console.error(ONESIGNAL_NOT_SETUP_ERROR);
