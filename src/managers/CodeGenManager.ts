@@ -6,6 +6,7 @@ import { BuildHelperWriterManager } from "./BuildHelperWriterManager";
 import { OneSignalWriterManager } from "./OneSignalWriterManager";
 import { TypingsWriterManager } from "./TypingsWriterManager";
 import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../functionSignatures";
+import { FUNCTION_IGNORE } from "../constants";
 
 export class CodeGenManager {
   private oneSignalFunctions: IFunctionSignature[];
@@ -71,6 +72,10 @@ export class CodeGenManager {
 
   private writeOneSignalFunctions(writer: OneSignalWriterManager): void {
     this.oneSignalFunctions.forEach(signature => {
+      if (FUNCTION_IGNORE.indexOf(signature.name) !== -1) {
+        return;
+      }
+
       let argNames: string[];
 
       if (!!signature.arguments) {
