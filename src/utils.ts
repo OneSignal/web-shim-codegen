@@ -17,7 +17,7 @@ export async function remoteFetchFile(path: string): Promise<string> {
  * @returns RegExp
  */
 export function createRegex(functionName: string): RegExp {
-  return new RegExp(functionName+'\s*\\((.*)\\)\s*:?\s*(.*)\s*{');
+  return new RegExp('(async)?\\s*'+functionName+'\s*\\((.*)\\)\s*:?\s*(.*)\s*{');
 }
 
 /**
