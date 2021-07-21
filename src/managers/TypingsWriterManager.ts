@@ -3,7 +3,6 @@ import { IFunctionSignature } from "../models/FunctionSignature";
 import { ACTION,
   AUTO_PROMPT_OPTIONS,
   CATEGORY_OPTIONS,
-  ONESIGNAL_EVENT,
   REGISTER_OPTIONS,
   SET_EMAIL_OPTIONS,
   SET_SMS_OPTIONS,
@@ -42,7 +41,6 @@ export class TypingsWriterManager extends CodeWriter {
     this.writeLine("\t"+SET_SMS_OPTIONS);
     this.writeLine("\t"+SET_EMAIL_OPTIONS);
     this.writeLine("\t"+TAGS_OBJECT);
-    this.writeLine("\t"+ONESIGNAL_EVENT);
     this.writeLine("\t"+SLIDEDOWN_OPTIONS);
     this.writeLine("\t"+CATEGORY_OPTIONS);
   }
