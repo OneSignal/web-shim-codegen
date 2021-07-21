@@ -38,6 +38,7 @@ export class CodeGenManager {
     this.writeRollupConfigFile();
     this.writeBabelRcConfigFile();
     this.writeNpmIgnoreFile();
+    this.writeEslintFile();
   }
 
   /* P R I V A T E */
@@ -68,6 +69,14 @@ export class CodeGenManager {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       buildHelperWriter.writeNpmIgnoreFile();
     });
+  }
+
+  private writeEslintFile(): void {
+    Generator.generateAsync({outputFile: './build/.eslintrc.js'}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeEslintFile();
+    });
+
   }
 
   private writeOneSignalFunctions(writer: OneSignalWriterManager): void {
