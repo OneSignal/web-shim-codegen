@@ -78,7 +78,7 @@ export function parseArguments(rawArgs: string): IArgument[] | void {
     const name = arg.split(":")[0];
     const type = arg.split(":")[1];
 
-    newArg["name"] = name.split("?")[0];
+    newArg["name"] = name.split("?")[0].trim();
     newArg["type"] = type.trim();
     newArg["optional"] = name.includes("?") ? true : false;
     parsedArgs.push(newArg as IArgument);
