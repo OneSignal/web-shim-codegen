@@ -1,4 +1,5 @@
 import { CodeWriter } from "@yellicode/core";
+import { ESLINT_CONFIG } from "../../build/.eslintrc";
 import { BABELRC_CONFIG } from "../snippets/babelrc";
 import { NPM_IGNORE } from "../snippets/npmIgnore";
 import { ReaderManager } from "./ReaderManager";
@@ -23,5 +24,9 @@ export class BuildHelperWriterManager extends CodeWriter {
 
   public writeNpmIgnoreFile(): void {
     this.writeLine(NPM_IGNORE);
+  }
+
+  public async writeEslintFile(): Promise<void> {
+    this.writeLine(ESLINT_CONFIG)
   }
 }
