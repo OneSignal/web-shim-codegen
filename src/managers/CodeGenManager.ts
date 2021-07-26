@@ -3,9 +3,9 @@ import { Generator } from "@yellicode/templating";
 import { FileFetchManager } from "./FileFetchManager";
 import { IFunctionSignature } from "../models/FunctionSignature";
 import { BuildHelperWriterManager } from "./BuildHelperWriterManager";
-import { OneSignalWriterManager } from "./OneSignalWriterManager";
+import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../support/functionSignatures";
 import { TypingsWriterManager } from "./TypingsWriterManager";
-import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../functionSignatures";
+import { ReactTypingsWriterManager } from "./shims/react/ReactTypingsWriterManager";
 import { FUNCTION_IGNORE } from "../constants";
 
 export class CodeGenManager {
