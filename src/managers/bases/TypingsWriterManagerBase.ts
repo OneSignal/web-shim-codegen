@@ -10,19 +10,8 @@ import { ACTION,
   TAGS_OBJECT,
   TAG_CATEGORY } from "../../snippets/types";
 
-export class TypingsWriterManager extends CodeWriter {
-  public writeOneSignalInterface(functions: IFunctionSignature[]): void {
-    this.writeLine("declare module 'react-onesignal' {");
-    this.writeInterfaces();
-    this.writeLine("\n\tinterface OneSignalReact {");
-    [...functions].forEach(func => {
-      this.writeLine(`\t\t${this.getFunctionSignatureString(func)}`);
-    });
-    this.writeLine("\t}\n\tconst OneSignalReact: OneSignalReact;\n\texport default OneSignalReact;");
-    this.writeLine("}");
-  }
-
-  private getFunctionSignatureString(sig: IFunctionSignature): string {
+export abstract class TypingsWriterManagerBase extends CodeWriter {
+  public getFunctionSignatureString(sig: IFunctionSignature): string {
     let argumentsString = "";
 
     if (sig.arguments) {
@@ -32,17 +21,29 @@ export class TypingsWriterManager extends CodeWriter {
       });
       argumentsString = argumentsString.trim();
     }
-    return `${sig.name}(${argumentsString.slice(0, -1)}): ${sig.returnType || "void"}`;
+    return `${sig.name}(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
   }
 
-  private writeInterfaces(): void {
-    this.writeLine("\t"+ACTION);
-    this.writeLine("\t"+AUTO_PROMPT_OPTIONS);
-    this.writeLine("\t"+REGISTER_OPTIONS);
-    this.writeLine("\t"+SET_SMS_OPTIONS);
-    this.writeLine("\t"+SET_EMAIL_OPTIONS);
-    this.writeLine("\t"+TAGS_OBJECT);
-    this.writeLine("\t"+SLIDEDOWN_OPTIONS);
-    this.writeLine("\t"+CATEGORY_OPTIONS);
+  public writeFunctionTypes(functions: IFunctionSignature[], tabs?: number): void {
+    const prefix = '\t'.repeat(tabs || 1);
+    [...functions].forEach(func => {
+      this.writeLine(`${prefix}${this.getFunctionSignatureString(func)}`);
+    });
+  }
+  /**
+   * @param  {number} tabs - how many tabs should be added in front of helper interfaces
+   * @returns void
+   */
+  public writeInterfaces(tabs: number): void {
+    const prefix = "\t".repeat(tabs);
+    this.writeLine(prefix+ACTION);
+    this.writeLine(prefix+AUTO_PROMPT_OPTIONS);
+    this.writeLine(prefix+REGISTER_OPTIONS);
+    this.writeLine(prefix+SET_SMS_OPTIONS);
+    this.writeLine(prefix+SET_EMAIL_OPTIONS);
+    this.writeLine(prefix+TAGS_OBJECT);
+    this.writeLine(prefix+SLIDEDOWN_OPTIONS);
+    this.writeLine(prefix+CATEGORY_OPTIONS);
+    this.writeLine(prefix+TAG_CATEGORY);
   }
 }
