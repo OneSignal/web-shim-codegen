@@ -1,4 +1,5 @@
 import { spreadArgs } from "../utils";
+import { spreadArgs } from "../../support/utils";
 
 export const oneSignalAsyncFunctionTemplate = (name: string, args: string[]) => (`
 function ${name}(${spreadArgs(args)}) {

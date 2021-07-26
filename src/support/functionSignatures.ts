@@ -1,4 +1,4 @@
-import { IFunctionSignature } from "./models/FunctionSignature";
+import { IFunctionSignature } from "../models/FunctionSignature";
 
 export const INIT_FUNCTION_SIG = {
   name: "init",
