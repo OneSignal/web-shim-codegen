@@ -1,26 +1,34 @@
-import { CodeWriter } from '@yellicode/core';
-import { oneSignalAsyncFunctionTemplate, oneSignalFunctionTemplate } from '../snippets/onesignal';
-import { ReaderManager } from './ReaderManager';
-export class OneSignalWriterManager extends CodeWriter {
-  public writeOneSignalFunction(name: string, args: string[], isAsync: boolean): void {
+import { CodeWriter, TextWriter } from '@yellicode/core';
+import { FUNCTION_IGNORE } from '../../support/constants';
+import { IFunctionSignature } from '../../models/FunctionSignature';
+import { Shim } from '../../models/Shim';
+import { reactOneSignalAsyncFunctionTemplate, reactOneSignalFunctionTemplate } from '../../snippets/react/oneSignalFunctionTemplates';
     if (isAsync) {
-      this.writeLine(oneSignalAsyncFunctionTemplate(name, args));
-    } else {
-      this.writeLine(oneSignalFunctionTemplate(name, args));
-    }
+import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
+
+const templateFunctionMap: ITemplateFunctionMap = {
+  [Shim.React]: {
+    sync: reactOneSignalFunctionTemplate,
+    async: reactOneSignalAsyncFunctionTemplate
+  },
+}
+
+export abstract class OneSignalWriterManagerBase extends CodeWriter {
+  abstract writeSupportCode(): Promise<void>;
+  abstract writeExportCode(exportFunctions: string[]): void;
+
+  constructor(writer: TextWriter, readonly shim: Shim) {
+    super(writer);
   }
 
-  public async writeSupportCode(): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + '/../snippets/support.ts');
-    this.writeLine(fileContents);
-  }
-
-  public writeExportCode(exportFunctions: string[]): void {
-    this.writeLine("\nconst OneSignalReact = {");
-    exportFunctions.forEach(func => {
-      this.writeLine(`\t${func},`);
-    })
-    this.writeLine("};");
-    this.writeLine("export default OneSignalReact");
+  public writeOneSignalFunctions(oneSignalFunctions: IFunctionSignature[]): void {
+    oneSignalFunctions.forEach(signature => {
+      if (FUNCTION_IGNORE.indexOf(signature.name) !== -1) {
+        return;
+      }
+      const mapKey = signature.isAsync ? "async" : "sync";
+      const templateFunction = templateFunctionMap[this.shim][mapKey];
+      this.writeLine(templateFunction(signature));
+    });
   }
 }
