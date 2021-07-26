@@ -8,6 +8,10 @@ export class ReaderManager {
         if (err) {
           reject(err);
         }
+        if (!data) {
+          console.error("Couldn't read file:", path);
+          return;
+        }
         resolve(data.replace(FILE_WRITTEN_IN_PURE_JS+'\n', ''));
       });
     });
