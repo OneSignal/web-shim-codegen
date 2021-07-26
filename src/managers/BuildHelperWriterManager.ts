@@ -31,4 +31,9 @@ export class BuildHelperWriterManager extends CodeWriter {
   public async writeEslintFile(): Promise<void> {
     this.writeLine(ESLINT_CONFIG)
   }
+
+  public async writeTsConfigFile(shim: Shim): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/tsconfig.json`);
+    this.writeLine(fileContents);
+  }
 }

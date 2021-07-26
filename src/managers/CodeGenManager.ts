@@ -89,10 +89,10 @@ export class CodeGenManager {
     });
   }
 
-      let argNames: string[];
-
-      if (!!signature.arguments) {
-       argNames = signature.arguments.map(arg => arg.name);
-      }
+  private writeTsConfigFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/tsconfig.json`}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeTsConfigFile(this.shim);
+    })
   }
 }
