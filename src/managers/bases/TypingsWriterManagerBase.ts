@@ -1,5 +1,5 @@
 import { CodeWriter } from "@yellicode/core";
-import { IFunctionSignature } from "../models/FunctionSignature";
+import { IFunctionSignature } from "../../models/FunctionSignature";
 import { ACTION,
   AUTO_PROMPT_OPTIONS,
   CATEGORY_OPTIONS,
