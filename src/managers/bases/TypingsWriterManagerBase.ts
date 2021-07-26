@@ -7,7 +7,8 @@ import { ACTION,
   SET_EMAIL_OPTIONS,
   SET_SMS_OPTIONS,
   SLIDEDOWN_OPTIONS,
-  TAGS_OBJECT } from "../snippets/types";
+  TAGS_OBJECT,
+  TAG_CATEGORY } from "../../snippets/types";
 
 export class TypingsWriterManager extends CodeWriter {
   public writeOneSignalInterface(functions: IFunctionSignature[]): void {
