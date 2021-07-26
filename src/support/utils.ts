@@ -40,6 +40,9 @@ export function parseFunctionSig(signature: string): IFunctionSignature {
 
     if (matches[3]) {
       functionSig['returnType'] = matches[3].trim();
+    } else {
+      const defaultReturnType = functionSig['isAsync'] ? 'Promise<void>' : 'void';
+      functionSig['returnType'] = matches[3].trim() || defaultReturnType;
     }
   }
 
