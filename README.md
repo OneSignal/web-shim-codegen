@@ -1,7 +1,8 @@
-# OneSignal React Code Generator
+# OneSignal React, Vue, & Angular Code Generator
 
-## NPM Package
-https://github.com/OneSignal/react-onesignal
+## NPM Packages
+* [React](https://github.com/OneSignal/react-onesignal)
+* [Vue](https://github.com/OneSignal/onesignal-vue)
 
 ## Start
 `npm install`
@@ -11,34 +12,45 @@ yellicode
 cd build
 yarn
 ```
-## Publishing
-1. Copy the entire contents of the build folder to the final package directory: `cp -r build/. ../react-onesignal`
-2. Delete the README and replace with the npm package [README file](https://github.com/OneSignal/react-onesignal/blob/main/README.md)
-3. `npm publish .`
+
+*ATTENTION: note regarding hidden files:*
+The `settings.json` file in the `.vscode` directory hides all `*.js` files automatically. This is to keep the workspace uncluttered. Alternatively, you can turn those settings off by flipping to `false` and cleaning / decluttering with the command `yarn clean` (see below).
 
 ## Cleaning
 You can clean the generated '.js' files by running `yarn clean`
 
+## Publishing
+1. Copy the ENTIRE contents of the build folder to the final package directory. e.g: `cp -r build/. ../react-onesignal` (do not do this manually as you won't copy files if they're hidden)
+2. Delete the README and replace with the npm package from the existing repository [README file](https://github.com/OneSignal/react-onesignal/blob/main/README.md)
+3. `npm publish .`
+
 ---
 
 # Dev Environment
-Set up a new React App so the new app is at the same directory level as this project.
+Set up a new React, Vue, or Angular App so the new app is at the same directory level as this project.
 ```
 |_ my-app
 |_ react-code-generator
 ```
 
+## React
 ```
 npx create-react-app my-app
 cd my-app
 ```
 
+## Vue
+```
+vue create my-app
+// follow the instructions
+```
+
 ## Modify Package.json
-In your test app, modify the package.json so that that the package points to the `react-code-generator/build` directory.
+In your test app, modify the package.json so that that the package points to the `web-shim-codegen/build/<shim>` directory.
 
 ```json
 "dependencies": {
-  "react-onesignal": "file:../react-code-generator/build",
+  "<package-name>": "file:../web-shim-codegen/build/<shim>",
 }
 ```
 
