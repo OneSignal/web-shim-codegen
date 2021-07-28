@@ -1,7 +1,7 @@
-import { IArgument } from "./models/Argument";
+import { IArgument } from "../models/Argument";
 import { GITHUB_URL } from './constants';
 import * as curl from 'curlrequest';
-import { IFunctionSignature } from './models/FunctionSignature';
+import { IFunctionSignature } from '../models/FunctionSignature';
 
 export async function remoteFetchFile(path: string): Promise<string> {
   return await new Promise(resolve => {
@@ -40,6 +40,9 @@ export function parseFunctionSig(signature: string): IFunctionSignature {
 
     if (matches[3]) {
       functionSig['returnType'] = matches[3].trim();
+    } else {
+      const defaultReturnType = functionSig['isAsync'] ? 'Promise<void>' : 'void';
+      functionSig['returnType'] = matches[3].trim() || defaultReturnType;
     }
   }
 

@@ -1,6 +1,6 @@
-import { FUNCTION_IGNORE, PATHS } from "../constants";
+import { FUNCTION_IGNORE, PATHS } from "../support/constants";
 import { IFunctionSignature } from "../models/FunctionSignature";
-import { createRegex, remoteFetchFile, parseFunctionSig } from "../utils";
+import { createRegex, remoteFetchFile, parseFunctionSig } from "../support/utils";
 
 export class FileFetchManager {
   static async getStubs() {

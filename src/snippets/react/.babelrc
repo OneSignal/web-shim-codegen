@@ -1,4 +1,4 @@
-export const BABELRC_CONFIG = `{
+{
   "presets": [
     ["@babel/preset-env", {
       "modules": false
@@ -6,4 +6,4 @@ export const BABELRC_CONFIG = `{
     "@babel/preset-react"
   ],
   "plugins": ["@babel/plugin-proposal-class-properties"]
-}`;
+}

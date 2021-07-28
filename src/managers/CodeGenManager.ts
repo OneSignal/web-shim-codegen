@@ -3,33 +3,45 @@ import { Generator } from "@yellicode/templating";
 import { FileFetchManager } from "./FileFetchManager";
 import { IFunctionSignature } from "../models/FunctionSignature";
 import { BuildHelperWriterManager } from "./BuildHelperWriterManager";
-import { OneSignalWriterManager } from "./OneSignalWriterManager";
-import { TypingsWriterManager } from "./TypingsWriterManager";
-import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../functionSignatures";
-import { FUNCTION_IGNORE } from "../constants";
+import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../support/functionSignatures";
+import { Shim } from "../models/Shim";
+import { ReactTypingsWriterManager } from "./shims/react/ReactTypingsWriterManager";
+import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterManager";
+import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
 
 export class CodeGenManager {
   private oneSignalFunctions: IFunctionSignature[];
+
+  constructor(readonly shim: Shim) {}
 
   public async fetchOneSignalFunctions(): Promise<void> {
     this.oneSignalFunctions = await FileFetchManager.getFunctions();
     this.oneSignalFunctions.unshift(INIT_FUNCTION_SIG, ON_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG);
   }
 
-  public writeIndexFile(): void {
-    Generator.generateAsync({outputFile: './build/index.js'}, async (writer: TextWriter) => {
-      const oneSignalWriter = new OneSignalWriterManager(writer);
+  public writeIndexFile(extension: string): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/index.${extension}`}, async (writer: TextWriter) => {
+      let oneSignalWriter: OneSignalWriterManagerBase;
+      switch (this.shim) {
+        case Shim.React:
+          oneSignalWriter = new ReactOneSignalWriterManager(writer);
+          break;
+      }
       await oneSignalWriter.writeSupportCode();
-      this.writeOneSignalFunctions(oneSignalWriter);
+      oneSignalWriter.writeOneSignalFunctions(this.oneSignalFunctions);
       const functionNames = this.oneSignalFunctions.map(sig => (sig.name));
-      oneSignalWriter.writeExportCode([...functionNames]);
+      await oneSignalWriter.writeExportCode([...functionNames]);
     });
   }
 
   public writeTypingsFile(): void {
-    Generator.generate({outputFile: './build/index.d.ts'}, async (writer: TextWriter) => {
-      const oneSignalWriter = new TypingsWriterManager(writer);
-      oneSignalWriter.writeOneSignalInterface(this.oneSignalFunctions);
+    Generator.generate({outputFile: `/build/${this.shim}/index.d.ts`}, async (writer: TextWriter) => {
+      switch (this.shim) {
+        case Shim.React:
+          const reactWriter = new ReactTypingsWriterManager(writer);
+          reactWriter.writeOneSignalModule(this.oneSignalFunctions);
+          break;
+      }
     });
   }
 
@@ -43,54 +55,44 @@ export class CodeGenManager {
 
   /* P R I V A T E */
   private writePackageJsonFile(): void {
-    Generator.generateAsync({ outputFile: './build/package.json' }, async (writer: TextWriter) => {
+    Generator.generateAsync({ outputFile: `./build/${this.shim}/package.json` }, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writePackageJsonFile();
+      await buildHelperWriter.writePackageJsonFile(this.shim);
     });
   }
 
-
   private writeRollupConfigFile(): void {
-    Generator.generateAsync({outputFile: './build/rollup.config.js'}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/rollup.config.js`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writeRollupConfigFile();
+      await buildHelperWriter.writeRollupConfigFile(this.shim);
     });
   }
 
   private writeBabelRcConfigFile(): void {
-    Generator.generate({outputFile: './build/.babelrc'}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/.babelrc`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      buildHelperWriter.writeBabelRcConfigFile();
+      await buildHelperWriter.writeBabelRcConfigFile(this.shim);
     });
   }
 
   private writeNpmIgnoreFile(): void {
-    Generator.generate({outputFile: './build/.npmignore'}, async (writer: TextWriter) => {
+    Generator.generate({outputFile: `./build/${this.shim}/.npmignore`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       buildHelperWriter.writeNpmIgnoreFile();
     });
   }
 
   private writeEslintFile(): void {
-    Generator.generateAsync({outputFile: './build/.eslintrc.js'}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/.eslintrc.js`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       await buildHelperWriter.writeEslintFile();
     });
-
   }
 
-  private writeOneSignalFunctions(writer: OneSignalWriterManager): void {
-    this.oneSignalFunctions.forEach(signature => {
-      if (FUNCTION_IGNORE.indexOf(signature.name) !== -1) {
-        return;
-      }
-
-      let argNames: string[];
-
-      if (!!signature.arguments) {
-       argNames = signature.arguments.map(arg => arg.name);
-      }
-      writer.writeOneSignalFunction(signature.name, argNames, signature.isAsync);
-    });
+  private writeTsConfigFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/tsconfig.json`}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeTsConfigFile(this.shim);
+    })
   }
 }

@@ -1,4 +1,4 @@
-import { IFunctionSignature } from "./models/FunctionSignature";
+import { IFunctionSignature } from "../models/FunctionSignature";
 
 export const INIT_FUNCTION_SIG = {
   name: "init",
@@ -26,7 +26,8 @@ const EVENTS_FUNCTION_SIG = {
       type: "Function",
       optional: false
     }
-  ]
+  ],
+  returnType: 'void'
 } as IFunctionSignature;
 
 export const ON_FUNCTION_SIG = { name: "on", ...EVENTS_FUNCTION_SIG };
