@@ -1,4 +1,4 @@
-export const ESLINT_CONFIG = `
+// file written in pure JS
 module.exports = {
   env: {
     browser: true,
@@ -49,4 +49,4 @@ module.exports = {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error"]
   },
-};`
+};

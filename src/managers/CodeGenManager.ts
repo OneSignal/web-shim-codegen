@@ -95,7 +95,7 @@ export class CodeGenManager {
   private writeEslintFile(): void {
     Generator.generateAsync({outputFile: `./build/${this.shim}/.eslintrc.js`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writeEslintFile();
+      await buildHelperWriter.writeEslintFile(this.shim);
     });
   }
 

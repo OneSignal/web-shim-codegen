@@ -1,5 +1,4 @@
 import { CodeWriter } from "@yellicode/core";
-import { ESLINT_CONFIG } from "../snippets/react/eslintrc";
 import { NPM_IGNORE } from "../snippets/npmIgnore";
 import { ReaderManager } from "./ReaderManager";
 import { Shim } from "../models/Shim";
@@ -28,8 +27,9 @@ export class BuildHelperWriterManager extends CodeWriter {
     this.writeLine(NPM_IGNORE);
   }
 
-  public async writeEslintFile(): Promise<void> {
-    this.writeLine(ESLINT_CONFIG)
+  public async writeEslintFile(shim: Shim): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/eslintrc.ts`);
+    this.writeLine(fileContents);
   }
 
   public async writeTsConfigFile(shim: Shim): Promise<void> {
