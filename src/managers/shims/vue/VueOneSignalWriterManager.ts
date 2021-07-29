@@ -18,9 +18,7 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
 
     this.writeLine(supportFileContents);
     typingsWriter.writeInterfaces(0);
-    this.writeLine('\n');
     typingsWriter.writeOneSignalInterface(this.oneSignalFunctions);
-    this.writeLine('\n');
     this.writeLine(initFileContents);
   }
 

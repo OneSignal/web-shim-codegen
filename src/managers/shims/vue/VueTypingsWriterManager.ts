@@ -7,5 +7,6 @@ export class VueTypingsWriterManager extends TypingsWriterManagerBase {
     this.writeFunctionTypes(functions, 1);
     this.writeLine(`\t[index: string]: Function;`);
     this.writeLine(`}`)
+    this.writeLine('\n');
   }
 }
