@@ -7,6 +7,7 @@ import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG
 import { Shim } from "../models/Shim";
 import { ReactTypingsWriterManager } from "./shims/react/ReactTypingsWriterManager";
 import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterManager";
+import { VueOneSignalWriterManager } from "./shims/vue/VueOneSignalWriterManager";
 import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
 
 export class CodeGenManager {
@@ -25,6 +26,9 @@ export class CodeGenManager {
       switch (this.shim) {
         case Shim.React:
           oneSignalWriter = new ReactOneSignalWriterManager(writer);
+          break;
+        case Shim.Vue:
+          oneSignalWriter = new VueOneSignalWriterManager(writer, this.oneSignalFunctions);
           break;
       }
       await oneSignalWriter.writeSupportCode();
@@ -51,6 +55,12 @@ export class CodeGenManager {
     this.writeBabelRcConfigFile();
     this.writeNpmIgnoreFile();
     this.writeEslintFile();
+
+    switch (this.shim) {
+      case Shim.Vue:
+        this.writeTsConfigFile();
+        break;
+    }
   }
 
   /* P R I V A T E */
@@ -85,7 +95,7 @@ export class CodeGenManager {
   private writeEslintFile(): void {
     Generator.generateAsync({outputFile: `./build/${this.shim}/.eslintrc.js`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writeEslintFile();
+      await buildHelperWriter.writeEslintFile(this.shim);
     });
   }
 

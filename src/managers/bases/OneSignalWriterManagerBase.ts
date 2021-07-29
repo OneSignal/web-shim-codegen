@@ -3,7 +3,7 @@ import { FUNCTION_IGNORE } from '../../support/constants';
 import { IFunctionSignature } from '../../models/FunctionSignature';
 import { Shim } from '../../models/Shim';
 import { reactOneSignalAsyncFunctionTemplate, reactOneSignalFunctionTemplate } from '../../snippets/react/oneSignalFunctionTemplates';
-    if (isAsync) {
+import { vueOneSignalAsyncFunctionTemplate, vueOneSignalFunctionTemplate } from '../../snippets/vue/oneSignalFunctionTemplates';
 import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
 
 const templateFunctionMap: ITemplateFunctionMap = {
@@ -11,6 +11,10 @@ const templateFunctionMap: ITemplateFunctionMap = {
     sync: reactOneSignalFunctionTemplate,
     async: reactOneSignalAsyncFunctionTemplate
   },
+  [Shim.Vue]: {
+    sync: vueOneSignalFunctionTemplate,
+    async: vueOneSignalAsyncFunctionTemplate
+  }
 }
 
 export abstract class OneSignalWriterManagerBase extends CodeWriter {
