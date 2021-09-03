@@ -9,15 +9,21 @@ import { ReactTypingsWriterManager } from "./shims/react/ReactTypingsWriterManag
 import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterManager";
 import { VueOneSignalWriterManager } from "./shims/vue/VueOneSignalWriterManager";
 import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
+import { NgOneSignalWriterManager } from "./shims/angular/NgOneSignalWriterManager";
+import { TypingsWriterManagerBase } from "./bases/TypingsWriterManagerBase";
+import { NgTypingsWriterManager } from "./shims/angular/NgTypingsWriterManager";
 
 export class CodeGenManager {
   private oneSignalFunctions: IFunctionSignature[];
 
-  constructor(readonly shim: Shim) {}
+  constructor(readonly shim: Shim, functions: IFunctionSignature[]) {
+    this.oneSignalFunctions = functions;
+  }
 
-  public async fetchOneSignalFunctions(): Promise<void> {
-    this.oneSignalFunctions = await FileFetchManager.getFunctions();
-    this.oneSignalFunctions.unshift(INIT_FUNCTION_SIG, ON_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG);
+  static async fetchOneSignalFunctions(): Promise<IFunctionSignature[]> {
+    let oneSignalFunctions = await FileFetchManager.getFunctions();
+    oneSignalFunctions.unshift(INIT_FUNCTION_SIG, ON_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG);
+    return oneSignalFunctions;
   }
 
   public writeIndexFile(extension: string): void {
@@ -36,6 +42,23 @@ export class CodeGenManager {
       const functionNames = this.oneSignalFunctions.map(sig => (sig.name));
       await oneSignalWriter.writeExportCode([...functionNames]);
     });
+  }
+
+  public writeNgServiceFile(): void {
+    Generator.generateAsync({ outputFile: `./src/scaffolds/angular-workspace/projects/onesignal-ngx/src/lib/onesignal-ngx.service.ts` }, async (writer: TextWriter) => {
+      if (this.shim !== Shim.Angular) {
+        console.error(`writeNgServiceFile: this function can only be used with the Angular shim build.`);
+        return;
+      }
+
+      const oneSignalWriter = new NgOneSignalWriterManager(writer, this.oneSignalFunctions);
+      const typingsWriter = new NgTypingsWriterManager(writer);
+      typingsWriter.writeInterfaces(0);
+      await oneSignalWriter.writeSupportCode();
+      await oneSignalWriter.writeServiceClass();
+      oneSignalWriter.writeOneSignalFunctions(this.oneSignalFunctions);
+      oneSignalWriter.writeLine('}');
+    })
   }
 
   public writeTypingsFile(): void {
