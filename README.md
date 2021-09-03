@@ -8,7 +8,7 @@
 `npm install`
 ## Building For Release
 ```
-yellicode
+yarn build
 cd build
 yarn
 ```
