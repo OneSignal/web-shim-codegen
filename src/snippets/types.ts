@@ -6,4 +6,4 @@ export const SET_EMAIL_OPTIONS = `interface SetEmailOptions { identifierAuthHash
 export const TAGS_OBJECT = `interface TagsObject<T> { [key: string]: T; }`;
 export const SLIDEDOWN_OPTIONS = `interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; isInUpdateMode?: boolean; categoryOptions?: IOneSignalCategories; }`;
 export const CATEGORY_OPTIONS = `interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }`;
-export const TAG_CATEGORY = `export interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }`;
+export const TAG_CATEGORY = `interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }`;
