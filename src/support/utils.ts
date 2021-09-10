@@ -65,6 +65,18 @@ export function spreadArgs(args: string[]): string {
   return acc;
 }
 
+export function spreadArgsWithTypes(signature: IFunctionSignature): string {
+  let acc = "";
+  if (signature.arguments) {
+    signature.arguments.forEach(arg => {
+      const optionalChar = arg.optional ? '?' : '';
+      acc = acc + arg.name + optionalChar + ': ' + arg.type + ', ';
+    })
+    acc = acc.slice(0, -2);
+  }
+  return acc;
+}
+
 /**
  * Returns an IArgument list from raw arguments (stuff between parentheses, including types)
  * @param  {string} rawArgs
