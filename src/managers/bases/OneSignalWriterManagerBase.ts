@@ -5,6 +5,7 @@ import { Shim } from '../../models/Shim';
 import { reactOneSignalAsyncFunctionTemplate, reactOneSignalFunctionTemplate } from '../../snippets/react/oneSignalFunctionTemplates';
 import { vueOneSignalAsyncFunctionTemplate, vueOneSignalFunctionTemplate } from '../../snippets/vue/oneSignalFunctionTemplates';
 import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
+import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '../../snippets/angular/oneSignalFunctionTemplates';
 
 const templateFunctionMap: ITemplateFunctionMap = {
   [Shim.React]: {
@@ -14,6 +15,10 @@ const templateFunctionMap: ITemplateFunctionMap = {
   [Shim.Vue]: {
     sync: vueOneSignalFunctionTemplate,
     async: vueOneSignalAsyncFunctionTemplate
+  },
+  [Shim.Angular]: {
+    sync: ngOneSignalFunctionTemplate,
+    async: ngOneSignalAsyncFunctionTemplate
   }
 }
 
