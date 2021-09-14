@@ -1,11 +1,12 @@
 {
-  "name": "react-code-generator",
+  "name": "web-shim-codegen",
   "version": "1.0.0",
-  "description": "",
+  "description": "Used to build Web SDK libraries for various web frameworks",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm main.js && cd src && find . -type f -name '*.js' -delete && cd .. && echo 'Done.'"
+    "clean": "rm main.js && cd src && find . -type f -name '*.js' -delete && cd .. && echo 'Done.'",
+    "build": "./build.sh"
   },
   "keywords": [],
   "author": "",

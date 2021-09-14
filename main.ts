@@ -1,8 +1,9 @@
 import { CodeGenManager } from "./src/managers/CodeGenManager";
+import { IFunctionSignature } from "./src/models/FunctionSignature";
 import { Shim } from "./src/models/Shim";
 
-const reactGenerator = new CodeGenManager(Shim.React);
-reactGenerator.fetchOneSignalFunctions().then(() => {
+CodeGenManager.fetchOneSignalFunctions().then(functions => {
+  const reactGenerator = new CodeGenManager(Shim.React, functions);
   try {
     reactGenerator.writeIndexFile('js');
     reactGenerator.writeTypingsFile();
@@ -10,10 +11,11 @@ reactGenerator.fetchOneSignalFunctions().then(() => {
   } catch (e) {
     console.error(e);
   }
-});
 
-const vueGenerator = new CodeGenManager(Shim.Vue);
-vueGenerator.fetchOneSignalFunctions().then(() => {
+  const vueGenerator = new CodeGenManager(Shim.Vue, functions);
   vueGenerator.writeIndexFile('ts');
   vueGenerator.writeBuildHelperFiles();
-});
+
+  const angularGenerator = new CodeGenManager(Shim.Angular, functions);
+  angularGenerator.writeNgServiceFile();
+})
