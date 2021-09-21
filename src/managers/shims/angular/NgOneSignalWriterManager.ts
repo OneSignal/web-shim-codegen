@@ -12,10 +12,8 @@ export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
   // implements abstract function
   async writeSupportCode(): Promise<void> {
     const supportFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.Angular}/support.ts`);
-    const initObjectInterfaceContents = await ReaderManager.readFile(__dirname + `/../../../snippets/InitObject.ts`);
 
     this.writeLine(supportFileContents);
-    this.writeLine(initObjectInterfaceContents);
   }
 
   // implements abstract function

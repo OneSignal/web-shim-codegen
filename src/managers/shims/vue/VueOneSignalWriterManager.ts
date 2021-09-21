@@ -17,7 +17,7 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
     const initFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.Vue}/onesignalInit.ts`);
 
     this.writeLine(supportFileContents);
-    typingsWriter.writeInterfaces(0);
+    await typingsWriter.writeInterfaces(0);
     typingsWriter.writeOneSignalInterface(this.oneSignalFunctions);
     this.writeLine(initFileContents);
   }

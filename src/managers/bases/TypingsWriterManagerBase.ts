@@ -9,6 +9,7 @@ import { ACTION,
   SLIDEDOWN_OPTIONS,
   TAGS_OBJECT,
   TAG_CATEGORY } from "../../snippets/types";
+import { ReaderManager } from "../ReaderManager";
 
 export abstract class TypingsWriterManagerBase extends CodeWriter {
   public getFunctionSignatureString(sig: IFunctionSignature): string {
@@ -34,7 +35,9 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
    * @param  {number} tabs - how many tabs should be added in front of helper interfaces
    * @returns void
    */
-  public writeInterfaces(tabs: number): void {
+  public async writeInterfaces(tabs: number): Promise<void> {
+    const initObjectInterfaceContents = await ReaderManager.readFile(__dirname + `/../../snippets/InitObject.ts`);
+
     const prefix = "\t".repeat(tabs);
     this.writeLine(prefix+ACTION);
     this.writeLine(prefix+AUTO_PROMPT_OPTIONS);
@@ -46,5 +49,6 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
     this.writeLine(prefix+CATEGORY_OPTIONS);
     this.writeLine(prefix+TAG_CATEGORY);
     this.writeLine('\n');
+    this.writeLine(initObjectInterfaceContents);
   }
 }
