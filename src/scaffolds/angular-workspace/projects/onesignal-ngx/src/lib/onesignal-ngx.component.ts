@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'onesignal-onesignal-ngx',
+  selector: 'lib-onesignal-ngx',
   template: `
     <p>
       onesignal-ngx works!
