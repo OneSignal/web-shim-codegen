@@ -10,7 +10,6 @@ import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterM
 import { VueOneSignalWriterManager } from "./shims/vue/VueOneSignalWriterManager";
 import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
 import { NgOneSignalWriterManager } from "./shims/angular/NgOneSignalWriterManager";
-import { TypingsWriterManagerBase } from "./bases/TypingsWriterManagerBase";
 import { NgTypingsWriterManager } from "./shims/angular/NgTypingsWriterManager";
 
 export class CodeGenManager {
@@ -53,7 +52,7 @@ export class CodeGenManager {
 
       const oneSignalWriter = new NgOneSignalWriterManager(writer, this.oneSignalFunctions);
       const typingsWriter = new NgTypingsWriterManager(writer);
-      typingsWriter.writeInterfaces(0);
+      await typingsWriter.writeInterfaces(0);
       await oneSignalWriter.writeSupportCode();
       await oneSignalWriter.writeServiceClass();
       oneSignalWriter.writeOneSignalFunctions(this.oneSignalFunctions);
@@ -62,11 +61,11 @@ export class CodeGenManager {
   }
 
   public writeTypingsFile(): void {
-    Generator.generate({outputFile: `/build/${this.shim}/index.d.ts`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `/build/${this.shim}/index.d.ts`}, async (writer: TextWriter) => {
       switch (this.shim) {
         case Shim.React:
           const reactWriter = new ReactTypingsWriterManager(writer);
-          reactWriter.writeOneSignalModule(this.oneSignalFunctions);
+          await reactWriter.writeOneSignalModule(this.oneSignalFunctions);
           break;
       }
     });

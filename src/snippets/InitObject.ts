@@ -11,6 +11,9 @@ interface IInitObject {
   autoRegister?: boolean;
   notificationClickHandlerMatch?: string;
   notificationClickHandlerAction?: string;
+  serviceWorkerParam?: { scope: string };
+  serviceWorkerPath?: string;
+  serviceWorkerUpdaterPath?: string;
   path?: string;
   [key: string]: any;
 }

@@ -9,6 +9,26 @@ interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateBut
 interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }
 
 
+interface IInitObject {
+  appId: string;
+  subdomainName?: string;
+  requiresUserPrivacyConsent?: boolean;
+  promptOptions?: Object;
+  welcomeNotification?: Object;
+  notifyButton?: Object;
+  persistNotification?: boolean;
+  webhooks?: Object;
+  autoResubscribe?: boolean;
+  autoRegister?: boolean;
+  notificationClickHandlerMatch?: string;
+  notificationClickHandlerAction?: string;
+  serviceWorkerParam?: { scope: string };
+  serviceWorkerPath?: string;
+  serviceWorkerUpdaterPath?: string;
+  path?: string;
+  [key: string]: any;
+}
+
 import { Injectable } from '@angular/core';
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/OneSignalSDK.js';
@@ -29,23 +49,6 @@ interface IOneSignalFunctionCall {
 
 interface IOneSignalService {
   [key: string]: any
-}
-
-interface IInitObject {
-  appId: string;
-  subdomainName?: string;
-  requiresUserPrivacyConsent?: boolean;
-  promptOptions?: Object;
-  welcomeNotification?: Object;
-  notifyButton?: Object;
-  persistNotification?: boolean;
-  webhooks?: Object;
-  autoResubscribe?: boolean;
-  autoRegister?: boolean;
-  notificationClickHandlerMatch?: string;
-  notificationClickHandlerAction?: string;
-  path?: string;
-  [key: string]: any;
 }
 
 @Injectable({

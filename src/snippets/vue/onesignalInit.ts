@@ -1,6 +1,6 @@
 /* O N E S I G N A L   A P I  */
 
-function init(options: Object = {}) {
+function init(options: IInitObject) {
   return new Promise<void>(resolve => {
     if (isOneSignalInitialized) {
       return;
