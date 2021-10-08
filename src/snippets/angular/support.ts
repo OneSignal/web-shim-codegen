@@ -16,6 +16,6 @@ interface IOneSignalFunctionCall {
   promiseResolver?: Function;
 }
 
-interface IOneSignalService {
+interface IOneSignal {
   [key: string]: any
 }

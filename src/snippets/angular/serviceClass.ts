@@ -1,7 +1,7 @@
 @Injectable({
   providedIn: 'root'
 })
-export class OneSignalService implements IOneSignalService {
+export class OneSignal implements IOneSignal {
   private isOneSignalInitialized = false;
   private ngOneSignalFunctionQueue: IOneSignalFunctionCall[] = [];
 
@@ -29,7 +29,7 @@ export class OneSignalService implements IOneSignalService {
       const { name, args, promiseResolver } = element;
 
       if (!!promiseResolver) {
-        (this as IOneSignalService)[name](...args).then((result: any) => {
+        (this as IOneSignal)[name](...args).then((result: any) => {
           promiseResolver(result);
         });
       } else {
