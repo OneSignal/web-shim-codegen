@@ -17,7 +17,7 @@ export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
 
   // implements abstract function
   async writeExportCode(exportFunctions: string[]): Promise<void> {
-    this.writeLine("\nconst OneSignalReact = {");
+    this.writeLine("\nconst OneSignalReact: IOneSignal = {");
 
     exportFunctions.forEach(func => {
       this.writeLine(`\t${func},`);
