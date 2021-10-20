@@ -124,7 +124,7 @@ export class CodeGenManager {
   private writeTsConfigFile(): void {
     Generator.generateAsync({outputFile: `./build/${this.shim}/tsconfig.json`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writeTsConfigFile(this.shim);
+      await buildHelperWriter.writeTsConfigFile();
     })
   }
 }
