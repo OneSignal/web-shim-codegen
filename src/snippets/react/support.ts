@@ -1,47 +1,18 @@
-// file written in pure JS
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
-const MODULE_ID = 'onesignal-module';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/OneSignalSDK.js';
 const ONESIGNAL_NOT_SETUP_ERROR = 'OneSignal is not setup correctly.';
 const reactOneSignalFunctionQueue = [];
 const MAX_TIMEOUT = 30;
 
-const getModuleScriptBody = (options = {}) => {
-    const mappedOptions = JSON.stringify(options, null, 2);
+let isOneSignalInitialized = false;
 
-    return `
-      var OneSignal = window.OneSignal || [];
-      OneSignal.push(function() {
-        OneSignal.init(${mappedOptions});
-      });
-    `;
-};
-
-const injectScript = (id, buildScript) => {
-  const hasScript = !!document.getElementById(id);
-  if (hasScript) {
-    return;
-  }
-  let script = document.createElement('script');
-  script.id = id;
-  script = buildScript(script);
-  document.body.appendChild(script);
-};
-
-const injectSDKScript = () => {
-    injectScript(ONESIGNAL_SDK_ID, (script) => {
-      script.src = ONE_SIGNAL_SCRIPT_SRC;
-      return script;
-    });
-};
-
-const injectModuleScript = (options= {}) => {
-  injectScript(MODULE_ID, (script) => {
-    script.innerHTML = getModuleScriptBody(options);
-    script.async = true;
-    return script;
-  });
-};
+const injectScript = () => {
+  const script = document.createElement('script');
+  script.id = ONESIGNAL_SDK_ID;
+  script.src = ONE_SIGNAL_SCRIPT_SRC;
+  script.async = true;
+  document.head.appendChild(script);
+}
 
 const processQueuedOneSignalFunctions = () => {
   reactOneSignalFunctionQueue.forEach(element => {
@@ -57,23 +28,46 @@ const processQueuedOneSignalFunctions = () => {
   });
 }
 
-const init = (options) => new Promise(resolve => {
+const doesOneSignalExist = () => {
+  if (window["OneSignal"]) {
+    return true;
+  }
+  return false;
+}
+
+const setupOneSignalIfMissing = () => {
+  if (!doesOneSignalExist()) {
+    window["OneSignal"] = window["OneSignal"] || [];
+  }
+}
+
+const init = (options: IInitObject) => new Promise<void>(resolve => {
+  if (isOneSignalInitialized) {
+    return;
+  }
+
   if (!options || !options.appId) {
     throw new Error('You need to provide your OneSignal appId.');
   }
   if (!document) {
     return;
   }
-  injectSDKScript();
-  injectModuleScript(options);
+  injectScript();
+  setupOneSignalIfMissing();
+  window["OneSignal"].push(() => {
+    window["OneSignal"].init(options);
+  });
 
   const timeout = setTimeout(() => {
     console.error(ONESIGNAL_NOT_SETUP_ERROR);
   }, MAX_TIMEOUT * 1_000);
 
-  OneSignal.push(() => {
+
+  window["OneSignal"].push(() => {
     clearTimeout(timeout);
     processQueuedOneSignalFunctions();
     resolve();
   });
+
+  isOneSignalInitialized = true;
 });
