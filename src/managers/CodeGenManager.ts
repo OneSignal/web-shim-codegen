@@ -60,17 +60,6 @@ export class CodeGenManager {
     })
   }
 
-  public writeTypingsFile(): void {
-    Generator.generateAsync({outputFile: `/build/${this.shim}/index.d.ts`}, async (writer: TextWriter) => {
-      switch (this.shim) {
-        case Shim.React:
-          const reactWriter = new ReactTypingsWriterManager(writer);
-          await reactWriter.writeOneSignalModule(this.oneSignalFunctions);
-          break;
-      }
-    });
-  }
-
   public writeBuildHelperFiles(): void {
     this.writePackageJsonFile();
     this.writeRollupConfigFile();
