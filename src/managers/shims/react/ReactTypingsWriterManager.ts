@@ -2,12 +2,11 @@ import { IFunctionSignature } from "../../../models/FunctionSignature";
 import { TypingsWriterManagerBase } from "../../bases/TypingsWriterManagerBase";
 
 export class ReactTypingsWriterManager extends TypingsWriterManagerBase {
-  public async writeOneSignalModule(functions: IFunctionSignature[]): Promise<void> {
-    this.writeLine("declare module 'react-onesignal' {");
-    await this.writeInterfaces(1);
-    this.writeLine("\tinterface OneSignalReact {");
-    this.writeFunctionTypes(functions, 2);
-    this.writeLine("\t}\n\tconst OneSignalReact: OneSignalReact;\n\texport default OneSignalReact;");
-    this.writeLine("}");
+  public writeOneSignalInterface(functions: IFunctionSignature[]): void {
+    this.writeLine(`interface IOneSignal {`);
+    this.writeFunctionTypes(functions, 1);
+    this.writeLine(`\t[index: string]: Function;`);
+    this.writeLine(`}`)
+    this.writeLine('\n');
   }
 }
