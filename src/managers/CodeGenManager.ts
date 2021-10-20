@@ -30,7 +30,7 @@ export class CodeGenManager {
       let oneSignalWriter: OneSignalWriterManagerBase;
       switch (this.shim) {
         case Shim.React:
-          oneSignalWriter = new ReactOneSignalWriterManager(writer);
+          oneSignalWriter = new ReactOneSignalWriterManager(writer, this.oneSignalFunctions);
           break;
         case Shim.Vue:
           oneSignalWriter = new VueOneSignalWriterManager(writer, this.oneSignalFunctions);
