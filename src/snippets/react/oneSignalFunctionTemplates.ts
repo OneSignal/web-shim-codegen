@@ -1,10 +1,10 @@
 import { IFunctionSignature } from "../../models/FunctionSignature";
-import { spreadArgs } from "../../support/utils";
+import { spreadArgs, spreadArgsWithTypes } from "../../support/utils";
 
 export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
   const args = sig.arguments?.map(arg => arg.name);
   return `
-  function ${sig.name}(${spreadArgs(args)}) {
+  function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     return new Promise((resolve, reject) => {
       if (!doesOneSignalExist()) {
         reactOneSignalFunctionQueue.push({
@@ -16,10 +16,10 @@ export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => 
       }
 
       try {
-        OneSignal.push(() => {
-          OneSignal.${sig.name}(${spreadArgs(args)})
-            .then((value) => resolve(value))
-            .catch((error) => reject(error));
+        window["OneSignal"].push(() => {
+          window["OneSignal"].${sig.name}(${spreadArgs(args)})
+            .then((value: any) => resolve(value))
+            .catch((error: any) => reject(error));
         });
       } catch (error) {
         reject(error);
@@ -31,9 +31,8 @@ export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => 
 export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
   const args = sig.arguments?.map(arg => arg.name);
   return `
-  function ${sig.name}(${spreadArgs(args)}) {
-    const oneSignal = window["OneSignal"] || null;
-    if (!oneSignal) {
+  function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+    if (!doesOneSignalExist()) {
       reactOneSignalFunctionQueue.push({
         name: "${sig.name}",
         args: arguments,
@@ -41,8 +40,8 @@ export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
       return;
     }
 
-    OneSignal.push(() => {
-      OneSignal.${sig.name}(${spreadArgs(args)})
+    window["OneSignal"].push(() => {
+      window["OneSignal"].${sig.name}(${spreadArgs(args)})
     });
   };`
 };
