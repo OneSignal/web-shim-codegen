@@ -69,6 +69,7 @@ export class CodeGenManager {
 
     switch (this.shim) {
       case Shim.Vue:
+      case Shim.React:
         this.writeTsConfigFile();
         break;
     }
