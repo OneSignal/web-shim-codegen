@@ -30,7 +30,7 @@ export class CodeGenManager {
       let oneSignalWriter: OneSignalWriterManagerBase;
       switch (this.shim) {
         case Shim.React:
-          oneSignalWriter = new ReactOneSignalWriterManager(writer);
+          oneSignalWriter = new ReactOneSignalWriterManager(writer, this.oneSignalFunctions);
           break;
         case Shim.Vue:
           oneSignalWriter = new VueOneSignalWriterManager(writer, this.oneSignalFunctions);
@@ -60,17 +60,6 @@ export class CodeGenManager {
     })
   }
 
-  public writeTypingsFile(): void {
-    Generator.generateAsync({outputFile: `/build/${this.shim}/index.d.ts`}, async (writer: TextWriter) => {
-      switch (this.shim) {
-        case Shim.React:
-          const reactWriter = new ReactTypingsWriterManager(writer);
-          await reactWriter.writeOneSignalModule(this.oneSignalFunctions);
-          break;
-      }
-    });
-  }
-
   public writeBuildHelperFiles(): void {
     this.writePackageJsonFile();
     this.writeRollupConfigFile();
@@ -80,6 +69,7 @@ export class CodeGenManager {
 
     switch (this.shim) {
       case Shim.Vue:
+      case Shim.React:
         this.writeTsConfigFile();
         break;
     }
@@ -124,7 +114,7 @@ export class CodeGenManager {
   private writeTsConfigFile(): void {
     Generator.generateAsync({outputFile: `./build/${this.shim}/tsconfig.json`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writeTsConfigFile(this.shim);
+      await buildHelperWriter.writeTsConfigFile();
     })
   }
 }
