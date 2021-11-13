@@ -6,7 +6,7 @@ export const INIT_FUNCTION_SIG = {
   arguments: [
     {
       name: "options",
-      type: "any",
+      type: "IInitObject",
       optional: true
     },
   ],
