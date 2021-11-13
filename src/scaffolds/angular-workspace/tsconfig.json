@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -13,26 +12,21 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "paths": {
-      "@onesignal/onesignal-ngx/*": [
-        "projects/onesignal-ngx/*",
-        "projects/onesignal-ngx"
-      ],
-      "@onesignal/onesignal-ngx": [
-        "dist/onesignal-ngx/onesignal-ngx",
-        "dist/onesignal-ngx"
-      ]
-    },
     "importHelpers": true,
-    "target": "es2017",
+    "target": "es2015",
     "module": "es2020",
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "onesignal-ngx": [
+        "dist/onesignal-ngx/onesignal-ngx",
+        "dist/onesignal-ngx"
+      ]
+    }
   },
   "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true

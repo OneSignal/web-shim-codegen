@@ -1,15 +1,12 @@
 import { NgModule } from '@angular/core';
+import { OnesignalNgxComponent } from './onesignal-ngx.component';
 
 
 
 @NgModule({
-  declarations: [
-  ],
+  declarations: [OnesignalNgxComponent],
   imports: [
   ],
-  exports: [
-  ],
-  providers: [
-  ]
+  exports: [OnesignalNgxComponent]
 })
 export class OnesignalNgxModule { }
