@@ -7,7 +7,7 @@
       "projectType": "library",
       "root": "projects/onesignal-ngx",
       "sourceRoot": "projects/onesignal-ngx/src",
-      "prefix": "lib",
+      "prefix": "onesignal",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

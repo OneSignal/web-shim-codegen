@@ -4,13 +4,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "lib",
+      "onesignal",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "lib",
+      "onesignal",
       "kebab-case"
     ]
   }
