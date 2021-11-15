@@ -1,5 +1,4 @@
 import { CodeWriter } from "@yellicode/core";
-import { NPM_IGNORE } from "../snippets/npmIgnore";
 import { ReaderManager } from "./ReaderManager";
 import { Shim } from "../models/Shim";
 
@@ -23,8 +22,9 @@ export class BuildHelperWriterManager extends CodeWriter {
     this.write(fileContents);
   }
 
-  public writeNpmIgnoreFile(): void {
-    this.writeLine(NPM_IGNORE);
+  public async writeNpmIgnoreFile(): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/.npmignore`);
+    this.write(fileContents);
   }
 
   public async writeEslintFile(shim: Shim): Promise<void> {
