@@ -1,5 +1,4 @@
 import { CodeWriter } from "@yellicode/core";
-import { NPM_IGNORE } from "../snippets/npmIgnore";
 import { ReaderManager } from "./ReaderManager";
 import { Shim } from "../models/Shim";
 
@@ -15,25 +14,26 @@ export class BuildHelperWriterManager extends CodeWriter {
 
   public async writeRollupConfigFile(shim: Shim): Promise<void> {
     const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/rollupConfig.ts`);
-    this.writeLine(fileContents);
+    this.write(fileContents);
   }
 
   public async writeBabelRcConfigFile(shim: Shim): Promise<void> {
     const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/.babelrc`);
-    this.writeLine(fileContents);
+    this.write(fileContents);
   }
 
-  public writeNpmIgnoreFile(): void {
-    this.writeLine(NPM_IGNORE);
+  public async writeNpmIgnoreFile(): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/.npmignore`);
+    this.write(fileContents);
   }
 
   public async writeEslintFile(shim: Shim): Promise<void> {
     const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/eslintrc.ts`);
-    this.writeLine(fileContents);
+    this.write(fileContents);
   }
 
   public async writeTsConfigFile(): Promise<void> {
     const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/tsconfig.json`);
-    this.writeLine(fileContents);
+    this.write(fileContents);
   }
 }

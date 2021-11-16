@@ -98,9 +98,9 @@ export class CodeGenManager {
   }
 
   private writeNpmIgnoreFile(): void {
-    Generator.generate({outputFile: `./build/${this.shim}/.npmignore`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/.npmignore`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      buildHelperWriter.writeNpmIgnoreFile();
+      await buildHelperWriter.writeNpmIgnoreFile();
     });
   }
 
