@@ -7,7 +7,7 @@ export const INIT_FUNCTION_SIG = {
     {
       name: "options",
       type: "IInitObject",
-      optional: true
+      optional: false
     },
   ],
   returnType: "Promise<void>"
