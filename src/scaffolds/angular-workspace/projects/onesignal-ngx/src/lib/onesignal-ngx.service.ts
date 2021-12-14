@@ -8,7 +8,6 @@ interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNativ
 interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }
 interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }
 
-
 interface IInitObject {
   appId: string;
   subdomainName?: string;
@@ -126,7 +125,7 @@ export class OneSignal implements IOneSignal {
   }
 
 
-  on(event: string, listener: () => void): void {
+  on(event: string, listener: Function): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: "on",
@@ -140,7 +139,7 @@ export class OneSignal implements IOneSignal {
     });
   };
 
-  off(event: string, listener: () => void): void {
+  off(event: string, listener: Function): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: "off",
@@ -154,7 +153,7 @@ export class OneSignal implements IOneSignal {
     });
   };
 
-  once(event: string, listener: () => void): void {
+  once(event: string, listener: Function): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: "once",
