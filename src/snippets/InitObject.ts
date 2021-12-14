@@ -15,5 +15,6 @@ interface IInitObject {
   serviceWorkerPath?: string;
   serviceWorkerUpdaterPath?: string;
   path?: string;
+  allowLocalhostAsSecureOrigin?: boolean;
   [key: string]: any;
 }

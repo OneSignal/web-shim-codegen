@@ -26,6 +26,7 @@ interface IInitObject {
   serviceWorkerPath?: string;
   serviceWorkerUpdaterPath?: string;
   path?: string;
+  allowLocalhostAsSecureOrigin?: boolean;
   [key: string]: any;
 }
 
@@ -125,7 +126,7 @@ export class OneSignal implements IOneSignal {
   }
 
 
-  on(event: string, listener: Function): void {
+  on(event: string, listener: () => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: "on",
@@ -139,7 +140,7 @@ export class OneSignal implements IOneSignal {
     });
   };
 
-  off(event: string, listener: Function): void {
+  off(event: string, listener: () => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: "off",
@@ -153,7 +154,7 @@ export class OneSignal implements IOneSignal {
     });
   };
 
-  once(event: string, listener: Function): void {
+  once(event: string, listener: () => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: "once",
