@@ -23,7 +23,7 @@ const EVENTS_FUNCTION_SIG = {
     },
     {
       name: "listener",
-      type: "Function",
+      type: "() => void",
       optional: false
     }
   ],
