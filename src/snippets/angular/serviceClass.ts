@@ -46,7 +46,7 @@ export class OneSignal implements IOneSignal {
 
   /* P U B L I C */
 
-  init(options: IInitObject) {
+  init(options: IInitObject): Promise<void> {
     return new Promise<void>(resolve => {
       if (this.isOneSignalInitialized) {
         return;
@@ -56,7 +56,7 @@ export class OneSignal implements IOneSignal {
       this.setupOneSignalIfMissing();
       window.OneSignal.push(() => {
         window.OneSignal.init(options);
-      })
+      });
 
       const timeout = setTimeout(() => {
         console.error(ONESIGNAL_NOT_SETUP_ERROR);
@@ -68,5 +68,5 @@ export class OneSignal implements IOneSignal {
         this.processQueuedOneSignalFunctions();
         resolve();
       });
-    })
+    });
   }
