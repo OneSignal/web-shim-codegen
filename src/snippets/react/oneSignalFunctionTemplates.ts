@@ -8,7 +8,7 @@ export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => 
     return new Promise((resolve, reject) => {
       if (!doesOneSignalExist()) {
         reactOneSignalFunctionQueue.push({
-          name: "${sig.name}",
+          name: '${sig.name}',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -25,7 +25,7 @@ export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => 
         reject(error);
       }
     });
-  };`
+  }`
 };
 
 export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
@@ -34,7 +34,7 @@ export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
   function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     if (!doesOneSignalExist()) {
       reactOneSignalFunctionQueue.push({
-        name: "${sig.name}",
+        name: '${sig.name}',
         args: arguments,
       });
       return;
@@ -43,5 +43,5 @@ export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
     window["OneSignal"].push(() => {
       window["OneSignal"].${sig.name}(${spreadArgs(args)})
     });
-  };`
+  }`
 };
