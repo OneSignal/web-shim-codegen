@@ -9,7 +9,7 @@ import { Shim } from "../models/Shim";
 export class BuildHelperWriterManager extends CodeWriter {
   public async writePackageJsonFile(shim: Shim): Promise<void> {
     const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/package.json`);
-    this.writeLine(fileContents);
+    this.write(fileContents);
   }
 
   public async writeRollupConfigFile(shim: Shim): Promise<void> {

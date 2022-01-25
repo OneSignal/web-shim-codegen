@@ -24,7 +24,7 @@ const templateFunctionMap: ITemplateFunctionMap = {
 
 export abstract class OneSignalWriterManagerBase extends CodeWriter {
   abstract writeSupportCode(): Promise<void>;
-  abstract writeExportCode(exportFunctions: string[]): void;
+  abstract writeExportCode(exportFunctions: string[]): Promise<void>;
 
   constructor(writer: TextWriter, readonly shim: Shim) {
     super(writer);

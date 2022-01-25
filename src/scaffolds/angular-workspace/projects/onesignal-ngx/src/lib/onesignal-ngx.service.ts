@@ -1,4 +1,4 @@
-interface Action<T>{ (item: T): void; }
+type Action<T> = (item: T) => void;
 interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }
 interface RegisterOptions { modalPrompt?: boolean; httpPermissionRequest?: boolean; slidedown?: boolean; autoAccept?: boolean }
 interface SetSMSOptions { identifierAuthHash?: string; }
@@ -8,16 +8,15 @@ interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNativ
 interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }
 interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }
 
-
 interface IInitObject {
   appId: string;
   subdomainName?: string;
   requiresUserPrivacyConsent?: boolean;
-  promptOptions?: Object;
-  welcomeNotification?: Object;
-  notifyButton?: Object;
+  promptOptions?: object;
+  welcomeNotification?: object;
+  notifyButton?: object;
   persistNotification?: boolean;
-  webhooks?: Object;
+  webhooks?: object;
   autoResubscribe?: boolean;
   autoRegister?: boolean;
   notificationClickHandlerMatch?: string;
@@ -26,6 +25,7 @@ interface IInitObject {
   serviceWorkerPath?: string;
   serviceWorkerUpdaterPath?: string;
   path?: string;
+  allowLocalhostAsSecureOrigin?: boolean;
   [key: string]: any;
 }
 
@@ -48,7 +48,7 @@ interface IOneSignalFunctionCall {
 }
 
 interface IOneSignal {
-  [key: string]: any
+  [key: string]: any;
 }
 
 @Injectable({
@@ -99,7 +99,7 @@ export class OneSignal implements IOneSignal {
 
   /* P U B L I C */
 
-  init(options: IInitObject) {
+  init(options: IInitObject): Promise<void> {
     return new Promise<void>(resolve => {
       if (this.isOneSignalInitialized) {
         return;
@@ -109,7 +109,7 @@ export class OneSignal implements IOneSignal {
       this.setupOneSignalIfMissing();
       window.OneSignal.push(() => {
         window.OneSignal.init(options);
-      })
+      });
 
       const timeout = setTimeout(() => {
         console.error(ONESIGNAL_NOT_SETUP_ERROR);
@@ -121,57 +121,71 @@ export class OneSignal implements IOneSignal {
         this.processQueuedOneSignalFunctions();
         resolve();
       });
-    })
+    });
   }
 
 
-  on(event: string, listener: Function): void {
+  on(event: string, listener: () => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
-        name: "on",
+        name: 'on',
         args: arguments,
       });
       return;
     }
 
     window.OneSignal.push(() => {
-      window.OneSignal.on(event, listener)
+      window.OneSignal.on(event, listener);
     });
-  };
+  }
 
-  off(event: string, listener: Function): void {
+  off(event: string, listener: () => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
-        name: "off",
+        name: 'off',
         args: arguments,
       });
       return;
     }
 
     window.OneSignal.push(() => {
-      window.OneSignal.off(event, listener)
+      window.OneSignal.off(event, listener);
     });
-  };
+  }
 
-  once(event: string, listener: Function): void {
+  once(event: string, listener: () => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
-        name: "once",
+        name: 'once',
         args: arguments,
       });
       return;
     }
 
     window.OneSignal.push(() => {
-      window.OneSignal.once(event, listener)
+      window.OneSignal.once(event, listener);
     });
-  };
+  }
+
+  isPushNotificationsSupported(callback?: Action<boolean>): void {
+    if (!this.doesOneSignalExist()) {
+      this.ngOneSignalFunctionQueue.push({
+        name: 'isPushNotificationsSupported',
+        args: arguments,
+      });
+      return;
+    }
+
+    window.OneSignal.push(() => {
+      window.OneSignal.isPushNotificationsSupported(callback);
+    });
+  }
 
   isPushNotificationsEnabled(callback?: Action<boolean>): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "isPushNotificationsEnabled",
+          name: 'isPushNotificationsEnabled',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -184,13 +198,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   showHttpPrompt(options?: AutoPromptOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "showHttpPrompt",
+          name: 'showHttpPrompt',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -203,13 +217,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   registerForPushNotifications(options?: RegisterOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "registerForPushNotifications",
+          name: 'registerForPushNotifications',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -222,13 +236,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   setDefaultNotificationUrl(url: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "setDefaultNotificationUrl",
+          name: 'setDefaultNotificationUrl',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -241,13 +255,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   setDefaultTitle(title: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "setDefaultTitle",
+          name: 'setDefaultTitle',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -260,13 +274,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   getTags(callback?: Action<any>): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "getTags",
+          name: 'getTags',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -279,13 +293,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   sendTag(key: string, value: any, callback?: Action<Object>): Promise<Object | null> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "sendTag",
+          name: 'sendTag',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -298,13 +312,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   sendTags(tags: TagsObject<any>, callback?: Action<Object>): Promise<Object | null> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "sendTags",
+          name: 'sendTags',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -317,13 +331,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   deleteTag(tag: string): Promise<Array<string>> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "deleteTag",
+          name: 'deleteTag',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -336,13 +350,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   deleteTags(tags: Array<string>, callback?: Action<Array<string>>): Promise<Array<string>> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "deleteTags",
+          name: 'deleteTags',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -355,13 +369,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   addListenerForNotificationOpened(callback?: Action<Notification>): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "addListenerForNotificationOpened",
+          name: 'addListenerForNotificationOpened',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -374,13 +388,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   setSubscription(newSubscription: boolean): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "setSubscription",
+          name: 'setSubscription',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -393,13 +407,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   showHttpPermissionRequest(options?: AutoPromptOptions): Promise<any> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "showHttpPermissionRequest",
+          name: 'showHttpPermissionRequest',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -412,13 +426,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   showNativePrompt(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "showNativePrompt",
+          name: 'showNativePrompt',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -431,13 +445,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   showSlidedownPrompt(options?: AutoPromptOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "showSlidedownPrompt",
+          name: 'showSlidedownPrompt',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -450,13 +464,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   showCategorySlidedown(options?: AutoPromptOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "showCategorySlidedown",
+          name: 'showCategorySlidedown',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -469,13 +483,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   showSmsSlidedown(options?: AutoPromptOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "showSmsSlidedown",
+          name: 'showSmsSlidedown',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -488,13 +502,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   showEmailSlidedown(options?: AutoPromptOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "showEmailSlidedown",
+          name: 'showEmailSlidedown',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -507,13 +521,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   showSmsAndEmailSlidedown(options?: AutoPromptOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "showSmsAndEmailSlidedown",
+          name: 'showSmsAndEmailSlidedown',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -526,13 +540,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   getNotificationPermission(onComplete?: Function): Promise<NotificationPermission> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "getNotificationPermission",
+          name: 'getNotificationPermission',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -545,13 +559,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   getUserId(callback?: Action<string | undefined | null>): Promise<string | undefined | null> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "getUserId",
+          name: 'getUserId',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -564,13 +578,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   getSubscription(callback?: Action<boolean>): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "getSubscription",
+          name: 'getSubscription',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -583,13 +597,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   setEmail(email: string, options?: SetEmailOptions): Promise<string|null> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "setEmail",
+          name: 'setEmail',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -602,13 +616,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   setSMSNumber(smsNumber: string, options?: SetSMSOptions): Promise<string | null> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "setSMSNumber",
+          name: 'setSMSNumber',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -621,13 +635,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   logoutEmail(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "logoutEmail",
+          name: 'logoutEmail',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -640,13 +654,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   logoutSMS(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "logoutSMS",
+          name: 'logoutSMS',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -659,13 +673,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   setExternalUserId(externalUserId: string | undefined | null, authHash?: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "setExternalUserId",
+          name: 'setExternalUserId',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -678,13 +692,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   removeExternalUserId(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "removeExternalUserId",
+          name: 'removeExternalUserId',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -697,13 +711,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   getExternalUserId(): Promise<string | undefined | null> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "getExternalUserId",
+          name: 'getExternalUserId',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -716,13 +730,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   provideUserConsent(consent: boolean): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "provideUserConsent",
+          name: 'provideUserConsent',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -735,13 +749,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   getEmailId(callback?: Action<string | undefined>): Promise<string | null | undefined> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "getEmailId",
+          name: 'getEmailId',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -754,13 +768,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   getSMSId(callback?: Action<string | undefined>): Promise<string | null | undefined> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "getSMSId",
+          name: 'getSMSId',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -773,13 +787,13 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 
   sendOutcome(outcomeName: string, outcomeWeight?: number | undefined): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "sendOutcome",
+          name: 'sendOutcome',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -792,5 +806,5 @@ export class OneSignal implements IOneSignal {
           .catch((error: Error) => reject(error));
       });
     });
-  };
+  }
 }

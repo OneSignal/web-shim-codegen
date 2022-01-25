@@ -1,4 +1,4 @@
-export const ACTION = `interface Action<T>{ (item: T): void; }`;
+export const ACTION = `type Action<T> = (item: T) => void;`;
 export const AUTO_PROMPT_OPTIONS = `interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }`;
 export const REGISTER_OPTIONS = `interface RegisterOptions { modalPrompt?: boolean; httpPermissionRequest?: boolean; slidedown?: boolean; autoAccept?: boolean }`;
 export const SET_SMS_OPTIONS = `interface SetSMSOptions { identifierAuthHash?: string; }`

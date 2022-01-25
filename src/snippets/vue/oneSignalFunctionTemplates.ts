@@ -8,7 +8,7 @@ export const vueOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
     return new Promise(function (resolve, reject) {
       if (!doesOneSignalExist()) {
         vueOneSignalFunctionQueue.push({
-          name: "${sig.name}",
+          name: '${sig.name}',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -21,7 +21,7 @@ export const vueOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
           .catch((error) => reject(error));
       });
     });
-  };`
+  }`
 };
 
 export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
@@ -30,7 +30,7 @@ export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
   function ${sig.name}(${spreadArgs(args)}): ${sig.returnType || 'void'} {
     if (!doesOneSignalExist()) {
       vueOneSignalFunctionQueue.push({
-        name: "${sig.name}",
+        name: '${sig.name}',
         args: arguments,
       });
       return;
@@ -39,5 +39,5 @@ export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
     window.OneSignal.push(() => {
       window.OneSignal.${sig.name}(${spreadArgs(args)})
     });
-  };`
+  }`
 };

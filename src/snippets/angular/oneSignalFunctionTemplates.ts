@@ -8,7 +8,7 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: "${sig.name}",
+          name: '${sig.name}',
           args: arguments,
           promiseResolver: resolve,
         });
@@ -21,7 +21,7 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
           .catch((error: Error) => reject(error));
       });
     });
-  };`
+  }`
 };
 
 export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
@@ -30,14 +30,14 @@ export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
   ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
-        name: "${sig.name}",
+        name: '${sig.name}',
         args: arguments,
       });
       return;
     }
 
     window.OneSignal.push(() => {
-      window.OneSignal.${sig.name}(${spreadArgs(args)})
+      window.OneSignal.${sig.name}(${spreadArgs(args)});
     });
-  };`
+  }`
 };

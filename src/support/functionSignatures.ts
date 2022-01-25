@@ -7,7 +7,7 @@ export const INIT_FUNCTION_SIG = {
     {
       name: "options",
       type: "IInitObject",
-      optional: true
+      optional: false
     },
   ],
   returnType: "Promise<void>"
@@ -23,7 +23,7 @@ const EVENTS_FUNCTION_SIG = {
     },
     {
       name: "listener",
-      type: "Function",
+      type: "() => void",
       optional: false
     }
   ],

@@ -17,5 +17,5 @@ interface IOneSignalFunctionCall {
 }
 
 interface IOneSignal {
-  [key: string]: any
+  [key: string]: any;
 }

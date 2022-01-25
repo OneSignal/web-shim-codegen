@@ -8,6 +8,12 @@
 ## Start
 `yarn`
 ## Building For Release
+
+**Update version in `package.json` files**
+* React: `src/snippets/react/package.json`
+* Vue: `src/snippets/vue/package.json`
+* Angular: `src/scaffolds/angular-workspace/package.json` <-- note this is in a different place than the others
+
 ```
 yarn build
 ```

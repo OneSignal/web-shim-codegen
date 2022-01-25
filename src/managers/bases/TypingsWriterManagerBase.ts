@@ -48,7 +48,7 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
     this.writeLine(prefix+SLIDEDOWN_OPTIONS);
     this.writeLine(prefix+CATEGORY_OPTIONS);
     this.writeLine(prefix+TAG_CATEGORY);
-    this.writeLine('\n');
+    this.writeLine();
     this.writeLine(initObjectInterfaceContents);
   }
 }
