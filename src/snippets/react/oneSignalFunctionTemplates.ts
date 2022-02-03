@@ -6,6 +6,11 @@ export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => 
   return `
   function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     return new Promise((resolve, reject) => {
+      if (isOneSignalScriptFailed) {
+        resolve();
+        return;
+      }
+
       if (!doesOneSignalExist()) {
         reactOneSignalFunctionQueue.push({
           name: '${sig.name}',

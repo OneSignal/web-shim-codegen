@@ -1,17 +1,45 @@
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/OneSignalSDK.js';
-const ONESIGNAL_NOT_SETUP_ERROR = 'OneSignal is not setup correctly.';
 const reactOneSignalFunctionQueue = [];
-const MAX_TIMEOUT = 30;
 
+// true if the script is successfully loaded from CDN.
 let isOneSignalInitialized = false;
+// true if the script fails to load from CDN. A separate flag is necessary
+// to disambiguate between a CDN load failure and a delayed call to
+// OneSignal#init.
+let isOneSignalScriptFailed = false;
 
-const injectScript = () => {
-  const script = document.createElement('script');
-  script.id = ONESIGNAL_SDK_ID;
-  script.src = ONE_SIGNAL_SCRIPT_SRC;
-  script.async = true;
-  document.head.appendChild(script);
+const doesOneSignalExist = () => {
+  if (window["OneSignal"]) {
+    return true;
+  }
+  return false;
+}
+
+const handleOnLoad = (resolve: () => void, options: IInitObject) => {
+  isOneSignalInitialized = true;
+
+  // OneSignal is assumed to be loaded correctly because this method
+  // is called after the script is successfully loaded by CDN, but
+  // just in case.
+  window["OneSignal"] = window["OneSignal"] || []
+
+  window["OneSignal"].push(() => {
+    window["OneSignal"].init(options);
+  });
+
+  window["OneSignal"].push(() => {
+    processQueuedOneSignalFunctions();
+    resolve();
+  });
+}
+
+const handleOnError = (resolve: () => void) => {
+  isOneSignalScriptFailed = true;
+  // Ensure that any unresolved functions are cleared from the queue,
+  // even in the event of a CDN load failure.
+  processQueuedOneSignalFunctions();
+  resolve();
 }
 
 const processQueuedOneSignalFunctions = () => {
@@ -28,21 +56,9 @@ const processQueuedOneSignalFunctions = () => {
   });
 }
 
-const doesOneSignalExist = () => {
-  if (window["OneSignal"]) {
-    return true;
-  }
-  return false;
-}
-
-const setupOneSignalIfMissing = () => {
-  if (!doesOneSignalExist()) {
-    window["OneSignal"] = window["OneSignal"] || [];
-  }
-}
-
 const init = (options: IInitObject) => new Promise<void>(resolve => {
   if (isOneSignalInitialized) {
+    resolve();
     return;
   }
 
@@ -50,24 +66,24 @@ const init = (options: IInitObject) => new Promise<void>(resolve => {
     throw new Error('You need to provide your OneSignal appId.');
   }
   if (!document) {
+    resolve();
     return;
   }
-  injectScript();
-  setupOneSignalIfMissing();
-  window["OneSignal"].push(() => {
-    window["OneSignal"].init(options);
-  });
 
-  const timeout = setTimeout(() => {
-    console.error(ONESIGNAL_NOT_SETUP_ERROR);
-  }, MAX_TIMEOUT * 1_000);
+  const script = document.createElement('script');
+  script.id = ONESIGNAL_SDK_ID;
+  script.src = ONE_SIGNAL_SCRIPT_SRC;
+  script.async = true;
 
+  script.onload = () => {
+    handleOnLoad(resolve, options);
+  };
 
-  window["OneSignal"].push(() => {
-    clearTimeout(timeout);
-    processQueuedOneSignalFunctions();
-    resolve();
-  });
+  // Always resolve whether or not the script is successfully initialized.
+  // This is important for users who may block cdn.onesignal.com w/ adblock.
+  script.onerror = () => {
+    handleOnError(resolve);
+  }
 
-  isOneSignalInitialized = true;
+  document.head.appendChild(script);
 });
