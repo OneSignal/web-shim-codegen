@@ -42,6 +42,11 @@ export class BuildHelperWriterManager extends CodeWriter {
     this.write(fileContents);
   }
 
+  public async writeReadmeFile(shim: Shim): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/README.md`);
+    this.write(fileContents);
+  }
+
   public async writeGitignoreFile(): Promise<void> {
     const fileContents = await ReaderManager.readFile(__dirname + `/../static/.gitignore`);
     this.write(fileContents);

@@ -65,6 +65,7 @@ export class CodeGenManager {
     this.writeNpmIgnoreFile();
     this.writeEslintFile();
     this.writeLicenseFile();
+    this.writeReadmeFile();
     this.writeGitignoreFile();
 
     switch (this.shim) {
@@ -133,6 +134,12 @@ export class CodeGenManager {
     })
   }
 
+  private writeReadmeFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/README.md`}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeReadmeFile(this.shim);
+    })
+  }
 
   private writeGitignoreFile(): void {
     Generator.generateAsync({outputFile: `./build/${this.shim}/.gitignore`}, async (writer: TextWriter) => {
