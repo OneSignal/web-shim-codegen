@@ -167,20 +167,6 @@ export class OneSignal implements IOneSignal {
     });
   }
 
-  isPushNotificationsSupported(callback?: Action<boolean>): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'isPushNotificationsSupported',
-        args: arguments,
-      });
-      return;
-    }
-
-    window.OneSignal.push(() => {
-      window.OneSignal.isPushNotificationsSupported(callback);
-    });
-  }
-
   isPushNotificationsEnabled(callback?: Action<boolean>): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
@@ -542,7 +528,7 @@ export class OneSignal implements IOneSignal {
     });
   }
 
-  getNotificationPermission(onComplete?: Function): Promise<NotificationPermission> {
+  getNotificationPermission(onComplete?: Action<NotificationPermission>): Promise<NotificationPermission> {
     return new Promise((resolve, reject) => {
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
