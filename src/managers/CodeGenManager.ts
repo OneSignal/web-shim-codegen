@@ -64,6 +64,7 @@ export class CodeGenManager {
     this.writePackageJsonFile();
     this.writeNpmIgnoreFile();
     this.writeEslintFile();
+    this.writeLicenseFile();
 
     switch (this.shim) {
       case Shim.Vue:
@@ -123,4 +124,12 @@ export class CodeGenManager {
       await buildHelperWriter.writeTsConfigFile();
     })
   }
+
+  private writeLicenseFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/LICENSE`}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeLicenseFile();
+    })
+  }
+
 }

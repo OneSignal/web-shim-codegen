@@ -36,4 +36,9 @@ export class BuildHelperWriterManager extends CodeWriter {
     const fileContents = await ReaderManager.readFile(__dirname + `/../static/tsconfig.json`);
     this.write(fileContents);
   }
+
+  public async writeLicenseFile(): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/LICENSE`);
+    this.write(fileContents);
+  }
 }
