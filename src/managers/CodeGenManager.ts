@@ -65,6 +65,7 @@ export class CodeGenManager {
     this.writeNpmIgnoreFile();
     this.writeEslintFile();
     this.writeLicenseFile();
+    this.writeGitignoreFile();
 
     switch (this.shim) {
       case Shim.Vue:
@@ -132,4 +133,11 @@ export class CodeGenManager {
     })
   }
 
+
+  private writeGitignoreFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/.gitignore`}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeGitignoreFile();
+    })
+  }
 }

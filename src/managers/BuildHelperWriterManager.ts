@@ -41,4 +41,9 @@ export class BuildHelperWriterManager extends CodeWriter {
     const fileContents = await ReaderManager.readFile(__dirname + `/../static/LICENSE`);
     this.write(fileContents);
   }
+
+  public async writeGitignoreFile(): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/.gitignore`);
+    this.write(fileContents);
+  }
 }
