@@ -17,9 +17,6 @@ module.exports = {
       },
     },
   },
-  extends: [
-    'airbnb',
-  ],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
