@@ -10,9 +10,14 @@
 ## Building For Release
 
 **Update version in `package.json` files**
-* React: `src/snippets/react/package.json`
-* Vue: `src/snippets/vue/package.json`
+* React: `src/static/react/package.json`
+* Vue: `src/static/vue/v*/package.json`
 * Angular: `src/scaffolds/angular-workspace/package.json` <-- note this is in a different place than the others
+
+**Update `README.md` files where needed**
+* React: `src/static/react/README.md`
+* Vue: `src/static/vue/README.md`
+* Angular: `src/static/onesignal-ngx/README.md`
 
 ```
 yarn build
