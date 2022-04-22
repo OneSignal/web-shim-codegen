@@ -35,6 +35,6 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
 
   async writePluginCode(): Promise<void> {
     const pluginFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.Vue}/plugin.ts`);
-    this.writeLine(pluginFileContents);
+    this.write(pluginFileContents);
   }
 }
