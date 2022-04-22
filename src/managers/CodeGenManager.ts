@@ -62,8 +62,6 @@ export class CodeGenManager {
 
   public writeBuildHelperFiles(): void {
     this.writePackageJsonFile();
-    this.writeRollupConfigFile();
-    this.writeBabelRcConfigFile();
     this.writeNpmIgnoreFile();
     this.writeEslintFile();
 
@@ -71,6 +69,14 @@ export class CodeGenManager {
       case Shim.Vue:
       case Shim.React:
         this.writeTsConfigFile();
+        break;
+    }
+
+    switch (this.shim) {
+      case Shim.Angular:
+      case Shim.React:
+        this.writeRollupConfigFile();
+        this.writeBabelRcConfigFile();
         break;
     }
   }
