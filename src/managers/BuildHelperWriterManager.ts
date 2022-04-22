@@ -8,32 +8,32 @@ import { Shim } from "../models/Shim";
 
 export class BuildHelperWriterManager extends CodeWriter {
   public async writePackageJsonFile(shim: Shim): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/package.json`);
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/package.json`);
     this.write(fileContents);
   }
 
   public async writeRollupConfigFile(shim: Shim): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/rollupConfig.ts`);
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/rollupConfig.ts`);
     this.write(fileContents);
   }
 
   public async writeBabelRcConfigFile(shim: Shim): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/.babelrc`);
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/.babelrc`);
     this.write(fileContents);
   }
 
   public async writeNpmIgnoreFile(): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/.npmignore`);
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/.npmignore`);
     this.write(fileContents);
   }
 
   public async writeEslintFile(shim: Shim): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/${shim}/eslintrc.ts`);
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/eslintrc.ts`);
     this.write(fileContents);
   }
 
   public async writeTsConfigFile(): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + `/../snippets/tsconfig.json`);
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/tsconfig.json`);
     this.write(fileContents);
   }
 }
