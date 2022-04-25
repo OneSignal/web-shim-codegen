@@ -5,7 +5,6 @@ import { IFunctionSignature } from "../models/FunctionSignature";
 import { BuildHelperWriterManager } from "./BuildHelperWriterManager";
 import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../support/functionSignatures";
 import { Shim } from "../models/Shim";
-import { ReactTypingsWriterManager } from "./shims/react/ReactTypingsWriterManager";
 import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterManager";
 import { VueOneSignalWriterManager } from "./shims/vue/VueOneSignalWriterManager";
 import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
