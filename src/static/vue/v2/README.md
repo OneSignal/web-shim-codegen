@@ -21,16 +21,15 @@ You can find more information on OneSignal [here](https://onesignal.com/).
 
 ---
 ## Vue Compatibility
-
-> 📘 The OneSignal Vue plugin now includes Vue 3 support!
+Make sure you install a plugin version compatible with your Vue environment.
 
 | Vue | OneSignal Plugin |
 |-----|------------------|
-| 2   | 1.x              |
-| 3   | 2+               |
+| 2   | onesignal-vue              |
+| 3   | [onesignal-vue3](https://github.com/OneSignal/onesignal-vue3)               |
 
-Make sure you install a plugin version compatible with your Vue environment. Click [here](https://github.com/OneSignal/onesignal-vue/releases) to view the latest releases.
 
+---
 ## Install
 
 You can use `yarn` or `npm`.
@@ -39,63 +38,24 @@ You can use `yarn` or `npm`.
 ### Yarn
 
 ```bash
-yarn add onesignal-vue #latest
-
-# or
-
-yarn add onesignal-vue@<X.X.X> # specific version
+yarn add onesignal-vue
 ```
 
 ### npm
 
 ```bash
-npm install --save onesignal-vue #latest
-
-# or
-
-npm install --save onesignal-vue@<X.X.X> # specific version
+npm install --save onesignal-vue
 ```
 
 ---
 ## Usage
 
 ## Plugin setup
-
-### Vue 3
-In Vue 3, you can pass in the OneSignal initialization options directly as an argument to the `use` function. You can still initialize separately if you prefer editor benefits like code-completion.
-
-```js
-// main
-import { createApp } from 'vue'
-import OneSignalVuePlugin from 'onesignal-vue';
-
-createApp(App).use(OneSignalVuePlugin, {
-  appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-}).mount('#app');
-
-```
-or
-
-```js
-//main
-import { createApp } from 'vue'
-import OneSignalVuePlugin from 'onesignal-vue';
-
-createApp(App).use(OneSignalVuePlugin).mount('#app');
-
-// component
-this.$OneSignal.init({
-  appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-});
-
-```
-
-### Vue 2
 ```js
 import Vue from 'vue'
-import OneSignalVuePlugin from 'onesignal-vue'
+import OneSignalVue from 'onesignal-vue'
 
-Vue.use(OneSignalVuePlugin);
+Vue.use(OneSignalVue);
 ```
 
 Initialize OneSignal with your `appId` via the `options` parameter:
@@ -109,8 +69,6 @@ new Vue({
 }).$mount('#app')
 ```
 
-## Reference
-### Initialization
 The `init` function returns a promise that resolves when OneSignal is loaded.
 
 **Examples**
@@ -123,6 +81,24 @@ await this.$OneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' });
 this.$OneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' }).then(() => {
   // do other stuff
 });
+```
+
+### Code completion
+For code completion to work correctly, make sure you import the plugin (e.g: in child components).
+
+```vue
+<script>
+import OneSignalVue from 'onesignal-vue';
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  beforeCreate() {
+    this.$OneSignal.showSlidedownPrompt()
+  }
+}
+</script>
 ```
 
 ### Options
@@ -146,13 +122,8 @@ The OneSignal SDK file must be publicly accessible. You can put them in your top
 **Tip:**
 Visit `https://yoursite.com/OneSignalSDKWorker.js` in the address bar to make sure the files are being served successfully.
 
-### Code completion
-If IntelliSense is not working as expected in your `.vue` file, try adding an import from the OneSignal plugin.
-
-
-![intellisense](https://user-images.githubusercontent.com/11739227/164801900-96592534-f991-49e0-ba36-e02bb04f31b8.png)
-
-
+---
+## OneSignal API
 ### Typescript
 This package includes Typescript support.
 
@@ -216,7 +187,7 @@ Use listeners to react to OneSignal-related events:
 
 **Example**
 ```js
-this.$OneSignal.on('subscriptionChange', function(isSubscribed) {
+OneSignal.on('subscriptionChange', function(isSubscribed) {
   console.log("The user's subscription state is now:", isSubscribed);
 });
 ```
