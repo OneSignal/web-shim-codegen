@@ -17,8 +17,8 @@ export const vueOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
 
       window.OneSignal.push(() => {
         window.OneSignal.${sig.name}(${spreadArgs(args)})
-          .then((value) => resolve(value))
-          .catch((error) => reject(error));
+          .then(value => resolve(value))
+          .catch(error => reject(error));
       });
     });
   }`
