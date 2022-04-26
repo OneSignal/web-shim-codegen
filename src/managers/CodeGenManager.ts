@@ -93,7 +93,7 @@ export class CodeGenManager {
   private writePackageJsonFile(): void {
     Generator.generateAsync({ outputFile: `./build/${this.shim}/${this.subdir}/package.json` }, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writePackageJsonFile(this.shim);
+      await buildHelperWriter.writePackageJsonFile(this.shim, this.subdir);
     });
   }
 

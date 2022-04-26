@@ -1,14 +1,15 @@
 import { CodeWriter } from "@yellicode/core";
 import { ReaderManager } from "./ReaderManager";
 import { Shim } from "../models/Shim";
+import { BuildSubdirectory } from "../models/BuildSubdirectory";
 
 /**
  * Writes files needed for building
  */
 
 export class BuildHelperWriterManager extends CodeWriter {
-  public async writePackageJsonFile(shim: Shim): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/package.json`);
+  public async writePackageJsonFile(shim: Shim, subdir: BuildSubdirectory = ""): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/${subdir}/package.json`);
     this.write(fileContents);
   }
 
