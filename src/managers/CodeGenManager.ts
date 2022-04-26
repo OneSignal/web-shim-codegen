@@ -142,7 +142,7 @@ export class CodeGenManager {
   private writeReadmeFile(): void {
     Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/README.md`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writeReadmeFile(this.shim);
+      await buildHelperWriter.writeReadmeFile(this.shim, this.subdir);
     })
   }
 

@@ -43,8 +43,8 @@ export class BuildHelperWriterManager extends CodeWriter {
     this.write(fileContents);
   }
 
-  public async writeReadmeFile(shim: Shim): Promise<void> {
-    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/README.md`);
+  public async writeReadmeFile(shim: Shim, subdir: BuildSubdirectory = ""): Promise<void> {
+    const fileContents = await ReaderManager.readFile(__dirname + `/../static/${shim}/${subdir}/README.md`);
     this.write(fileContents);
   }
 
