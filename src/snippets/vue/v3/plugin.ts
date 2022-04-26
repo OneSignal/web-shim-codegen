@@ -1,3 +1,7 @@
+export const useOneSignal = () => {
+  return OneSignalVue;
+}
+
 const OneSignalVuePlugin = {
   install(app: App, options: IInitObject) {
     app.config.globalProperties.$OneSignal = OneSignalVue as IOneSignal;
