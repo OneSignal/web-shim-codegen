@@ -5,17 +5,22 @@ import { IFunctionSignature } from "../models/FunctionSignature";
 import { BuildHelperWriterManager } from "./BuildHelperWriterManager";
 import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../support/functionSignatures";
 import { Shim } from "../models/Shim";
-import { ReactTypingsWriterManager } from "./shims/react/ReactTypingsWriterManager";
 import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterManager";
 import { VueOneSignalWriterManager } from "./shims/vue/VueOneSignalWriterManager";
 import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
 import { NgOneSignalWriterManager } from "./shims/angular/NgOneSignalWriterManager";
 import { NgTypingsWriterManager } from "./shims/angular/NgTypingsWriterManager";
+import { BuildSubdirectory } from "../models/BuildSubdirectory";
 
 export class CodeGenManager {
   private oneSignalFunctions: IFunctionSignature[];
 
-  constructor(readonly shim: Shim, functions: IFunctionSignature[]) {
+  /**
+   * @param  {Shim} shim - Vue, React, or Angular
+   * @param  {IFunctionSignature[]} functions - Function signature array
+   * @param  {BuildSubdirectory} subdir? - *optional* argument to create separate build subdirectory (e.g: vue/v2 and vue/v3)
+   */
+  constructor(readonly shim: Shim, functions: IFunctionSignature[], readonly subdir: BuildSubdirectory = "") {
     this.oneSignalFunctions = functions;
   }
 
@@ -26,14 +31,14 @@ export class CodeGenManager {
   }
 
   public writeIndexFile(extension: string): void {
-    Generator.generateAsync({outputFile: `./build/${this.shim}/index.${extension}`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/index.${extension}`}, async (writer: TextWriter) => {
       let oneSignalWriter: OneSignalWriterManagerBase;
       switch (this.shim) {
         case Shim.React:
           oneSignalWriter = new ReactOneSignalWriterManager(writer, this.oneSignalFunctions);
           break;
         case Shim.Vue:
-          oneSignalWriter = new VueOneSignalWriterManager(writer, this.oneSignalFunctions);
+          oneSignalWriter = new VueOneSignalWriterManager(writer, this.oneSignalFunctions, this.subdir);
           break;
       }
       await oneSignalWriter.writeSupportCode();
@@ -62,10 +67,11 @@ export class CodeGenManager {
 
   public writeBuildHelperFiles(): void {
     this.writePackageJsonFile();
-    this.writeRollupConfigFile();
-    this.writeBabelRcConfigFile();
     this.writeNpmIgnoreFile();
     this.writeEslintFile();
+    this.writeLicenseFile();
+    this.writeReadmeFile();
+    this.writeGitignoreFile();
 
     switch (this.shim) {
       case Shim.Vue:
@@ -73,48 +79,77 @@ export class CodeGenManager {
         this.writeTsConfigFile();
         break;
     }
+
+    switch (this.shim) {
+      case Shim.Angular:
+      case Shim.React:
+        this.writeRollupConfigFile();
+        this.writeBabelRcConfigFile();
+        break;
+    }
   }
 
   /* P R I V A T E */
   private writePackageJsonFile(): void {
-    Generator.generateAsync({ outputFile: `./build/${this.shim}/package.json` }, async (writer: TextWriter) => {
+    Generator.generateAsync({ outputFile: `./build/${this.shim}/${this.subdir}/package.json` }, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
-      await buildHelperWriter.writePackageJsonFile(this.shim);
+      await buildHelperWriter.writePackageJsonFile(this.shim, this.subdir);
     });
   }
 
   private writeRollupConfigFile(): void {
-    Generator.generateAsync({outputFile: `./build/${this.shim}/rollup.config.js`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/rollup.config.js`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       await buildHelperWriter.writeRollupConfigFile(this.shim);
     });
   }
 
   private writeBabelRcConfigFile(): void {
-    Generator.generateAsync({outputFile: `./build/${this.shim}/.babelrc`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/.babelrc`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       await buildHelperWriter.writeBabelRcConfigFile(this.shim);
     });
   }
 
   private writeNpmIgnoreFile(): void {
-    Generator.generateAsync({outputFile: `./build/${this.shim}/.npmignore`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/.npmignore`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       await buildHelperWriter.writeNpmIgnoreFile();
     });
   }
 
   private writeEslintFile(): void {
-    Generator.generateAsync({outputFile: `./build/${this.shim}/.eslintrc.js`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/.eslintrc.js`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       await buildHelperWriter.writeEslintFile(this.shim);
     });
   }
 
   private writeTsConfigFile(): void {
-    Generator.generateAsync({outputFile: `./build/${this.shim}/tsconfig.json`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/tsconfig.json`}, async (writer: TextWriter) => {
       const buildHelperWriter = new BuildHelperWriterManager(writer);
       await buildHelperWriter.writeTsConfigFile();
+    })
+  }
+
+  private writeLicenseFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/LICENSE`}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeLicenseFile();
+    })
+  }
+
+  private writeReadmeFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/README.md`}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeReadmeFile(this.shim, this.subdir);
+    })
+  }
+
+  private writeGitignoreFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/.gitignore`}, async (writer: TextWriter) => {
+      const buildHelperWriter = new BuildHelperWriterManager(writer);
+      await buildHelperWriter.writeGitignoreFile();
     })
   }
 }
