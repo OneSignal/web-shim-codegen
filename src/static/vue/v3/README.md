@@ -55,7 +55,7 @@ In Vue 3, you can pass in the OneSignal initialization options directly as an ar
 ```js
 // main
 import { createApp } from 'vue'
-import OneSignalVuePlugin from 'onesignal-vue3';
+import OneSignalVuePlugin from '@onesignal/onesignal-vue3'
 
 createApp(App).use(OneSignalVuePlugin, {
   appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
@@ -67,7 +67,7 @@ or
 ```js
 //main
 import { createApp } from 'vue'
-import OneSignalVuePlugin from 'onesignal-vue3';
+import OneSignalVuePlugin from '@onesignal/onesignal-vue3'
 
 createApp(App).use(OneSignalVuePlugin).mount('#app');
 
