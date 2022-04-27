@@ -1,6 +1,6 @@
 <h1 align="center">welcome to onesignal-vue3 👋</h1>
 
-[![npm version](https://img.shields.io/npm/v/onesignal-vue3.svg)](https://www.npmjs.com/package/onesignal-vue3) [![npm downloads](https://img.shields.io/npm/dm/onesignal-vue3.svg)](https://www.npmjs.com/package/onesignal-vue3)
+[![npm version](https://img.shields.io/npm/v/@onesignal/onesignal-vue3.svg)](https://www.npmjs.com/package/@onesignal/onesignal-vue3) [![npm downloads](https://img.shields.io/npm/dm/@onesignal/onesignal-vue3.svg)](https://www.npmjs.com/package/@onesignal/onesignal-vue3)
 
 Vue OneSignal Plugin: Make it easy to integrate OneSignal with your Vue App!
 
@@ -11,7 +11,7 @@ OneSignal is the world's leader for Mobile Push Notifications, Web Push, and In-
 You can find more information on OneSignal [here](https://onesignal.com/).
 
 * 🏠 [Homepage](https://onesignal.com)
-* 🖤 [npm](https://www.npmjs.com/package/onesignal-vue3)
+* 🖤 [npm](https://www.npmjs.com/package/@onesignal/onesignal-vue3)
 
 ## Contents
 - [Install](#install)
@@ -36,13 +36,13 @@ You can use `yarn` or `npm`.
 ### Yarn
 
 ```bash
-yarn add onesignal-vue3
+yarn add @onesignal/onesignal-vue3
 ```
 
 ### npm
 
 ```bash
-npm install --save onesignal-vue3
+npm install --save @onesignal/onesignal-vue3
 ```
 
 ---
