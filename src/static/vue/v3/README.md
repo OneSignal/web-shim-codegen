@@ -77,6 +77,13 @@ this.$OneSignal.init({
 });
 
 ```
+
+The OneSignal plugin automatically exposes a `$OneSignal` global property accessible inside the application.
+
+### Composition API
+
+You can also leverage Vue's [Composition API](https://vuejs.org/guide/extras/composition-api-faq.html) via the `useOneSignal` function that can be called from within [`setup`](https://vuejs.org/api/composition-api-setup.html#basic-usage).
+
 ## Reference
 ### Initialization
 The `init` function returns a promise that resolves when OneSignal is loaded.

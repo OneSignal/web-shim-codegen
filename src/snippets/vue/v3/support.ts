@@ -1,4 +1,4 @@
-import { App } from 'vue';
+import { App, inject } from 'vue';
 
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/OneSignalSDK.js';
