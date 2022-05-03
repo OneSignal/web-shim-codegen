@@ -29,11 +29,16 @@ The `settings.json` file in the `.vscode` directory hides all `*.js` files autom
 ## Cleaning
 You can clean the generated `.js` files by running `yarn clean`
 
+## Compatibility
+As frameworks put out new major releases, we should ensure our shims remain compatible with the new versions.
+### Vue 2 & 3
+There were some breaking changes in Vue 3 that required the plugin to be updated to support it. Instead of making a major release, we opted to create a separate plugin: `onesignal-vue3` as this will greatly simplify managing future major releases (e.g: w/ upcoming user-model).
+
 ## Publishing
 1. Copy the ENTIRE contents of the build folder to the final package directory (see below section on copying changes)
 2. Discard any unwanted changes to the README file
 3. Create a new PR and merge to master
-3. `npm publish .`
+3. `npm publish .` -- for onesignal-vue3 you must pass the `--access public` to the publish command as it is a scoped package.
 
 
 ### Copying Changes to NPM Package Repo
