@@ -12,7 +12,7 @@
 **Update version in `package.json` files**
 * React: `src/static/react/package.json`
 * Vue: `src/static/vue/v*/package.json`
-* Angular: `src/scaffolds/angular-workspace/package.json` <-- note this is in a different place than the others
+* Angular: `src/scaffolds/angular-workspace/projects/onesignal-ngx/package.json` <-- note this is in a different place than the others
 
 **Update `README.md` files where needed**
 * React: `src/static/react/README.md`
@@ -28,6 +28,20 @@ The `settings.json` file in the `.vscode` directory hides all `*.js` files autom
 
 ## Cleaning
 You can clean the generated `.js` files by running `yarn clean`
+
+## Compatibility
+As frameworks put out new major releases, we should ensure our shims remain compatible with the new versions.
+### Vue 2 & 3
+There were some breaking changes in Vue 3 that required the plugin to be updated to support it. Instead of making a major release, we opted to create a separate plugin: `onesignal-vue3` as this will greatly simplify managing future major releases (e.g: w/ upcoming user-model).
+
+### Angular
+Angular puts out a new major release more frequently: once or twice per year. Our plugin is almost a pure JS module with the exception of a couple imports including `Injectable` needed for the eventual dependency injection. These are:
+
+```js
+import { Injectable, NgModule, Component, OnInit } from '@angular/core';
+```
+
+It is unlikely that Angular would introduce a regression in a future release, in particular with `Injectable` which is our main dependency injection method. For context, it is a decorator (e.g: `@Injectable()`) which Angular uses to know what to inject. However, keep an eye out for changes related to any of these when looking to determine compatibility.
 
 ## Publishing
 1. Copy the ENTIRE contents of the build folder to the final package directory (see below section on copying changes)
