@@ -125,7 +125,7 @@ export class OneSignal implements IOneSignal {
   }
 
 
-  on(event: string, listener: () => void): void {
+  on(event: string, listener: (eventData?: any) => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: 'on',
@@ -139,7 +139,7 @@ export class OneSignal implements IOneSignal {
     });
   }
 
-  off(event: string, listener: () => void): void {
+  off(event: string, listener: (eventData?: any) => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: 'off',
@@ -153,7 +153,7 @@ export class OneSignal implements IOneSignal {
     });
   }
 
-  once(event: string, listener: () => void): void {
+  once(event: string, listener: (eventData?: any) => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
         name: 'once',
