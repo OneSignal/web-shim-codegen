@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm main.js && cd src && find . -type f -name '*.js' -not -path '**/node_modules/*' -delete && cd .. && echo 'Done.'",
-    "build": "./build.sh"
+    "build": "./scripts/build.sh"
   },
   "keywords": [],
   "author": "",
