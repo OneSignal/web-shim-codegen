@@ -2,7 +2,6 @@ import { TextWriter } from "@yellicode/core";
 import { Generator } from "@yellicode/templating";
 import { FileFetchManager } from "./FileFetchManager";
 import { IFunctionSignature } from "../models/FunctionSignature";
-import { BuildHelperWriterManager } from "./BuildHelperWriterManager";
 import { INIT_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG, ON_FUNCTION_SIG } from "../support/functionSignatures";
 import { Shim } from "../models/Shim";
 import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterManager";
@@ -30,8 +29,21 @@ export class CodeGenManager {
     return oneSignalFunctions;
   }
 
-  public writeIndexFile(extension: string): void {
-    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/index.${extension}`}, async (writer: TextWriter) => {
+  public write(): void {
+    switch (this.shim) {
+      case Shim.React:
+      case Shim.Vue:
+        this.writeIndexFile();
+        break;
+      case Shim.Angular:
+        this.writeNgServiceFile();
+      default:
+        break;
+    }
+  }
+
+  private writeIndexFile(): void {
+    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/index.ts`}, async (writer: TextWriter) => {
       let oneSignalWriter: OneSignalWriterManagerBase;
       switch (this.shim) {
         case Shim.React:
