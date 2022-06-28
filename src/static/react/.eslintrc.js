@@ -1,4 +1,3 @@
-// file written in pure JS
 module.exports = {
   env: {
     browser: true,
