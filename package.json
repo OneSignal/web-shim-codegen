@@ -6,7 +6,6 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm main.js && cd src && find . -type f -name '*.js' -not -path '**/node_modules/*' -delete && cd .. && echo 'Done.'",
     "build": "./scripts/build.sh"
   },
   "keywords": [],
