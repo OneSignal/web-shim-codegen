@@ -44,7 +44,7 @@ export class CodeGenManager {
   }
 
   private writeIndexFile(): void {
-    Generator.generateAsync({outputFile: `./build/${this.shim}/${this.subdir}/index.ts`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `../build/${this.shim}/${this.subdir}/index.ts`}, async (writer: TextWriter) => {
       let oneSignalWriter: OneSignalWriterManagerBase;
       switch (this.shim) {
         case Shim.React:
