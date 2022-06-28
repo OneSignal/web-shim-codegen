@@ -1,8 +1,8 @@
 {
   "templates": [
       {
-          "templateFile": "./main.ts"
+          "templateFile": "./ts-to-es6/main.js"
       }
   ],
-  "compileTypeScript": true
+  "compileTypeScript": false
 }

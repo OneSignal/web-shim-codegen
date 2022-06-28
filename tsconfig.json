@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+      "target": "es2017",
+      "module": "commonjs",
+      "inlineSourceMap": true,
+      "removeComments": true,
+      "outDir": "./ts-to-es6"
+  },
+  "include": ["."],
+  "exclude": ["build", "src/scaffolds", "src/snippets", "src/static", "ts-to-es6"]
+}

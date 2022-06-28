@@ -1,5 +1,11 @@
 #!/bin/bash
+set -euo pipefail
+echo "Linting..."
+yarn run lint
 rm -rf build
+rm -rf ts-to-es6
+echo "Transpiling..."
+tsc
 echo "Code-generation initiating..."
 yellicode
 echo 'Done.'

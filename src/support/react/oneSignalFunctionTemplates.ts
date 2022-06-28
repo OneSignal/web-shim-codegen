@@ -1,5 +1,5 @@
 import { IFunctionSignature } from "../../models/FunctionSignature";
-import { spreadArgs, spreadArgsWithTypes } from "../../support/utils";
+import { spreadArgs, spreadArgsWithTypes } from "../utils";
 
 export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
   const args = sig.arguments?.map(arg => arg.name);

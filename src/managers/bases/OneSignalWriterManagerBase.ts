@@ -2,10 +2,10 @@ import { CodeWriter, TextWriter } from '@yellicode/core';
 import { FUNCTION_IGNORE } from '../../support/constants';
 import { IFunctionSignature } from '../../models/FunctionSignature';
 import { Shim } from '../../models/Shim';
-import { reactOneSignalAsyncFunctionTemplate, reactOneSignalFunctionTemplate } from '../../snippets/react/oneSignalFunctionTemplates';
-import { vueOneSignalAsyncFunctionTemplate, vueOneSignalFunctionTemplate } from '../../snippets/vue/oneSignalFunctionTemplates';
+import { reactOneSignalAsyncFunctionTemplate, reactOneSignalFunctionTemplate } from '../../support/react/oneSignalFunctionTemplates';
+import { vueOneSignalAsyncFunctionTemplate, vueOneSignalFunctionTemplate } from '../../support/vue/oneSignalFunctionTemplates';
 import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
-import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '../../snippets/angular/oneSignalFunctionTemplates';
+import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '../../support/angular/oneSignalFunctionTemplates';
 
 const templateFunctionMap: ITemplateFunctionMap = {
   [Shim.React]: {

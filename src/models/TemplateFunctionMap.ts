@@ -1,6 +1,8 @@
+import { IFunctionSignature } from "./FunctionSignature";
+
 interface ITemplateFunctionTuple {
-  sync: Function;
-  async: Function;
+  sync: (sig: IFunctionSignature) => string;
+  async: (sig: IFunctionSignature) => string;
 }
 
 export interface ITemplateFunctionMap {

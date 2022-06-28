@@ -36,7 +36,7 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
    * @returns void
    */
   public async writeInterfaces(tabs: number): Promise<void> {
-    const initObjectInterfaceContents = await ReaderManager.readFile(__dirname + `/../../snippets/InitObject.ts`);
+    const initObjectInterfaceContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../snippets/InitObject.ts`);
 
     const prefix = "\t".repeat(tabs);
     this.writeLine(prefix+ACTION);
