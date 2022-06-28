@@ -11,7 +11,7 @@ export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
 
   // implements abstract function
   async writeSupportCode(): Promise<void> {
-    const supportFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.Angular}/support.ts`);
+    const supportFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Angular}/support.ts`);
 
     this.writeLine(supportFileContents);
   }
@@ -22,7 +22,7 @@ export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
   }
 
   async writeServiceClass(): Promise<void> {
-    const serviceClassFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.Angular}/serviceClass.ts`);
+    const serviceClassFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '')  + `/../../../snippets/${Shim.Angular}/serviceClass.ts`);
     this.writeLine(serviceClassFileContents);
   }
 }

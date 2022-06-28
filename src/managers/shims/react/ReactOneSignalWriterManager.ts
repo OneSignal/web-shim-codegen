@@ -14,7 +14,7 @@ export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
   // implements abstract function
   async writeSupportCode(): Promise<void> {
     const typingsWriter = new ReactTypingsWriterManager(this);
-    const supportFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.React}/support.ts`);
+    const supportFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.React}/support.ts`);
     this.writeLine(supportFileContents);
     await typingsWriter.writeInterfaces(0);
     typingsWriter.writeOneSignalInterface(this.oneSignalFunctions);

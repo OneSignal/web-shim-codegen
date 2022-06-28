@@ -14,8 +14,8 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
   // implements abstract function
   async writeSupportCode(): Promise<void> {
     const typingsWriter = new VueTypingsWriterManager(this);
-    const supportFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.Vue}/${this.subdir}/support.ts`);
-    const initFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.Vue}/onesignalInit.ts`);
+    const supportFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue}/${this.subdir}/support.ts`);
+    const initFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue}/onesignalInit.ts`);
 
     this.writeLine(supportFileContents);
     await typingsWriter.writeInterfaces(0);
@@ -35,7 +35,7 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
   }
 
   async writePluginCode(): Promise<void> {
-    const pluginFileContents = await ReaderManager.readFile(__dirname + `/../../../snippets/${Shim.Vue}/${this.subdir}/plugin.ts`);
+    const pluginFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue}/${this.subdir}/plugin.ts`);
     this.write(pluginFileContents);
   }
 }
