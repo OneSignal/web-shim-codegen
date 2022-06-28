@@ -5,7 +5,7 @@ import { IFunctionSignature } from '../models/FunctionSignature';
 
 export async function remoteFetchFile(path: string): Promise<string> {
   return await new Promise(resolve => {
-    curl.request({ url: GITHUB_URL+path }, function (err, stdout) {
+    curl.request({ url: GITHUB_URL+path }, (err, stdout) => {
       resolve(stdout);
     });
   })
