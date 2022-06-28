@@ -24,7 +24,7 @@ export class CodeGenManager {
   }
 
   static async fetchOneSignalFunctions(): Promise<IFunctionSignature[]> {
-    let oneSignalFunctions = await FileFetchManager.getFunctions();
+    const oneSignalFunctions = await FileFetchManager.getFunctions();
     oneSignalFunctions.unshift(INIT_FUNCTION_SIG, ON_FUNCTION_SIG, OFF_FUNCTION_SIG, ONCE_FUNCTION_SIG);
     return oneSignalFunctions;
   }
@@ -37,6 +37,7 @@ export class CodeGenManager {
         break;
       case Shim.Angular:
         this.writeNgServiceFile();
+        break;
       default:
         break;
     }

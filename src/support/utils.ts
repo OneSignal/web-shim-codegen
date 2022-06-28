@@ -5,7 +5,7 @@ import { IFunctionSignature } from '../models/FunctionSignature';
 
 export async function remoteFetchFile(path: string): Promise<string> {
   return await new Promise(resolve => {
-    curl.request({ url: GITHUB_URL+path }, function (err, stdout, meta) {
+    curl.request({ url: GITHUB_URL+path }, function (err, stdout) {
       resolve(stdout);
     });
   })
@@ -26,8 +26,8 @@ export function createRegex(functionName: string): RegExp {
  * @returns IFunctionSignature
  */
 export function parseFunctionSig(signature: string): IFunctionSignature {
-  let functionSig= {};
-  let matches = signature.match(/(\S*)\s*\((.*)\)\s*:?\s*(.*)\s*{/);
+  const functionSig= {};
+  const matches = signature.match(/(\S*)\s*\((.*)\)\s*:?\s*(.*)\s*{/);
 
   if (matches) {
     functionSig['name'] = matches[1];
@@ -87,7 +87,7 @@ export function parseArguments(rawArgs: string): IArgument[] | void {
     return;
   }
 
-  let parsedArgs = [];
+  const parsedArgs = [];
   rawArgs.split(",").forEach(arg => {
     const newArg = {};
     const name = arg.split(":")[0];
