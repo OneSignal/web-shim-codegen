@@ -6,7 +6,17 @@
 * [Angular](https://github.com/OneSignal/onesignal-ngx)
 
 ## Start
+`npm install @yellicode/cli -g`
+
 `yarn`
+
+If you just cloned the repo run the command:
+`scripts/bootstrap`
+`scripts/update-subtrees`
+
+If you already bootstrapped the remotes you just need to run:
+`scripts/update-subtrees`
+
 ## Building For Release
 
 **Update version in `package.json` files**
@@ -51,13 +61,12 @@ It is unlikely that Angular would introduce a regression in a future release, in
 3. `npm publish .` -- for onesignal-vue3 you must pass the `--access public` to the publish command as it is a scoped package.
 
 
-### Copying Changes to NPM Package Repo
-Do not do this manually as you won't copy files if they're hidden by VScode for example
-- `cp -a build/onesignal-ngx/. ../onesignal-ngx`
-- `cp -a build/react/. ../react-onesignal`
-- `cp -a build/vue/. ../onesignal-vue`
+### Publishing changes to the downstream repositories:
+GitHub CD action will kick off after a PR has been merged.
+It will take care of updating all the downstream repositories and create a pull request for each of them (if there are changes to be committed). 
 
----
+Before running the commands mentioned bellow make sure that the current repo does not have uncommitted changes, otherwise
+you may need to remove some origins manually afterwords.
 
 # Dev Environment
 Set up a new React, Vue, or Angular App so the new app and final package repo is at the same directory level as this project.

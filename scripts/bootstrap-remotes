@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -exuo pipefail
+
+# Subtree
+git subtree add --prefix outputs/onesignal-ngx git@github.com:OneSignal/onesignal-ngx.git main --squash || true
+git subtree add --prefix outputs/react git@github.com:OneSignal/react-onesignal.git main --squash || true
+git subtree add --prefix outputs/vue/v2 git@github.com:OneSignal/onesignal-vue.git main --squash || true
+git subtree add --prefix outputs/vue/v3 git@github.com:OneSignal/onesignal-vue3.git main --squash || true
+
+# Outputs
+git remote add onesignal-ngx  git@github.com:OneSignal/onesignal-ngx.git  || true
+git remote add react          git@github.com:OneSignal/react-onesignal.git  || true
+git remote add vue2           git@github.com:OneSignal/onesignal-vue.git  || true
+git remote add vue3           git@github.com:OneSignal/onesignal-vue3.git  || true
