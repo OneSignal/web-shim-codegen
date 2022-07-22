@@ -4,7 +4,7 @@
   "plugins": [
     "@typescript-eslint"
   ],
-  "ignorePatterns": ["build", "src/static/*", "src/snippets/*", "src/scaffolds/*", "ts-to-es6"],
+  "ignorePatterns": ["build", "src/static/*", "src/snippets/*", "src/scaffolds/*", "ts-to-es6", "outputs"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
