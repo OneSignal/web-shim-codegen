@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -euo pipefail
+
+scripts/bootstrap-dependencies
+scripts/bootstrap-remotes
+scripts/update-subtrees

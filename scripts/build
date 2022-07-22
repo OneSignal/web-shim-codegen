@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -euo pipefail
+
+echo "Linting..."
+yarn run lint
+echo 'Done.'
+
+echo "Cleanup..."
+rm -rf build
+rm -rf ts-to-es6
+echo 'Done.'
+
+mkdir -p dist/vue
+
+echo "Transpiling..."
+tsc
+echo 'Done.'
+
+echo "Code-generation initiating..."
+yellicode
+echo 'Done.'
+
+echo 'Bundling Angular SDK...'
+cd src/scaffolds/angular-workspace
+yarn && yarn build --configuration production
+cp -R dist/onesignal-ngx ../../../build
+cd ../../../
+echo 'Done.'
+
+echo 'Copying static files...'
+./scripts/copy-static
+echo 'Done.'
+
+echo 'Downstream repos setup.'
+cd build
+echo 'Archiving...'
+tar cvfz onesignal-ngx.tgz onesignal-ngx
+tar cvfz react.tgz react
+tar cvfz vue/v2.tgz vue/v2
+tar cvfz vue/v3.tgz vue/v3
+echo 'Done.'
+cd ..
+
+echo 'Moving build files...'
+mv build/onesignal-ngx.tgz dist/onesignal-ngx.tgz
+mv build/react.tgz dist/react.tgz
+mv build/vue/v2.tgz dist/vue/v2.tgz
+mv build/vue/v3.tgz dist/vue/v3.tgz
+echo 'Done.'
+
+echo 'Diff between current build and the content of the downstream repo.'
+git diff --diff-filter=RD --name-status --no-index outputs/onesignal-ngx build/onesignal-ngx | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/onesignal-ngx.rmfiles  || true
+git diff --diff-filter=RD --name-status --no-index outputs/react build/react | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/react.rmfiles || true
+git diff --diff-filter=RD --name-status --no-index outputs/vue/v2 build/vue/v2 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue/v2.rmfiles  || true
+git diff --diff-filter=RD --name-status --no-index outputs/vue/v3 build/vue/v3 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue/v3.rmfiles  || true
+echo 'Done.'
