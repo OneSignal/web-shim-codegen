@@ -10,6 +10,13 @@
 
 `yarn`
 
+If you just cloned the repo run the command:
+`scripts/bootstrap`
+`scripts/update-subtrees`
+
+If you already bootstrapped the remotes you just need to run:
+`scripts/update-subtrees`
+
 ## Building For Release
 
 **Update version in `package.json` files**
@@ -55,19 +62,11 @@ It is unlikely that Angular would introduce a regression in a future release, in
 
 
 ### Publishing changes to the downstream repositories:
-GitHub CD action will kick off after a PR has been submitted.
+GitHub CD action will kick off after a PR has been merged.
 It will take care of updating all the downstream repositories and create a pull request for each of them (if there are changes to be committed). 
 
 Before running the commands mentioned bellow make sure that the current repo does not have uncommitted changes, otherwise
 you may need to remove some origins manually afterwords.
-
-If you just cloned the repo run the command:
-`scripts/bootstrap`
-`scripts/update-subtrees`
-
-If you already bootstrapped the remotes you just need to run:
-`scripts/update-subtrees`
-
 
 # Dev Environment
 Set up a new React, Vue, or Angular App so the new app and final package repo is at the same directory level as this project.
