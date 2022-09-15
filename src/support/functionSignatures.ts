@@ -2,7 +2,7 @@ import { IFunctionSignature } from "../models/FunctionSignature";
 
 export const INIT_FUNCTION_SIG = {
   name: "init",
-  isAsync: true,
+  isAsync: false,
   arguments: [
     {
       name: "options",
@@ -10,7 +10,7 @@ export const INIT_FUNCTION_SIG = {
       optional: false
     },
   ],
-  returnType: "Promise<void>"
+  returnType: "void"
 } as IFunctionSignature;
 
 const EVENTS_FUNCTION_SIG = {
