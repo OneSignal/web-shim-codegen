@@ -34,6 +34,14 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
       this.writeLine(`${prefix}${this.getFunctionSignatureString(func)}`);
     });
   }
+
+  public writeNamespaces(namespaces: string[], tabs?: number): void {
+    const prefix = '\t'.repeat(tabs || 1);
+    namespaces.forEach(namespace => {
+      this.writeLine(`${prefix}${namespace}: I${namespace};`);
+    });
+  }
+
   /**
    * @param  {number} tabs - how many tabs should be added in front of helper interfaces
    * @returns void
