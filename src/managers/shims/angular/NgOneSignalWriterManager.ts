@@ -20,9 +20,4 @@ export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
   async writeExportCode(): Promise<void> {
     // unused stub
   }
-
-  async writeServiceClass(): Promise<void> {
-    const serviceClassFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '')  + `/../../../snippets/${Shim.Angular}/serviceClass.ts`);
-    this.writeLine(serviceClassFileContents);
-  }
 }
