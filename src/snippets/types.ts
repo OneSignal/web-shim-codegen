@@ -1,9 +1,12 @@
 export const ACTION = `type Action<T> = (item: T) => void;`;
 export const AUTO_PROMPT_OPTIONS = `interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }`;
-export const REGISTER_OPTIONS = `interface RegisterOptions { modalPrompt?: boolean; httpPermissionRequest?: boolean; slidedown?: boolean; autoAccept?: boolean }`;
-export const SET_SMS_OPTIONS = `interface SetSMSOptions { identifierAuthHash?: string; }`
-export const SET_EMAIL_OPTIONS = `interface SetEmailOptions { identifierAuthHash?: string; emailAuthHash?: string; }`;
-export const TAGS_OBJECT = `interface TagsObject<T> { [key: string]: T; }`;
 export const SLIDEDOWN_OPTIONS = `interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; isInUpdateMode?: boolean; categoryOptions?: IOneSignalCategories; }`;
 export const CATEGORY_OPTIONS = `interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }`;
 export const TAG_CATEGORY = `interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }`;
+export const PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES = `type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };`;
+export const SUBSCRIPTION_CHANGE_EVENT = `type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };`;
+export const NOTIFICATION_EVENT_NAME = `type NotificationEventName = 'click' | 'willDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';`;
+export const STRUCTURED_NOTIFICATION = `interface StructuredNotification { id: string; content: string; heading?: string; url?: string; data?: object; rr?: string; icon?: string; image?: string; tag?: string; badge?: string; vibrate?: string; buttons?: NotificationButtonData[]; }`;
+export const NOTIFICATION_BUTTON_DATA = `interface NotificationButtonData { action?: string; title?: string; icon?: string; url?: string; }`;
+export const SLIDEDOWN_EVENT_NAME = `type SlidedownEventName = 'slidedownShown';`;
+export const NOTIFICATION_CALLBACK_TYPE = `type NotificationCallbackType = | ((obj: StructuredNotification) => void) | ((obj: { to: NotificationPermission }) => void) | ((obj: (arg: any) => void) => void);`;
