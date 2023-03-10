@@ -2,12 +2,11 @@ import { ReaderManager } from '../../ReaderManager';
 import { Shim } from '../../../models/Shim';
 import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
 import { VueTypingsWriterManager } from './VueTypingsWriterManager';
-import { IFunctionSignature } from '../../../models/FunctionSignature';
 import { TextWriter } from '@yellicode/core';
 import { BuildSubdirectory } from '../../../models/BuildSubdirectory';
 
 export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
-  constructor(writer: TextWriter, readonly oneSignalFunctions: IFunctionSignature[], readonly subdir?: BuildSubdirectory) {
+  constructor(writer: TextWriter, readonly api: IOneSignalApi, readonly subdir?: BuildSubdirectory) {
     super(writer, Shim.Vue);
   }
 

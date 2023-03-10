@@ -1,11 +1,11 @@
 import { ReaderManager } from '../../ReaderManager';
 import { Shim } from '../../../models/Shim';
 import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
-import { IFunctionSignature } from '../../../models/FunctionSignature';
 import { TextWriter } from '@yellicode/core';
+import IOneSignalApi from '../../../models/OneSignalApi';
 
 export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
-  constructor(writer: TextWriter, readonly oneSignalFunctions: IFunctionSignature[]) {
+  constructor(writer: TextWriter, readonly api: IOneSignalApi) {
     super(writer, Shim.Angular)
   }
 

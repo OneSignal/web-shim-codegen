@@ -3,11 +3,11 @@ import { ReaderManager } from '../../ReaderManager';
 import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
 import { TextWriter } from '@yellicode/core';
 import { ReactTypingsWriterManager } from './ReactTypingsWriterManager';
-import { IFunctionSignature } from '../../../models/FunctionSignature';
+import IOneSignalApi from '../../../models/OneSignalApi';
 
 export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
 
-  constructor(writer: TextWriter, readonly oneSignalFunctions: IFunctionSignature[]) {
+  constructor(writer: TextWriter, readonly api: IOneSignalApi) {
     super(writer, Shim.React);
   }
 
