@@ -15,8 +15,8 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
   public getFunctionSignatureString(sig: IFunctionSignature): string {
     let argumentsString = "";
 
-    if (sig.arguments) {
-      sig.arguments.forEach(arg => {
+    if (sig.args) {
+      sig.args.forEach(arg => {
         const optionalValue = arg.optional ? "?" : "";
         argumentsString = argumentsString + arg.name + optionalValue + ": "+arg.type+", ";
       });

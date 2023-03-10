@@ -67,8 +67,8 @@ export function spreadArgs(args: string[]): string {
 
 export function spreadArgsWithTypes(signature: IFunctionSignature): string {
   let acc = "";
-  if (signature.arguments) {
-    signature.arguments.forEach(arg => {
+  if (signature.args) {
+    signature.args.forEach(arg => {
       const optionalChar = arg.optional ? '?' : '';
       acc = acc + arg.name + optionalChar + ': ' + arg.type + ', ';
     })

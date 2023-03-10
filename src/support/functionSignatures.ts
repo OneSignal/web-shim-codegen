@@ -15,7 +15,7 @@ export const INIT_FUNCTION_SIG = {
 
 const EVENTS_FUNCTION_SIG = {
   isAsync: false,
-  arguments: [
+  args: [
     {
       name: "event",
       type: "string",

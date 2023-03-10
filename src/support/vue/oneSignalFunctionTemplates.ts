@@ -2,7 +2,7 @@ import { IFunctionSignature } from "../../models/FunctionSignature";
 import { spreadArgs, spreadArgsWithTypes } from "../../support/utils";
 
 export const vueOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
-  const args = sig.arguments?.map(arg => arg.name);
+  const args = sig.args?.map(arg => arg.name);
   return `
   function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     return new Promise(function (resolve, reject) {
@@ -25,7 +25,7 @@ export const vueOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
 };
 
 export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
-  const args = sig.arguments?.map(arg => arg.name);
+  const args = sig.args?.map(arg => arg.name);
   return `
   function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     if (!doesOneSignalExist()) {

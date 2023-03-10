@@ -2,7 +2,7 @@ import { IFunctionSignature } from "../../models/FunctionSignature";
 import { spreadArgs, spreadArgsWithTypes } from "../utils";
 
 export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
-  const args = sig.arguments?.map(arg => arg.name);
+  const args = sig.args?.map(arg => arg.name);
   return `
   function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     return new Promise((resolve, reject) => {
@@ -34,7 +34,7 @@ export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => 
 };
 
 export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
-  const args = sig.arguments?.map(arg => arg.name);
+  const args = sig.args?.map(arg => arg.name);
   return `
   function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     if (!doesOneSignalExist()) {

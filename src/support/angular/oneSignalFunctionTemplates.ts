@@ -2,7 +2,7 @@ import { IFunctionSignature } from "../../models/FunctionSignature";
 import { spreadArgs, spreadArgsWithTypes } from "../utils";
 
 export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
-  const args = sig.arguments?.map(arg => arg.name);
+  const args = sig.args?.map(arg => arg.name);
   return `
   ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     return new Promise((resolve, reject) => {
@@ -25,7 +25,7 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature) => {
 };
 
 export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature) => {
-  const args = sig.arguments?.map(arg => arg.name);
+  const args = sig.args?.map(arg => arg.name);
   return `
   ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     if (!this.doesOneSignalExist()) {
