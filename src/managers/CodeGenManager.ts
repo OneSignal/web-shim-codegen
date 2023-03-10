@@ -55,7 +55,7 @@ export class CodeGenManager {
   }
 
   public writeNgServiceFile(): void {
-    Generator.generateAsync({ outputFile: `./src/scaffolds/angular-workspace/projects/onesignal-ngx/src/lib/onesignal-ngx.service.ts` }, async (writer: TextWriter) => {
+    Generator.generateAsync({ outputFile: `../src/scaffolds/angular-workspace/projects/onesignal-ngx/src/lib/onesignal-ngx.service.ts` }, async (writer: TextWriter) => {
       if (this.shim !== Shim.Angular) {
         console.error(`writeNgServiceFile: this function can only be used with the Angular shim build.`);
         return;
