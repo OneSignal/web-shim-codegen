@@ -1,6 +1,5 @@
 export const PATHS = {
-  ONESIGNAL_STUBS : '/OneSignal/OneSignal-Website-SDK/master/src/utils/OneSignalStub.ts',
-  ONESIGNAL_MAIN  : '/OneSignal/OneSignal-Website-SDK/master/src/OneSignal.ts',
+  UPSTREAM_API_SPEC: "/OneSignal/OneSignal-Website-SDK/user-model/api/api.json"
 };
 
 export const GITHUB_URL = "https://raw.githubusercontent.com";
