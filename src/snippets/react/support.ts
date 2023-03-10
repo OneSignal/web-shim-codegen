@@ -1,6 +1,8 @@
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
-const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/OneSignalSDK.js';
-const reactOneSignalFunctionQueue = [];
+const ONE_SIGNAL_SCRIPT_SRC = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
+
+type FunctionQueueItem = { name: string; args: IArguments; namespaceName?: string, promiseResolver?: (result: any) => any };
+const reactOneSignalFunctionQueue: FunctionQueueItem[] = [];
 
 // true if the script is successfully loaded from CDN.
 let isOneSignalInitialized = false;
@@ -9,8 +11,10 @@ let isOneSignalInitialized = false;
 // OneSignal#init.
 let isOneSignalScriptFailed = false;
 
+/* H E L P E R S */
+
 const doesOneSignalExist = () => {
-  if (window["OneSignal"]) {
+  if (window["OneSignalDeferred"]) {
     return true;
   }
   return false;
@@ -22,13 +26,13 @@ const handleOnLoad = (resolve: () => void, options: IInitObject) => {
   // OneSignal is assumed to be loaded correctly because this method
   // is called after the script is successfully loaded by CDN, but
   // just in case.
-  window["OneSignal"] = window["OneSignal"] || []
+  window["OneSignalDeferred"] = window["OneSignalDeferred"] || []
 
-  window["OneSignal"].push(() => {
-    window["OneSignal"].init(options);
+  window["OneSignalDeferred"].push((OneSignal) => {
+    OneSignal.init(options);
   });
 
-  window["OneSignal"].push(() => {
+  window["OneSignalDeferred"].push(() => {
     processQueuedOneSignalFunctions();
     resolve();
   });
@@ -44,18 +48,32 @@ const handleOnError = (resolve: () => void) => {
 
 const processQueuedOneSignalFunctions = () => {
   reactOneSignalFunctionQueue.forEach(element => {
-    const { name, args, promiseResolver } = element;
+    const { name, args, namespaceName, promiseResolver } = element;
 
     if (!!promiseResolver) {
-      OneSignalReact[name](...args).then(result => {
+      OneSignalNamespace[namespaceName][name](...args).then(result => {
         promiseResolver(result);
       });
     } else {
-      OneSignalReact[name](...args);
+      OneSignalNamespace[namespaceName][name](...args);
     }
   });
 }
 
+/**
+ * @PublicApi
+ */
+const isPushSupported = (): boolean => {
+  const supportsVapid = typeof PushSubscriptionOptions !== "undefined" && PushSubscriptionOptions.prototype.hasOwnProperty("applicationServerKey");
+  const isSafariInIframe = navigator.vendor === "Apple Computer, Inc." && window.top !== window;
+  const supportsSafari = typeof window.safari !== "undefined" && typeof window.safari.pushNotification !== "undefined" || isSafariInIframe;
+
+  return supportsVapid || supportsSafari;
+}
+
+/**
+ * @PublicApi
+ */
 const init = (options: IInitObject) => new Promise<void>(resolve => {
   if (isOneSignalInitialized) {
     resolve();
@@ -72,6 +90,7 @@ const init = (options: IInitObject) => new Promise<void>(resolve => {
 
   const script = document.createElement('script');
   script.id = ONESIGNAL_SDK_ID;
+  script.defer = true;
   script.src = ONE_SIGNAL_SCRIPT_SRC;
   script.async = true;
 
