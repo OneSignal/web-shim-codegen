@@ -100,3 +100,7 @@ export function parseArguments(rawArgs: string): IArgument[] | void {
   });
   return parsedArgs as IArgument[];
 }
+
+export function toCamelCase(input: string): string {
+  return input.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+}
