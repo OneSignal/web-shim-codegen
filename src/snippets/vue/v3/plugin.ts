@@ -1,10 +1,10 @@
 export const useOneSignal = () => {
-  return OneSignalVue;
+  return OneSignalNamespace;
 }
 
 const OneSignalVuePlugin = {
   install(app: App, options: IInitObject) {
-    app.config.globalProperties.$OneSignal = OneSignalVue as IOneSignal;
+    app.config.globalProperties.$OneSignal = OneSignalNamespace as IOneSignal;
     app.config.globalProperties.$OneSignal.init(options);
   }
 }
