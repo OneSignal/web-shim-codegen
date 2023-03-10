@@ -1,6 +1,6 @@
 const OneSignalVuePlugin = {
   install(app: typeof VueApp) {
-    app.prototype.$OneSignal = OneSignalVue as IOneSignal;
+    app.prototype.$OneSignal = OneSignalNamespace as IOneSignal;
   }
 }
 
