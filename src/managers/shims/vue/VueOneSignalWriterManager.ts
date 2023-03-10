@@ -4,6 +4,7 @@ import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBa
 import { VueTypingsWriterManager } from './VueTypingsWriterManager';
 import { TextWriter } from '@yellicode/core';
 import { BuildSubdirectory } from '../../../models/BuildSubdirectory';
+import IOneSignalApi from '../../../models/OneSignalApi';
 
 export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
   constructor(writer: TextWriter, readonly api: IOneSignalApi, readonly subdir?: BuildSubdirectory) {
@@ -18,7 +19,7 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
 
     this.writeLine(supportFileContents);
     await typingsWriter.writeInterfaces(0);
-    typingsWriter.writeOneSignalInterface(this.oneSignalFunctions);
+    typingsWriter.writeOneSignalInterfaces(this.api);
     this.writeLine(initFileContents);
   }
 

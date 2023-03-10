@@ -17,7 +17,7 @@ export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
     const supportFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.React}/support.ts`);
     this.writeLine(supportFileContents);
     await typingsWriter.writeInterfaces(0);
-    typingsWriter.writeOneSignalInterface(this.oneSignalFunctions);
+    typingsWriter.writeOneSignalInterfaces(this.api);
   }
 
   // implements abstract function
