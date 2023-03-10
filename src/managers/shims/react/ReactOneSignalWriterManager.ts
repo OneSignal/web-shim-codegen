@@ -4,6 +4,7 @@ import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBa
 import { TextWriter } from '@yellicode/core';
 import { ReactTypingsWriterManager } from './ReactTypingsWriterManager';
 import IOneSignalApi from '../../../models/OneSignalApi';
+import { toCamelCase } from '../../../support/utils';
 
 export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
 
@@ -21,14 +22,42 @@ export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
   }
 
   // implements abstract function
-  async writeExportCode(exportFunctions: string[]): Promise<void> {
-    this.writeLine("\nconst OneSignalReact: IOneSignal = {");
-
-    exportFunctions.forEach(func => {
-      this.writeLine(`\t${func},`);
+  async writeExportCode(api: IOneSignalApi): Promise<void> {
+    Object.keys(api).reverse().forEach(async key => {
+      await this.writeNamespaceExport(api, key);
     });
 
-    this.writeLine("};");
-    this.writeLine("export default OneSignalReact");
+    this.writeLine("const OneSignal = OneSignalNamespace;");
+    this.writeLine("export default OneSignal;");
+  }
+
+  private async writeNamespaceExport(api: IOneSignalApi, namespaceName: string, tabs?: number): Promise<void> {
+    const prefix = '\t'.repeat(tabs || 1);
+    const namespaceApi = api[namespaceName];
+    const { functions, namespaces } = namespaceApi;
+
+    this.writeLine(`const ${namespaceName}Namespace: I${namespaceName} = {`);
+    functions.forEach(func => {
+      // if function name is addEventListener or removeEventListener use the function in the format
+      // add${camelCaseKey}EventListener or remove${camelCaseKey}EventListener
+      const camelCaseKey = toCamelCase(namespaceName);
+      if (func.name === 'addEventListener') {
+        const modifiedName = `add${camelCaseKey}EventListener`;
+        this.writeLine(`${prefix}${func.name}: ${modifiedName},`);
+      } else if (func.name === 'removeEventListener') {
+        const modifiedName = `remove${camelCaseKey}EventListener`;
+        this.writeLine(`${prefix}${func.name}: ${modifiedName},`);
+      } else {
+        this.writeLine(`${prefix}${func.name},`);
+      }
+    });
+
+    if (namespaces) {
+      namespaces.forEach(namespace => {
+        this.writeLine(`${prefix}${namespace}: ${namespace}Namespace,`);
+      });
+    }
+
+    this.writeLine("};\n");
   }
 }
