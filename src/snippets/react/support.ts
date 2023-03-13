@@ -11,7 +11,7 @@ let isOneSignalInitialized = false;
 // OneSignal#init.
 let isOneSignalScriptFailed = false;
 
-window['OneSignalDeferred'] = window['OneSignalDeferred'] || []
+window['OneSignalDeferred'] = window['OneSignalDeferred'] || [];
 
 addSDKScript();
 
@@ -50,7 +50,6 @@ function addSDKScript() {
   script.id = ONESIGNAL_SDK_ID;
   script.defer = true;
   script.src = ONE_SIGNAL_SCRIPT_SRC;
-  script.async = true;
 
   script.onload = () => {
     processQueuedOneSignalFunctions();
@@ -64,7 +63,6 @@ function addSDKScript() {
 
   document.head.appendChild(script);
 }
-
 
 /**
  * @PublicApi
