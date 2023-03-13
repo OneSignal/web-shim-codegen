@@ -37,21 +37,21 @@ cd build
 echo 'Archiving...'
 tar cvfz onesignal-ngx.tgz onesignal-ngx
 tar cvfz react.tgz react
-tar cvfz vue/v2.tgz vue/v2
-tar cvfz vue/v3.tgz vue/v3
+tar cvfz vue2.tgz vue2
+tar cvfz vue3.tgz vue3
 echo 'Done.'
 cd ..
 
 echo 'Moving build files...'
 mv build/onesignal-ngx.tgz dist/onesignal-ngx.tgz
 mv build/react.tgz dist/react.tgz
-mv build/vue/v2.tgz dist/vue/v2.tgz
-mv build/vue/v3.tgz dist/vue/v3.tgz
+mv build/vue2.tgz dist/vue2.tgz
+mv build/vue3.tgz dist/vue3.tgz
 echo 'Done.'
 
 echo 'Diff between current build and the content of the downstream repo.'
 git diff --diff-filter=RD --name-status --no-index outputs/onesignal-ngx build/onesignal-ngx | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/onesignal-ngx.rmfiles  || true
 git diff --diff-filter=RD --name-status --no-index outputs/react build/react | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/react.rmfiles || true
-git diff --diff-filter=RD --name-status --no-index outputs/vue/v2 build/vue/v2 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue/v2.rmfiles  || true
-git diff --diff-filter=RD --name-status --no-index outputs/vue/v3 build/vue/v3 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue/v3.rmfiles  || true
+git diff --diff-filter=RD --name-status --no-index outputs/vue2 build/vue/v2 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue2.rmfiles  || true
+git diff --diff-filter=RD --name-status --no-index outputs/vue3 build/vue/v3 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue3.rmfiles  || true
 echo 'Done.'

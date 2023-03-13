@@ -1,6 +1,6 @@
 #!/bin/bash
 
-paths=("onesignal-ngx" "react" "vue/v2" "vue/v3")
+paths=("onesignal-ngx" "react" "vue2" "vue3")
 
 for tgt in "${paths[@]}"; do
   cp -a src/static/$tgt/* build/$tgt; # shim-specific files

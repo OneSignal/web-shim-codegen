@@ -5,5 +5,5 @@ set -euo pipefail
 # Outputs
 git subtree pull --squash --prefix outputs/onesignal-ngx  git@github.com:OneSignal/onesignal-ngx.git    main
 git subtree pull --squash --prefix outputs/react          git@github.com:OneSignal/react-onesignal.git  main
-git subtree pull --squash --prefix outputs/vue/v2         git@github.com:OneSignal/onesignal-vue.git    main
-git subtree pull --squash --prefix outputs/vue/v3         git@github.com:OneSignal/onesignal-vue3.git   main
+git subtree pull --squash --prefix outputs/vue2         git@github.com:OneSignal/onesignal-vue.git    main
+git subtree pull --squash --prefix outputs/vue3         git@github.com:OneSignal/onesignal-vue3.git   main
