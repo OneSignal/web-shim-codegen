@@ -120,9 +120,9 @@ jobs:
       - name: "[onesignal-vue] Patch"
         run: |
           mkdir -p __clone/onesignal-vue
-          tar zxvvf dist/vue/v2.tgz -C __clone/
+          tar zxvvf dist/vue2.tgz -C __clone/
           cd __clone/onesignal-vue
-          while read file; do git rm "$file"; done < ../../build/vue/v2.rmfiles
+          while read file; do git rm "$file"; done < ../../build/vue2.rmfiles
           git add .
           if git commit -m "Update onesignal-vue"; then
             echo "onesignal-vue repository has been updated"
@@ -160,9 +160,9 @@ jobs:
       - name: "[onesignal-vue3] Patch"
         run: |
           mkdir -p __clone/onesignal-vue3
-          tar zxvvf dist/vue/v3.tgz -C __clone/
+          tar zxvvf dist/vue3.tgz -C __clone/
           cd __clone/onesignal-vue3
-          while read file; do git rm "$file"; done < ../../build/vue/v3.rmfiles
+          while read file; do git rm "$file"; done < ../../build/vue3.rmfiles
           git add .
           if git commit -m "Update onesignal-vue3"; then
             echo "onesignal-vue3 repository has been updated"

@@ -13,7 +13,11 @@ const templateFunctionMap: ITemplateFunctionMap = {
     sync: reactOneSignalFunctionTemplate,
     async: reactOneSignalAsyncFunctionTemplate
   },
-  [Shim.Vue]: {
+  [Shim.Vue2]: {
+    sync: vueOneSignalFunctionTemplate,
+    async: vueOneSignalAsyncFunctionTemplate
+  },
+  [Shim.Vue3]: {
     sync: vueOneSignalFunctionTemplate,
     async: vueOneSignalAsyncFunctionTemplate
   },

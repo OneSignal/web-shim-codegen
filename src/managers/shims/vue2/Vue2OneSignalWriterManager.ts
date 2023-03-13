@@ -1,21 +1,20 @@
 import { ReaderManager } from '../../ReaderManager';
 import { Shim } from '../../../models/Shim';
 import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
-import { VueTypingsWriterManager } from './VueTypingsWriterManager';
+import { Vue2TypingsWriterManager } from './Vue2TypingsWriterManager';
 import { TextWriter } from '@yellicode/core';
-import { BuildSubdirectory } from '../../../models/BuildSubdirectory';
 import IOneSignalApi from '../../../models/OneSignalApi';
 import { toCamelCase } from '../../../support/utils';
 
-export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
-  constructor(writer: TextWriter, readonly api: IOneSignalApi, readonly subdir?: BuildSubdirectory) {
-    super(writer, Shim.Vue);
+export class Vue2OneSignalWriterManager extends OneSignalWriterManagerBase {
+  constructor(writer: TextWriter, readonly api: IOneSignalApi) {
+    super(writer, Shim.Vue2);
   }
 
   // implements abstract function
   async writeSupportCode(): Promise<void> {
-    const typingsWriter = new VueTypingsWriterManager(this);
-    const supportFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue}/${this.subdir}/support.ts`);
+    const typingsWriter = new Vue2TypingsWriterManager(this);
+    const supportFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue2}/support.ts`);
 
     this.writeLine(supportFileContents);
     await typingsWriter.writeInterfaces(0);
@@ -62,7 +61,7 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
   }
 
   async writePluginCode(): Promise<void> {
-    const pluginFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue}/${this.subdir}/plugin.ts`);
+    const pluginFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue2}/plugin.ts`);
     this.write(pluginFileContents);
   }
 }

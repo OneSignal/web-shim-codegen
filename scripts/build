@@ -11,8 +11,6 @@ rm -rf build
 rm -rf ts-to-es6
 echo 'Done.'
 
-mkdir -p dist/vue
-
 echo "Transpiling..."
 tsc
 echo 'Done.'
@@ -43,6 +41,7 @@ echo 'Done.'
 cd ..
 
 echo 'Moving build files...'
+mkdir -p dist
 mv build/onesignal-ngx.tgz dist/onesignal-ngx.tgz
 mv build/react.tgz dist/react.tgz
 mv build/vue2.tgz dist/vue2.tgz
@@ -52,6 +51,6 @@ echo 'Done.'
 echo 'Diff between current build and the content of the downstream repo.'
 git diff --diff-filter=RD --name-status --no-index outputs/onesignal-ngx build/onesignal-ngx | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/onesignal-ngx.rmfiles  || true
 git diff --diff-filter=RD --name-status --no-index outputs/react build/react | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/react.rmfiles || true
-git diff --diff-filter=RD --name-status --no-index outputs/vue2 build/vue/v2 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue2.rmfiles  || true
-git diff --diff-filter=RD --name-status --no-index outputs/vue3 build/vue/v3 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue3.rmfiles  || true
+git diff --diff-filter=RD --name-status --no-index outputs/vue2 build/vue2 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue2.rmfiles  || true
+git diff --diff-filter=RD --name-status --no-index outputs/vue3 build/vue3 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue3.rmfiles  || true
 echo 'Done.'

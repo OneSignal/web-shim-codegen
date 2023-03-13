@@ -3,20 +3,19 @@ import { Generator } from "@yellicode/templating";
 import { FileFetchManager } from "./FileFetchManager";
 import { Shim } from "../models/Shim";
 import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterManager";
-import { VueOneSignalWriterManager } from "./shims/vue/VueOneSignalWriterManager";
+import { Vue2OneSignalWriterManager } from "./shims/vue2/Vue2OneSignalWriterManager";
+import { Vue3OneSignalWriterManager } from "./shims/vue3/Vue3OneSignalWriterManager";
 import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
 import { NgOneSignalWriterManager } from "./shims/angular/NgOneSignalWriterManager";
 import { NgTypingsWriterManager } from "./shims/angular/NgTypingsWriterManager";
-import { BuildSubdirectory } from "../models/BuildSubdirectory";
 import IOneSignalApi from "../models/OneSignalApi";
 
 export class CodeGenManager {
   /**
    * @param  {Shim} shim - Vue, React, or Angular
    * @param  {IFunctionSignature[]} functions - Function signature array
-   * @param  {BuildSubdirectory} subdir? - *optional* argument to create separate build subdirectory (e.g: vue/v2 and vue/v3)
    */
-  constructor(readonly shim: Shim, readonly api: IOneSignalApi, readonly subdir: BuildSubdirectory = "") {}
+  constructor(readonly shim: Shim, readonly api: IOneSignalApi) {}
 
   static async fetchApi(): Promise<IOneSignalApi> {
     const rawJson = await FileFetchManager.getApiSpec();
@@ -26,7 +25,8 @@ export class CodeGenManager {
   public write(): void {
     switch (this.shim) {
       case Shim.React:
-      case Shim.Vue:
+      case Shim.Vue2:
+      case Shim.Vue3:
         this.writeIndexFile();
         break;
       case Shim.Angular:
@@ -38,14 +38,17 @@ export class CodeGenManager {
   }
 
   private writeIndexFile(): void {
-    Generator.generateAsync({outputFile: `../build/${this.shim}/${this.subdir}/index.ts`}, async (writer: TextWriter) => {
+    Generator.generateAsync({outputFile: `../build/${this.shim}/index.ts`}, async (writer: TextWriter) => {
       let oneSignalWriter: OneSignalWriterManagerBase;
       switch (this.shim) {
         case Shim.React:
           oneSignalWriter = new ReactOneSignalWriterManager(writer, this.api);
           break;
-        case Shim.Vue:
-          oneSignalWriter = new VueOneSignalWriterManager(writer, this.api, this.subdir);
+        case Shim.Vue2:
+          oneSignalWriter = new Vue2OneSignalWriterManager(writer, this.api);
+          break;
+        case Shim.Vue3:
+          oneSignalWriter = new Vue3OneSignalWriterManager(writer, this.api);
           break;
       }
       await oneSignalWriter.writeSupportCode();

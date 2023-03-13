@@ -1,7 +1,7 @@
 import IOneSignalApi from "../../../models/OneSignalApi";
 import { TypingsWriterManagerBase } from "../../bases/TypingsWriterManagerBase";
 
-export class VueTypingsWriterManager extends TypingsWriterManagerBase {
+export class Vue3TypingsWriterManager extends TypingsWriterManagerBase {
   public writeOneSignalInterfaces(api: IOneSignalApi): void {
     Object.keys(api).forEach(key => {
       const namespace = api[key];
