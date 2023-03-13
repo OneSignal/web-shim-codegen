@@ -38,7 +38,6 @@ jobs:
           path: __clone/onesignal-ngx
       - name: "[onesignal-ngx] Patch"
         run: |
-          mkdir -p __clone/onesignal-ngx
           tar zxvvf dist/onesignal-ngx.tgz -C __clone/
           cd __clone/onesignal-ngx
           while read file; do git rm "$file"; done < ../../build/onesignal-ngx.rmfiles
@@ -79,7 +78,6 @@ jobs:
           path: __clone/react
       - name: "[react-onesignal] Patch"
         run: |
-          mkdir -p __clone/react
           tar zxvvf dist/react.tgz -C __clone/
           cd __clone/react
           while read file; do git rm "$file"; done < ../../build/react.rmfiles
@@ -116,12 +114,11 @@ jobs:
           token: ${{ secrets.GH_TOKEN_TEST }}
           repository: OneSignal/onesignal-vue
           fetch-depth: 0
-          path: __clone/onesignal-vue
+          path: __clone/vue/v2
       - name: "[onesignal-vue] Patch"
         run: |
-          mkdir -p __clone/onesignal-vue
           tar zxvvf dist/vue/v2.tgz -C __clone/
-          cd __clone/onesignal-vue
+          cd __clone/vue/v2
           while read file; do git rm "$file"; done < ../../build/vue/v2.rmfiles
           git add .
           if git commit -m "Update onesignal-vue"; then
@@ -133,7 +130,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           repository: OneSignal/onesignal-vue
-          directory: __clone/onesignal-vue
+          directory: __clone/vue/v2
           force: true
           branch: cd_update
           github_token: ${{ secrets.GH_TOKEN_TEST }}
@@ -156,12 +153,11 @@ jobs:
           token: ${{ secrets.GH_TOKEN_TEST }}
           repository: OneSignal/onesignal-vue3
           fetch-depth: 0
-          path: __clone/onesignal-vue3
+          path: __clone/vue/v3
       - name: "[onesignal-vue3] Patch"
         run: |
-          mkdir -p __clone/onesignal-vue3
           tar zxvvf dist/vue/v3.tgz -C __clone/
-          cd __clone/onesignal-vue3
+          cd __clone/vue/v3
           while read file; do git rm "$file"; done < ../../build/vue/v3.rmfiles
           git add .
           if git commit -m "Update onesignal-vue3"; then
@@ -173,7 +169,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           repository: OneSignal/onesignal-vue3
-          directory: __clone/onesignal-vue3
+          directory: __clone/vue/v3
           force: true
           branch: cd_update
           github_token: ${{ secrets.GH_TOKEN_TEST }}
