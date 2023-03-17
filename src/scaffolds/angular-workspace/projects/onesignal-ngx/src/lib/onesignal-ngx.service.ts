@@ -9,6 +9,7 @@ type NotificationEventName = 'click' | 'willDisplay' | 'dismiss' | 'permissionCh
 interface NotificationButtonData { action?: string; title?: string; icon?: string; url?: string; }
 interface StructuredNotification { id: string; content: string; heading?: string; url?: string; data?: object; rr?: string; icon?: string; image?: string; tag?: string; badge?: string; vibrate?: string; buttons?: NotificationButtonData[]; }
 type SlidedownEventName = 'slidedownShown';
+type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;
 
 interface IInitObject {
   appId: string;
@@ -46,21 +47,22 @@ let isOneSignalScriptFailed = false;
 
 declare global {
   interface Window {
-    OneSignalDeferred: any;
+    OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
     safari?: {
       pushNotification: any;
     };
   }
 }
 
-interface IOneSignal {
+interface IOneSignalOneSignal {
   [key: string]: any;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class OneSignal implements IOneSignal {
+export class OneSignal implements IOneSignalOneSignal {
+  [key: string]: any;
   private isOneSignalInitialized = false;
   private ngOneSignalFunctionQueue: FunctionQueueItem[] = [];
 
@@ -106,11 +108,11 @@ export class OneSignal implements IOneSignal {
       const { name, args, namespaceName, promiseResolver } = element;
 
       if (!!promiseResolver) {
-        (this as IOneSignal)[namespaceName][name](...args).then((result: any) => {
+        this[namespaceName][name](...args).then((result: any) => {
           promiseResolver(result);
         });
       } else {
-        (this as IOneSignal)[namespaceName][name](...args);
+        this[namespaceName][name](...args);
       }
     });
   }
@@ -134,7 +136,7 @@ export class OneSignal implements IOneSignal {
     }
 
     return new Promise<void>((resolve) => {
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.init(options).then(() => {
           isOneSignalInitialized = true;
           resolve();
@@ -181,7 +183,6 @@ export class OneSignal implements IOneSignal {
   }
 
 
-
   oneSignalLogin(externalId: string, jwtToken?: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (isOneSignalScriptFailed) {
@@ -198,7 +199,7 @@ export class OneSignal implements IOneSignal {
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.oneSignalLogin(externalId, jwtToken)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -222,7 +223,7 @@ export class OneSignal implements IOneSignal {
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.oneSignalLogout()
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -246,7 +247,7 @@ export class OneSignal implements IOneSignal {
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.oneSignalSetConsentGiven(consent)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -270,7 +271,7 @@ export class OneSignal implements IOneSignal {
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.oneSignalSetConsentRequired(requiresConsent)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -294,7 +295,7 @@ export class OneSignal implements IOneSignal {
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Notifications.notificationsSetDefaultUrl(url)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -318,7 +319,7 @@ export class OneSignal implements IOneSignal {
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Notifications.notificationsSetDefaultTitle(title)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -342,7 +343,7 @@ export class OneSignal implements IOneSignal {
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Notifications.notificationsGetPermissionStatus(onComplete)
           .then((value: Promise<NotificationPermission>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -366,7 +367,7 @@ export class OneSignal implements IOneSignal {
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Notifications.notificationsRequestPermission()
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -388,7 +389,7 @@ notificationsAddEventListener(event: 'permissionPromptDisplay', listener: () => 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.notificationsAddEventListener(event, listener);
     });
   }
@@ -407,7 +408,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.notificationsRemoveEventListener(event, listener);
     });
   }
@@ -428,7 +429,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Slidedown.slidedownPromptPush(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -452,7 +453,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Slidedown.slidedownPromptPushCategories(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -476,7 +477,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Slidedown.slidedownPromptSms(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -500,7 +501,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Slidedown.slidedownPromptEmail(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -524,7 +525,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Slidedown.slidedownPromptSmsAndEmail(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -542,7 +543,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.slidedownAddEventListener(event, listener);
     });
   }
@@ -557,7 +558,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.slidedownRemoveEventListener(event, listener);
     });
   }
@@ -572,7 +573,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.debugSetLogLevel(logLevel);
     });
   }
@@ -593,7 +594,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Session.sessionSendOutcome(outcomeName, outcomeWeight)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -617,7 +618,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.Session.sessionSendUniqueOutcome(outcomeName)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -635,7 +636,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.userAddAlias(label, id);
     });
   }
@@ -650,7 +651,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.userAddAliases(aliases);
     });
   }
@@ -665,7 +666,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.userRemoveAlias(label);
     });
   }
@@ -680,7 +681,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.userRemoveAliases(labels);
     });
   }
@@ -695,7 +696,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.userAddEmail(email);
     });
   }
@@ -710,7 +711,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.userRemoveEmail(email);
     });
   }
@@ -725,7 +726,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.userAddSms(smsNumber);
     });
   }
@@ -740,7 +741,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.userRemoveSms(smsNumber);
     });
   }
@@ -761,7 +762,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.PushSubscription.pushSubscriptionOptIn()
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -785,7 +786,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.PushSubscription.pushSubscriptionOptOut()
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -803,7 +804,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.pushSubscriptionAddEventListener(event, listener);
     });
   }
@@ -818,7 +819,7 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.pushSubscriptionRemoveEventListener(event, listener);
     });
   }

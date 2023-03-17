@@ -78,7 +78,7 @@ declare module 'vue/types/vue' {
 
 declare global {
   interface Window {
-    OneSignal: any;
+    OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
     safari?: {
       pushNotification: any;
     };

@@ -13,21 +13,22 @@ let isOneSignalScriptFailed = false;
 
 declare global {
   interface Window {
-    OneSignalDeferred: any;
+    OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
     safari?: {
       pushNotification: any;
     };
   }
 }
 
-interface IOneSignal {
+interface IOneSignalOneSignal {
   [key: string]: any;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class OneSignal implements IOneSignal {
+export class OneSignal implements IOneSignalOneSignal {
+  [key: string]: any;
   private isOneSignalInitialized = false;
   private ngOneSignalFunctionQueue: FunctionQueueItem[] = [];
 
@@ -73,11 +74,11 @@ export class OneSignal implements IOneSignal {
       const { name, args, namespaceName, promiseResolver } = element;
 
       if (!!promiseResolver) {
-        (this as IOneSignal)[namespaceName][name](...args).then((result: any) => {
+        this[namespaceName][name](...args).then((result: any) => {
           promiseResolver(result);
         });
       } else {
-        (this as IOneSignal)[namespaceName][name](...args);
+        this[namespaceName][name](...args);
       }
     });
   }
@@ -101,7 +102,7 @@ export class OneSignal implements IOneSignal {
     }
 
     return new Promise<void>((resolve) => {
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.init(options).then(() => {
           isOneSignalInitialized = true;
           resolve();
@@ -146,4 +147,3 @@ export class OneSignal implements IOneSignal {
   isPushSupported(): boolean {
     return this.isPushNotificationsSupported();
   }
-

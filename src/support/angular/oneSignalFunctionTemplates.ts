@@ -20,7 +20,7 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, namesp
         return;
       }
 
-      window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.${namespaceName}${namespaceName !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
           .then((value: ${sig.returnType}) => resolve(value))
           .catch((error: Error) => reject(error));
@@ -42,7 +42,7 @@ export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature, namespaceNa
       return;
     }
 
-    window.OneSignalDeferred.push((oneSignal: IOneSignal) => {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.${sig.name}(${spreadArgs(args)});
     });
   }`

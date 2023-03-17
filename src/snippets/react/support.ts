@@ -15,6 +15,13 @@ window['OneSignalDeferred'] = window['OneSignalDeferred'] || [];
 
 addSDKScript();
 
+interface Window {
+  OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
+  safari?: {
+    pushNotification: any;
+  };
+}
+
 /* H E L P E R S */
 
 function doesOneSignalExist() {

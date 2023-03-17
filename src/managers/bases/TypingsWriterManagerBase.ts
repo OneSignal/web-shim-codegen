@@ -5,6 +5,7 @@ import { ACTION,
   CATEGORY_OPTIONS,
   NOTIFICATION_BUTTON_DATA,
   NOTIFICATION_EVENT_NAME,
+  ONESIGNAL_DEFERRED_CALLBACK,
   PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES,
   SLIDEDOWN_EVENT_NAME,
   SLIDEDOWN_OPTIONS,
@@ -61,6 +62,7 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
     this.writeLine(prefix+NOTIFICATION_BUTTON_DATA);
     this.writeLine(prefix+STRUCTURED_NOTIFICATION);
     this.writeLine(prefix+SLIDEDOWN_EVENT_NAME);
+    this.writeLine(prefix+ONESIGNAL_DEFERRED_CALLBACK);
     this.writeLine();
     this.writeLine(initObjectInterfaceContents);
   }
