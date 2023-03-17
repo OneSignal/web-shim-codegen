@@ -9,7 +9,6 @@ type NotificationEventName = 'click' | 'willDisplay' | 'dismiss' | 'permissionCh
 interface NotificationButtonData { action?: string; title?: string; icon?: string; url?: string; }
 interface StructuredNotification { id: string; content: string; heading?: string; url?: string; data?: object; rr?: string; icon?: string; image?: string; tag?: string; badge?: string; vibrate?: string; buttons?: NotificationButtonData[]; }
 type SlidedownEventName = 'slidedownShown';
-type NotificationCallbackType = | ((obj: StructuredNotification) => void) | ((obj: { to: NotificationPermission }) => void) | ((obj: (arg: any) => void) => void);
 
 interface IInitObject {
   appId: string;
@@ -350,6 +349,10 @@ export class OneSignal implements IOneSignal {
     });
   }
 
+notificationsAddEventListener(event: 'click' | 'willDisplay' | 'dismiss', listener: (obj: StructuredNotification) => void): void;
+notificationsAddEventListener(event: 'permissionChange', listener: (obj: { to: NotificationPermission }) => void): void;
+notificationsAddEventListener(event: 'permissionPromptDisplay', listener: () => void): void;
+
   notificationsAddEventListener(event: NotificationEventName, listener: (obj: any) => void): void {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
@@ -364,6 +367,10 @@ export class OneSignal implements IOneSignal {
       oneSignal.notificationsAddEventListener(event, listener);
     });
   }
+
+notificationsRemoveEventListener(event: 'click' | 'willDisplay' | 'dismiss', listener: (obj: StructuredNotification) => void): void;
+notificationsRemoveEventListener(event: 'permissionChange', listener: (obj: { to: NotificationPermission }) => void): void;
+notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () => void): void;
 
   notificationsRemoveEventListener(event: NotificationEventName, listener: (obj: any) => void): void {
     if (!this.doesOneSignalExist()) {

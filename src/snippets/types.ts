@@ -9,4 +9,3 @@ export const NOTIFICATION_EVENT_NAME = `type NotificationEventName = 'click' | '
 export const STRUCTURED_NOTIFICATION = `interface StructuredNotification { id: string; content: string; heading?: string; url?: string; data?: object; rr?: string; icon?: string; image?: string; tag?: string; badge?: string; vibrate?: string; buttons?: NotificationButtonData[]; }`;
 export const NOTIFICATION_BUTTON_DATA = `interface NotificationButtonData { action?: string; title?: string; icon?: string; url?: string; }`;
 export const SLIDEDOWN_EVENT_NAME = `type SlidedownEventName = 'slidedownShown';`;
-export const NOTIFICATION_CALLBACK_TYPE = `type NotificationCallbackType = | ((obj: StructuredNotification) => void) | ((obj: { to: NotificationPermission }) => void) | ((obj: (arg: any) => void) => void);`;

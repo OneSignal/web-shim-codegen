@@ -7,19 +7,26 @@ import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
 import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '../../support/angular/oneSignalFunctionTemplates';
 import IOneSignalApi from '../../models/OneSignalApi';
 import { generateUniqueFunctionName } from '../../support/utils';
+import { NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS, NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX } from '../../snippets/EventListenerOverloads';
 
-const templateFunctionMap: ITemplateFunctionMap = {
+const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
   [Shim.React]: {
     sync: reactOneSignalFunctionTemplate,
-    async: reactOneSignalAsyncFunctionTemplate
+    async: reactOneSignalAsyncFunctionTemplate,
+    addListenerOverloads: NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX,
+    removeListenerOverloads: NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX
   },
   [Shim.Vue]: {
     sync: vueOneSignalFunctionTemplate,
-    async: vueOneSignalAsyncFunctionTemplate
+    async: vueOneSignalAsyncFunctionTemplate,
+    addListenerOverloads: NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX,
+    removeListenerOverloads: NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX
   },
   [Shim.Angular]: {
     sync: ngOneSignalFunctionTemplate,
-    async: ngOneSignalAsyncFunctionTemplate
+    async: ngOneSignalAsyncFunctionTemplate,
+    addListenerOverloads: NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS,
+    removeListenerOverloads: NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS
   }
 }
 
@@ -45,12 +52,27 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
         // prefix with the namespace to avoid function name conflicts
         func.name = generateUniqueFunctionName(namespaceName, func.name);
 
+        this._generateFunctionOverloadsIfNeeded(func.name);
+
         const mapKey = func.isAsync ? "async" : "sync";
-        const templateFunction = templateFunctionMap[this.shim][mapKey];
+        const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
         const finalNamespace = namespaceName === 'OneSignal' ? '' : namespaceName;
         this.writeLine(templateFunction(func, finalNamespace));
       });
     });
+  }
+
+  private _generateFunctionOverloadsIfNeeded(functionName: string): void {
+    switch (functionName) {
+      case 'notificationsAddEventListener':
+        this.writeLine('\n'+TEMPLATE_FUNCTION_MAP[this.shim].addListenerOverloads);
+        break;
+      case 'notificationsRemoveEventListener':
+        this.writeLine('\n'+TEMPLATE_FUNCTION_MAP[this.shim].removeListenerOverloads);
+        break;
+      default:
+        break;
+    }
   }
 
   protected async writeNamespaceExport(api: IOneSignalApi, namespaceName: string, tabs?: number): Promise<void> {

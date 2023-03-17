@@ -4,7 +4,6 @@ import { ACTION,
   AUTO_PROMPT_OPTIONS,
   CATEGORY_OPTIONS,
   NOTIFICATION_BUTTON_DATA,
-  NOTIFICATION_CALLBACK_TYPE,
   NOTIFICATION_EVENT_NAME,
   PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES,
   SLIDEDOWN_EVENT_NAME,
@@ -62,7 +61,6 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
     this.writeLine(prefix+NOTIFICATION_BUTTON_DATA);
     this.writeLine(prefix+STRUCTURED_NOTIFICATION);
     this.writeLine(prefix+SLIDEDOWN_EVENT_NAME);
-    this.writeLine(prefix+NOTIFICATION_CALLBACK_TYPE);
     this.writeLine();
     this.writeLine(initObjectInterfaceContents);
   }
