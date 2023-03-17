@@ -12,6 +12,7 @@ import { ACTION,
   STRUCTURED_NOTIFICATION,
   SUBSCRIPTION_CHANGE_EVENT,
   TAG_CATEGORY } from "../../snippets/types";
+import { INTERFACE_PREFIX } from "../../support/constants";
 import { ReaderManager } from "../ReaderManager";
 
 export abstract class TypingsWriterManagerBase extends CodeWriter {
@@ -38,7 +39,7 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
   public writeNamespaces(namespaces: string[], tabs?: number): void {
     const prefix = '\t'.repeat(tabs || 1);
     namespaces.forEach(namespace => {
-      this.writeLine(`${prefix}${namespace}: I${namespace};`);
+      this.writeLine(`${prefix}${namespace}: ${INTERFACE_PREFIX}${namespace};`);
     });
   }
 

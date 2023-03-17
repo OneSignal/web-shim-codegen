@@ -101,6 +101,14 @@ export function parseArguments(rawArgs: string): IArgument[] | void {
   return parsedArgs as IArgument[];
 }
 
-export function toCamelCase(input: string): string {
-  return input.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+function toCamelCase(input: string): string {
+  return input.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }).replace(/^\w/, c => c.toLowerCase());
+}
+
+function capitalizeFirstLetter(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function generateUniqueFunctionName(namespaceName: string, functionName: string): string {
+  return `${toCamelCase(namespaceName)}${capitalizeFirstLetter(functionName)}`;
 }

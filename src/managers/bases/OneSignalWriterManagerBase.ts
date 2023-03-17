@@ -1,12 +1,12 @@
 import { CodeWriter, TextWriter } from '@yellicode/core';
-import { FUNCTION_IGNORE } from '../../support/constants';
+import { FUNCTION_IGNORE, INTERFACE_PREFIX } from '../../support/constants';
 import { Shim } from '../../models/Shim';
 import { reactOneSignalAsyncFunctionTemplate, reactOneSignalFunctionTemplate } from '../../support/react/oneSignalFunctionTemplates';
 import { vueOneSignalAsyncFunctionTemplate, vueOneSignalFunctionTemplate } from '../../support/vue/oneSignalFunctionTemplates';
 import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
 import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '../../support/angular/oneSignalFunctionTemplates';
 import IOneSignalApi from '../../models/OneSignalApi';
-import { toCamelCase } from '../../support/utils';
+import { generateUniqueFunctionName } from '../../support/utils';
 
 const templateFunctionMap: ITemplateFunctionMap = {
   [Shim.React]: {
@@ -35,20 +35,15 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
     const apiCopy = JSON.parse(JSON.stringify(api));
 
     Object.keys(apiCopy).forEach(namespaceName => {
-      const camelCaseNamespaceName = toCamelCase(namespaceName);
       const { functions } = apiCopy[namespaceName];
 
       functions.forEach(func => {
-        // for all addEventListener and removeEventListener functions, we need to modify the name to avoid conflicts
-        if (func.name === 'addEventListener') {
-          func.name = `add${camelCaseNamespaceName}EventListener`;
-        } else if (func.name === 'removeEventListener') {
-          func.name = `remove${camelCaseNamespaceName}EventListener`;
-        }
-
         if (FUNCTION_IGNORE.indexOf(func.name) !== -1) {
           return;
         }
+
+        // prefix with the namespace to avoid function name conflicts
+        func.name = generateUniqueFunctionName(namespaceName, func.name);
 
         const mapKey = func.isAsync ? "async" : "sync";
         const templateFunction = templateFunctionMap[this.shim][mapKey];
@@ -56,5 +51,29 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
         this.writeLine(templateFunction(func, finalNamespace));
       });
     });
+  }
+
+  protected async writeNamespaceExport(api: IOneSignalApi, namespaceName: string, tabs?: number): Promise<void> {
+    const prefix = '\t'.repeat(tabs || 1);
+    const namespaceApi = api[namespaceName];
+    const { functions, namespaces } = namespaceApi;
+
+    this.writeLine(`const ${namespaceName}Namespace: ${INTERFACE_PREFIX}${namespaceName} = {`);
+    functions.forEach(func => {
+      if (FUNCTION_IGNORE.indexOf(func.name) !== -1) {
+        this.writeLine(`${prefix}${func.name},`);
+        return;
+      }
+
+      this.writeLine(`${prefix}${func.name}: ${generateUniqueFunctionName(namespaceName, func.name)},`);
+    });
+
+    if (namespaces) {
+      namespaces.forEach(namespace => {
+        this.writeLine(`${prefix}${namespace}: ${namespace}Namespace,`);
+      });
+    }
+
+    this.writeLine("};\n");
   }
 }

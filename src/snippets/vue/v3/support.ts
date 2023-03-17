@@ -3,7 +3,7 @@ import { App } from 'vue';
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
 
-type FunctionQueueItem = { name: string; args: IArguments; namespaceName?: string, promiseResolver?: (result: any) => any };
+type FunctionQueueItem = { name: string; args: IArguments; namespaceName: string, promiseResolver?: (result: any) => any };
 const vueOneSignalFunctionQueue: FunctionQueueItem[] = [];
 
 // true if the script is successfully loaded from CDN.
@@ -69,7 +69,7 @@ function addSDKScript() {
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
-    $OneSignal: IOneSignal;
+    $OneSignal: IOneSignalOneSignal;
   }
 }
 
@@ -77,7 +77,6 @@ declare global {
   interface Window {
     OneSignal: any;
     safari?: {
-      pushNotificationPermission: (permissionData: any) => void;
       pushNotification: any;
     };
   }
@@ -117,7 +116,7 @@ declare global {
  */
 const isPushSupported = (): boolean => {
   const supportsVapid = typeof PushSubscriptionOptions !== "undefined" && PushSubscriptionOptions.prototype.hasOwnProperty("applicationServerKey");
-  const isSafariInIframe = navigator.vendor === "Apple Computer, Inc." && window.top !== window;
+  const isSafariInIframe = navigator.vendor === 'Apple Computer, Inc.' && window.top !== window && navigator.platform === "MacIntel";
   const supportsSafari = typeof window.safari !== "undefined" && typeof window.safari.pushNotification !== "undefined" || isSafariInIframe;
 
   return supportsVapid || supportsSafari;

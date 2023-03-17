@@ -1,4 +1,5 @@
 import IOneSignalApi from "../../../models/OneSignalApi";
+import { INTERFACE_PREFIX } from "../../../support/constants";
 import { TypingsWriterManagerBase } from "../../bases/TypingsWriterManagerBase";
 
 export class VueTypingsWriterManager extends TypingsWriterManagerBase {
@@ -6,7 +7,7 @@ export class VueTypingsWriterManager extends TypingsWriterManagerBase {
     Object.keys(api).forEach(key => {
       const namespace = api[key];
       const { functions } = namespace;
-      this.writeLine(`interface I${key} {`);
+      this.writeLine(`interface ${INTERFACE_PREFIX}${key} {`);
       this.writeFunctionTypes(functions, 1);
 
       if (namespace.namespaces) {

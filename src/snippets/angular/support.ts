@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
 
-type FunctionQueueItem = { name: string; args: IArguments; namespaceName?: string, promiseResolver?: (result: any) => any };
+type FunctionQueueItem = { name: string; args: IArguments; namespaceName: string, promiseResolver?: (result: any) => any };
 
 // true if the script is successfully loaded from CDN.
 let isOneSignalInitialized = false;
@@ -15,7 +15,6 @@ declare global {
   interface Window {
     OneSignalDeferred: any;
     safari?: {
-      pushNotificationPermission: (permissionData: any) => void;
       pushNotification: any;
     };
   }
@@ -73,12 +72,12 @@ export class OneSignal implements IOneSignal {
     this.ngOneSignalFunctionQueue.forEach(element => {
       const { name, args, namespaceName, promiseResolver } = element;
 
-      if (!!promiseResolver && !!namespaceName) {
+      if (!!promiseResolver) {
         (this as IOneSignal)[namespaceName][name](...args).then((result: any) => {
           promiseResolver(result);
         });
-      } else if (!!namespaceName) {
-        window.OneSignalDeferred[namespaceName][name](...args);
+      } else {
+        (this as IOneSignal)[namespaceName][name](...args);
       }
     });
   }
@@ -116,7 +115,7 @@ export class OneSignal implements IOneSignal {
    */
   isPushSupported(): boolean {
     const supportsVapid = typeof PushSubscriptionOptions !== 'undefined' && PushSubscriptionOptions.prototype.hasOwnProperty('applicationServerKey');
-    const isSafariInIframe = navigator.vendor === 'Apple Computer, Inc.' && window.top !== window;
+    const isSafariInIframe = navigator.vendor === 'Apple Computer, Inc.' && window.top !== window && navigator.platform === "MacIntel";
     const supportsSafari = typeof window.safari !== 'undefined' &&
       typeof window.safari.pushNotification !== 'undefined' || isSafariInIframe;
 

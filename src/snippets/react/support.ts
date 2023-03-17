@@ -1,7 +1,7 @@
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
 
-type FunctionQueueItem = { name: string; args: IArguments; namespaceName?: string, promiseResolver?: (result: any) => any };
+type FunctionQueueItem = { name: string; args: IArguments; namespaceName: string, promiseResolver?: (result: any) => any };
 const reactOneSignalFunctionQueue: FunctionQueueItem[] = [];
 
 // true if the script is successfully loaded from CDN.
@@ -65,11 +65,14 @@ function addSDKScript() {
 }
 
 /**
+ * This is a SPECIAL FUNCTION
+ * It is a hardcoded implementation copied from the upstream/native WebSDK since we want to return a boolean immediately
+ * Natively, this is done via the shimloading mechanism (i.e. if the SDK loads, push is supported)
  * @PublicApi
  */
 const isPushSupported = (): boolean => {
   const supportsVapid = typeof PushSubscriptionOptions !== "undefined" && PushSubscriptionOptions.prototype.hasOwnProperty("applicationServerKey");
-  const isSafariInIframe = navigator.vendor === "Apple Computer, Inc." && window.top !== window;
+  const isSafariInIframe = navigator.vendor === 'Apple Computer, Inc.' && window.top !== window && navigator.platform === "MacIntel";
   const supportsSafari = typeof window.safari !== "undefined" && typeof window.safari.pushNotification !== "undefined" || isSafariInIframe;
 
   return supportsVapid || supportsSafari;
