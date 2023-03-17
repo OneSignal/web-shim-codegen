@@ -3,20 +3,24 @@ import { IFunctionSignature } from "../../models/FunctionSignature";
 import { ACTION,
   AUTO_PROMPT_OPTIONS,
   CATEGORY_OPTIONS,
-  REGISTER_OPTIONS,
-  SET_EMAIL_OPTIONS,
-  SET_SMS_OPTIONS,
+  NOTIFICATION_BUTTON_DATA,
+  NOTIFICATION_EVENT_NAME,
+  ONESIGNAL_DEFERRED_CALLBACK,
+  PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES,
+  SLIDEDOWN_EVENT_NAME,
   SLIDEDOWN_OPTIONS,
-  TAGS_OBJECT,
+  STRUCTURED_NOTIFICATION,
+  SUBSCRIPTION_CHANGE_EVENT,
   TAG_CATEGORY } from "../../snippets/types";
+import { INTERFACE_PREFIX } from "../../support/constants";
 import { ReaderManager } from "../ReaderManager";
 
 export abstract class TypingsWriterManagerBase extends CodeWriter {
   public getFunctionSignatureString(sig: IFunctionSignature): string {
     let argumentsString = "";
 
-    if (sig.arguments) {
-      sig.arguments.forEach(arg => {
+    if (sig.args) {
+      sig.args.forEach(arg => {
         const optionalValue = arg.optional ? "?" : "";
         argumentsString = argumentsString + arg.name + optionalValue + ": "+arg.type+", ";
       });
@@ -31,6 +35,14 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
       this.writeLine(`${prefix}${this.getFunctionSignatureString(func)}`);
     });
   }
+
+  public writeNamespaces(namespaces: string[], tabs?: number): void {
+    const prefix = '\t'.repeat(tabs || 1);
+    namespaces.forEach(namespace => {
+      this.writeLine(`${prefix}${namespace}: ${INTERFACE_PREFIX}${namespace};`);
+    });
+  }
+
   /**
    * @param  {number} tabs - how many tabs should be added in front of helper interfaces
    * @returns void
@@ -41,13 +53,16 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
     const prefix = "\t".repeat(tabs);
     this.writeLine(prefix+ACTION);
     this.writeLine(prefix+AUTO_PROMPT_OPTIONS);
-    this.writeLine(prefix+REGISTER_OPTIONS);
-    this.writeLine(prefix+SET_SMS_OPTIONS);
-    this.writeLine(prefix+SET_EMAIL_OPTIONS);
-    this.writeLine(prefix+TAGS_OBJECT);
     this.writeLine(prefix+SLIDEDOWN_OPTIONS);
     this.writeLine(prefix+CATEGORY_OPTIONS);
     this.writeLine(prefix+TAG_CATEGORY);
+    this.writeLine(prefix+PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES);
+    this.writeLine(prefix+SUBSCRIPTION_CHANGE_EVENT);
+    this.writeLine(prefix+NOTIFICATION_EVENT_NAME);
+    this.writeLine(prefix+NOTIFICATION_BUTTON_DATA);
+    this.writeLine(prefix+STRUCTURED_NOTIFICATION);
+    this.writeLine(prefix+SLIDEDOWN_EVENT_NAME);
+    this.writeLine(prefix+ONESIGNAL_DEFERRED_CALLBACK);
     this.writeLine();
     this.writeLine(initObjectInterfaceContents);
   }

@@ -67,8 +67,8 @@ export function spreadArgs(args: string[]): string {
 
 export function spreadArgsWithTypes(signature: IFunctionSignature): string {
   let acc = "";
-  if (signature.arguments) {
-    signature.arguments.forEach(arg => {
+  if (signature.args) {
+    signature.args.forEach(arg => {
       const optionalChar = arg.optional ? '?' : '';
       acc = acc + arg.name + optionalChar + ': ' + arg.type + ', ';
     })
@@ -99,4 +99,16 @@ export function parseArguments(rawArgs: string): IArgument[] | void {
     parsedArgs.push(newArg as IArgument);
   });
   return parsedArgs as IArgument[];
+}
+
+function toCamelCase(input: string): string {
+  return input.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); }).replace(/^\w/, c => c.toLowerCase());
+}
+
+function capitalizeFirstLetter(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function generateUniqueFunctionName(namespaceName: string, functionName: string): string {
+  return `${toCamelCase(namespaceName)}${capitalizeFirstLetter(functionName)}`;
 }

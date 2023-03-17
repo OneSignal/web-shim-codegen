@@ -116,6 +116,11 @@ In your test app, modify the package.json so that that the package points to the
 ## Rebuilding to test changes to package
 `rm -rf node_modules/react-onesignal && rm yarn.lock && yarn build`
 
+## Special Types File
+The repo contains a file `types.ts` that contains all the type definitions for arguments and return values. These types must be kept updated (synchronized) with the upstream. To add new ones:
+- add the type to `src/snippets/types.ts`
+- write the type via `TypingsWriterManagerBase.ts`
+
 ## Troubleshooting
 ### Changes not showing?
 Try removing the file's top level package import and re-importing via VSCode auto-import (start typing package name, hit enter)

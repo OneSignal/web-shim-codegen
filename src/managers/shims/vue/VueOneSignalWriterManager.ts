@@ -2,12 +2,12 @@ import { ReaderManager } from '../../ReaderManager';
 import { Shim } from '../../../models/Shim';
 import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
 import { VueTypingsWriterManager } from './VueTypingsWriterManager';
-import { IFunctionSignature } from '../../../models/FunctionSignature';
 import { TextWriter } from '@yellicode/core';
 import { BuildSubdirectory } from '../../../models/BuildSubdirectory';
+import IOneSignalApi from '../../../models/OneSignalApi';
 
 export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
-  constructor(writer: TextWriter, readonly oneSignalFunctions: IFunctionSignature[], readonly subdir?: BuildSubdirectory) {
+  constructor(writer: TextWriter, readonly api: IOneSignalApi, readonly subdir?: BuildSubdirectory) {
     super(writer, Shim.Vue);
   }
 
@@ -15,22 +15,18 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
   async writeSupportCode(): Promise<void> {
     const typingsWriter = new VueTypingsWriterManager(this);
     const supportFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue}/${this.subdir}/support.ts`);
-    const initFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.Vue}/onesignalInit.ts`);
 
     this.writeLine(supportFileContents);
     await typingsWriter.writeInterfaces(0);
-    typingsWriter.writeOneSignalInterface(this.oneSignalFunctions);
-    this.writeLine(initFileContents);
+    typingsWriter.writeOneSignalInterfaces(this.api);
   }
 
   // implements abstract function
-  async writeExportCode(exportFunctions: string[]): Promise<void> {
-    this.writeLine("\nconst OneSignalVue: IOneSignal = {");
-
-    exportFunctions.forEach(func => {
-      this.writeLine(`\t${func},`);
+  async writeExportCode(api: IOneSignalApi): Promise<void> {
+    Object.keys(api).reverse().forEach(async key => {
+      await this.writeNamespaceExport(api, key);
     });
-    this.writeLine("};\n");
+
     await this.writePluginCode();
   }
 

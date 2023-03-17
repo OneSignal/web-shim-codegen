@@ -1,12 +1,21 @@
-import { IFunctionSignature } from "../../../models/FunctionSignature";
+import IOneSignalApi from "../../../models/OneSignalApi";
+import { INTERFACE_PREFIX } from "../../../support/constants";
 import { TypingsWriterManagerBase } from "../../bases/TypingsWriterManagerBase";
 
 export class ReactTypingsWriterManager extends TypingsWriterManagerBase {
-  public writeOneSignalInterface(functions: IFunctionSignature[]): void {
-    this.writeLine(`interface IOneSignal {`);
-    this.writeFunctionTypes(functions, 1);
-    this.writeLine(`\t[index: string]: Function;`);
-    this.writeLine(`}`)
-    this.writeLine('\n');
+  public writeOneSignalInterfaces(api: IOneSignalApi): void {
+    Object.keys(api).forEach(key => {
+      const namespace = api[key];
+      const { functions } = namespace;
+      this.writeLine(`interface ${INTERFACE_PREFIX}${key} {`);
+      this.writeFunctionTypes(functions, 1);
+
+      if (namespace.namespaces) {
+        this.writeNamespaces(namespace.namespaces, 1);
+      }
+
+      this.writeLine(`\t[index: string]: any;`);
+      this.writeLine(`}`);
+    });
   }
 }

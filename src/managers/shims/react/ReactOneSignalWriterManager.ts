@@ -3,11 +3,11 @@ import { ReaderManager } from '../../ReaderManager';
 import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
 import { TextWriter } from '@yellicode/core';
 import { ReactTypingsWriterManager } from './ReactTypingsWriterManager';
-import { IFunctionSignature } from '../../../models/FunctionSignature';
+import IOneSignalApi from '../../../models/OneSignalApi';
 
 export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
 
-  constructor(writer: TextWriter, readonly oneSignalFunctions: IFunctionSignature[]) {
+  constructor(writer: TextWriter, readonly api: IOneSignalApi) {
     super(writer, Shim.React);
   }
 
@@ -17,18 +17,16 @@ export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
     const supportFileContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../../snippets/${Shim.React}/support.ts`);
     this.writeLine(supportFileContents);
     await typingsWriter.writeInterfaces(0);
-    typingsWriter.writeOneSignalInterface(this.oneSignalFunctions);
+    typingsWriter.writeOneSignalInterfaces(this.api);
   }
 
   // implements abstract function
-  async writeExportCode(exportFunctions: string[]): Promise<void> {
-    this.writeLine("\nconst OneSignalReact: IOneSignal = {");
-
-    exportFunctions.forEach(func => {
-      this.writeLine(`\t${func},`);
+  async writeExportCode(api: IOneSignalApi): Promise<void> {
+    Object.keys(api).reverse().forEach(async key => {
+      await this.writeNamespaceExport(api, key);
     });
 
-    this.writeLine("};");
-    this.writeLine("export default OneSignalReact");
+    this.writeLine("const OneSignal = OneSignalNamespace;");
+    this.writeLine("export default OneSignal;");
   }
 }

@@ -1,9 +1,9 @@
 export const PATHS = {
-  ONESIGNAL_STUBS : '/OneSignal/OneSignal-Website-SDK/master/src/utils/OneSignalStub.ts',
-  ONESIGNAL_MAIN  : '/OneSignal/OneSignal-Website-SDK/master/src/OneSignal.ts',
+  UPSTREAM_API_SPEC: "/OneSignal/OneSignal-Website-SDK/user-model/api/api.json"
 };
 
 export const GITHUB_URL = "https://raw.githubusercontent.com";
 
 // OneSignal WebSDK functions we should not pass to `writeOneSignalFunction`
-export const FUNCTION_IGNORE = ["init"];
+export const FUNCTION_IGNORE = ["init", "isPushSupported"];
+export const INTERFACE_PREFIX = "IOneSignal";
