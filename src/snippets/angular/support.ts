@@ -111,14 +111,39 @@ export class OneSignal implements IOneSignal {
   }
 
   /**
+   * The following code is copied directly from the native SDK source file BrowserSupportsPush.ts
+   * S T A R T
+   */
+
+  // Checks if the browser supports push notifications by checking if specific
+  //   classes and properties on them exist
+  private isPushNotificationsSupported() {
+    return this.supportsVapidPush() || this.supportsSafariPush();
+  }
+
+  private isMacOSSafariInIframe(): boolean {
+    // Fallback detection for Safari on macOS in an iframe context
+    return window.top !== window && // isContextIframe
+    navigator.vendor === "Apple Computer, Inc." && // isSafari
+    navigator.platform === "MacIntel"; // isMacOS
+  }
+
+  private supportsSafariPush(): boolean {
+    return (window.safari && typeof window.safari.pushNotification !== "undefined") ||
+            this.isMacOSSafariInIframe();
+  }
+
+  // Does the browser support the standard Push API
+  private supportsVapidPush(): boolean {
+    return typeof PushSubscriptionOptions !== "undefined" &&
+          PushSubscriptionOptions.prototype.hasOwnProperty("applicationServerKey");
+  }
+  /* E N D */
+
+  /**
    * @PublicApi
    */
   isPushSupported(): boolean {
-    const supportsVapid = typeof PushSubscriptionOptions !== 'undefined' && PushSubscriptionOptions.prototype.hasOwnProperty('applicationServerKey');
-    const isSafariInIframe = navigator.vendor === 'Apple Computer, Inc.' && window.top !== window && navigator.platform === "MacIntel";
-    const supportsSafari = typeof window.safari !== 'undefined' &&
-      typeof window.safari.pushNotification !== 'undefined' || isSafariInIframe;
-
-    return supportsVapid || supportsSafari;
+    return this.isPushNotificationsSupported();
   }
 

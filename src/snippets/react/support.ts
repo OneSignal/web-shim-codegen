@@ -65,17 +65,43 @@ function addSDKScript() {
 }
 
 /**
+ * The following code is copied directly from the native SDK source file BrowserSupportsPush.ts
+ * S T A R T
+ */
+
+// Checks if the browser supports push notifications by checking if specific
+//   classes and properties on them exist
+function isPushNotificationsSupported() {
+  return supportsVapidPush() || supportsSafariPush();
+}
+
+function isMacOSSafariInIframe(): boolean {
+  // Fallback detection for Safari on macOS in an iframe context
+  return window.top !== window && // isContextIframe
+  navigator.vendor === "Apple Computer, Inc." && // isSafari
+  navigator.platform === "MacIntel"; // isMacOS
+}
+
+function supportsSafariPush(): boolean {
+  return (window.safari && typeof window.safari.pushNotification !== "undefined") ||
+          isMacOSSafariInIframe();
+}
+
+// Does the browser support the standard Push API
+function supportsVapidPush(): boolean {
+  return typeof PushSubscriptionOptions !== "undefined" &&
+         PushSubscriptionOptions.prototype.hasOwnProperty("applicationServerKey");
+}
+/* E N D */
+
+/**
  * This is a SPECIAL FUNCTION
  * It is a hardcoded implementation copied from the upstream/native WebSDK since we want to return a boolean immediately
  * Natively, this is done via the shimloading mechanism (i.e. if the SDK loads, push is supported)
  * @PublicApi
  */
 const isPushSupported = (): boolean => {
-  const supportsVapid = typeof PushSubscriptionOptions !== "undefined" && PushSubscriptionOptions.prototype.hasOwnProperty("applicationServerKey");
-  const isSafariInIframe = navigator.vendor === 'Apple Computer, Inc.' && window.top !== window && navigator.platform === "MacIntel";
-  const supportsSafari = typeof window.safari !== "undefined" && typeof window.safari.pushNotification !== "undefined" || isSafariInIframe;
-
-  return supportsVapid || supportsSafari;
+  return isPushNotificationsSupported();
 }
 
 /**
