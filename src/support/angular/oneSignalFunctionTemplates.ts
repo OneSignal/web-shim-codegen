@@ -1,10 +1,10 @@
 import { IFunctionSignature } from "../../models/FunctionSignature";
 import { spreadArgs, spreadArgsWithTypes } from "../utils";
 
-export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, namespaceName?: string) => {
+export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceName: string) => {
   const args = sig.args?.map(arg => arg.name);
   return `
-  ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+  ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     return new Promise((resolve, reject) => {
       if (isOneSignalScriptFailed) {
         reject();
@@ -12,7 +12,7 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, namesp
 
       if (!this.doesOneSignalExist()) {
         this.ngOneSignalFunctionQueue.push({
-          name: '${sig.name}',
+          name: '${uniqueFunctionName}',
           namespaceName: '${namespaceName}',
           args: arguments,
           promiseResolver: resolve,
@@ -29,13 +29,13 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, namesp
   }`
 };
 
-export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature, namespaceName?: string) => {
+export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceName: string) => {
   const args = sig.args?.map(arg => arg.name);
   return `
-  ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+  ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     if (!this.doesOneSignalExist()) {
       this.ngOneSignalFunctionQueue.push({
-        name: '${sig.name}',
+        name: '${uniqueFunctionName}',
         namespaceName: '${namespaceName}',
         args: arguments,
       });

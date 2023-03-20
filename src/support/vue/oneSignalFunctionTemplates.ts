@@ -1,10 +1,10 @@
 import { IFunctionSignature } from "../../models/FunctionSignature";
 import { spreadArgs, spreadArgsWithTypes } from "../../support/utils";
 
-export const vueOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, namespaceName?: string) => {
+export const vueOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceName: string) => {
   const args = sig.args?.map(arg => arg.name);
   return `
-function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   return new Promise(function (resolve, reject) {
     if (isOneSignalScriptFailed) {
       reject();
@@ -12,7 +12,7 @@ function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
 
     if (!doesOneSignalExist()) {
       vueOneSignalFunctionQueue.push({
-        name: '${sig.name}',
+        name: '${uniqueFunctionName}',
         namespaceName: '${namespaceName}',
         args: arguments,
         promiseResolver: resolve,
@@ -33,13 +33,13 @@ function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
 }`
 };
 
-export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature, namespaceName?: string) => {
+export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceName: string) => {
   const args = sig.args?.map(arg => arg.name);
   return `
-function ${sig.name}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   if (!doesOneSignalExist()) {
     vueOneSignalFunctionQueue.push({
-      name: '${sig.name}',
+      name: '${uniqueFunctionName}',
       namespaceName: '${namespaceName}',
       args: arguments,
     });

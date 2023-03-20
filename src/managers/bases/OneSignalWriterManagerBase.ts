@@ -8,6 +8,7 @@ import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '.
 import IOneSignalApi from '../../models/OneSignalApi';
 import { generateUniqueFunctionName } from '../../support/utils';
 import { NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS, NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX } from '../../snippets/EventListenerOverloads';
+import { IFunctionSignature } from '../../models/FunctionSignature';
 
 const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
   [Shim.React]: {
@@ -44,20 +45,20 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
     Object.keys(apiCopy).forEach(namespaceName => {
       const { functions } = apiCopy[namespaceName];
 
-      functions.forEach(func => {
-        if (FUNCTION_IGNORE.indexOf(func.name) !== -1) {
+      functions.forEach((sig: IFunctionSignature) => {
+        if (FUNCTION_IGNORE.indexOf(sig.name) !== -1) {
           return;
         }
 
         // prefix with the namespace to avoid function name conflicts
-        func.name = generateUniqueFunctionName(namespaceName, func.name);
+        const uniqueFunctionName = generateUniqueFunctionName(namespaceName, sig.name);
 
-        this._generateFunctionOverloadsIfNeeded(func.name);
+        this._generateFunctionOverloadsIfNeeded(uniqueFunctionName);
 
-        const mapKey = func.isAsync ? "async" : "sync";
+        const mapKey = sig.isAsync ? "async" : "sync";
         const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
         const finalNamespace = namespaceName === 'OneSignal' ? '' : namespaceName;
-        this.writeLine(templateFunction(func, finalNamespace));
+        this.writeLine(templateFunction(sig, uniqueFunctionName, finalNamespace));
       });
     });
   }
