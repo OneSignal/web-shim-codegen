@@ -14,7 +14,6 @@ export class ReactTypingsWriterManager extends TypingsWriterManagerBase {
         this.writeNamespaces(namespace.namespaces, 1);
       }
 
-      this.writeLine(`\t[index: string]: any;`);
       this.writeLine(`}`);
     });
   }

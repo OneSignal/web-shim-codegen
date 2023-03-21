@@ -8,6 +8,7 @@ import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '.
 import IOneSignalApi from '../../models/OneSignalApi';
 import { generateUniqueFunctionName } from '../../support/utils';
 import { NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS, NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX } from '../../snippets/EventListenerOverloads';
+import { IFunctionSignature } from '../../models/FunctionSignature';
 
 const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
   [Shim.React]: {
@@ -38,28 +39,39 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
     super(writer);
   }
 
-  public writeOneSignalFunctions(api: IOneSignalApi): void {
-    const apiCopy = JSON.parse(JSON.stringify(api));
+  public writeOneSignalFunctions(api: IOneSignalApi, namespaceChain: string[]): void {
+    const apiCopy: IOneSignalApi = JSON.parse(JSON.stringify(api));
 
-    Object.keys(apiCopy).forEach(namespaceName => {
-      const { functions } = apiCopy[namespaceName];
+    // get last namespace in nest chain
+    const currentNamespace = namespaceChain[namespaceChain.length - 1];
 
-      functions.forEach(func => {
-        if (FUNCTION_IGNORE.indexOf(func.name) !== -1) {
-          return;
-        }
+    if (!apiCopy[currentNamespace]) {
+      return;
+    }
 
-        // prefix with the namespace to avoid function name conflicts
-        func.name = generateUniqueFunctionName(namespaceName, func.name);
+    const { functions, namespaces } = apiCopy[currentNamespace];
 
-        this._generateFunctionOverloadsIfNeeded(func.name);
+    functions?.forEach((sig: IFunctionSignature) => {
+      if (FUNCTION_IGNORE.indexOf(sig.name) !== -1) {
+        return;
+      }
 
-        const mapKey = func.isAsync ? "async" : "sync";
-        const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
-        const finalNamespace = namespaceName === 'OneSignal' ? '' : namespaceName;
-        this.writeLine(templateFunction(func, finalNamespace));
-      });
+      // prefix with the namespace to avoid function name conflicts
+      const uniqueFunctionName = generateUniqueFunctionName(currentNamespace, sig.name);
+
+      this._generateFunctionOverloadsIfNeeded(uniqueFunctionName);
+
+      const mapKey = sig.isAsync ? "async" : "sync";
+      const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
+      this.writeLine(templateFunction(sig, uniqueFunctionName, namespaceChain));
     });
+
+    namespaces?.forEach((namespaceName: string) => {
+      const chainCopy = JSON.parse(JSON.stringify(namespaceChain));
+      chainCopy.push(namespaceName);
+      this.writeOneSignalFunctions(api, chainCopy);
+    });
+
   }
 
   private _generateFunctionOverloadsIfNeeded(functionName: string): void {

@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
 
-type FunctionQueueItem = { name: string; args: IArguments; namespaceName: string, promiseResolver?: (result: any) => any };
-
 // true if the script is successfully loaded from CDN.
 let isOneSignalInitialized = false;
 // true if the script fails to load from CDN. A separate flag is necessary
@@ -30,7 +28,6 @@ interface IOneSignalOneSignal {
 export class OneSignal implements IOneSignalOneSignal {
   [key: string]: any;
   private isOneSignalInitialized = false;
-  private ngOneSignalFunctionQueue: FunctionQueueItem[] = [];
 
   constructor() { }
 
@@ -45,9 +42,6 @@ export class OneSignal implements IOneSignalOneSignal {
 
   handleOnError(): void {
     isOneSignalScriptFailed = true;
-    // Ensure that any unresolved functions are cleared from the queue,
-    // even in the event of a CDN load failure.
-    this.processQueuedOneSignalFunctions();
   }
 
   addSDKScript(): void {
@@ -56,10 +50,6 @@ export class OneSignal implements IOneSignalOneSignal {
     script.defer = true;
     script.src = ONE_SIGNAL_SCRIPT_SRC;
 
-    script.onload = () => {
-      this.processQueuedOneSignalFunctions();
-    };
-
     // Always resolve whether or not the script is successfully initialized.
     // This is important for users who may block cdn.onesignal.com w/ adblock.
     script.onerror = () => {
@@ -67,20 +57,6 @@ export class OneSignal implements IOneSignalOneSignal {
     };
 
     document.head.appendChild(script);
-  }
-
-  private processQueuedOneSignalFunctions = (): void => {
-    this.ngOneSignalFunctionQueue.forEach(element => {
-      const { name, args, namespaceName, promiseResolver } = element;
-
-      if (!!promiseResolver) {
-        this[namespaceName][name](...args).then((result: any) => {
-          promiseResolver(result);
-        });
-      } else {
-        this[namespaceName][name](...args);
-      }
-    });
   }
 
   /* P U B L I C */

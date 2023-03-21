@@ -36,8 +36,6 @@ import { Injectable } from '@angular/core';
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
 
-type FunctionQueueItem = { name: string; args: IArguments; namespaceName: string, promiseResolver?: (result: any) => any };
-
 // true if the script is successfully loaded from CDN.
 let isOneSignalInitialized = false;
 // true if the script fails to load from CDN. A separate flag is necessary
@@ -64,7 +62,6 @@ interface IOneSignalOneSignal {
 export class OneSignal implements IOneSignalOneSignal {
   [key: string]: any;
   private isOneSignalInitialized = false;
-  private ngOneSignalFunctionQueue: FunctionQueueItem[] = [];
 
   constructor() { }
 
@@ -79,9 +76,6 @@ export class OneSignal implements IOneSignalOneSignal {
 
   handleOnError(): void {
     isOneSignalScriptFailed = true;
-    // Ensure that any unresolved functions are cleared from the queue,
-    // even in the event of a CDN load failure.
-    this.processQueuedOneSignalFunctions();
   }
 
   addSDKScript(): void {
@@ -90,10 +84,6 @@ export class OneSignal implements IOneSignalOneSignal {
     script.defer = true;
     script.src = ONE_SIGNAL_SCRIPT_SRC;
 
-    script.onload = () => {
-      this.processQueuedOneSignalFunctions();
-    };
-
     // Always resolve whether or not the script is successfully initialized.
     // This is important for users who may block cdn.onesignal.com w/ adblock.
     script.onerror = () => {
@@ -101,20 +91,6 @@ export class OneSignal implements IOneSignalOneSignal {
     };
 
     document.head.appendChild(script);
-  }
-
-  private processQueuedOneSignalFunctions = (): void => {
-    this.ngOneSignalFunctionQueue.forEach(element => {
-      const { name, args, namespaceName, promiseResolver } = element;
-
-      if (!!promiseResolver) {
-        this[namespaceName][name](...args).then((result: any) => {
-          promiseResolver(result);
-        });
-      } else {
-        this[namespaceName][name](...args);
-      }
-    });
   }
 
   /* P U B L I C */
@@ -189,18 +165,8 @@ export class OneSignal implements IOneSignalOneSignal {
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'oneSignalLogin',
-          namespaceName: '',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.oneSignalLogin(externalId, jwtToken)
+        oneSignal.login(externalId, jwtToken)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -213,18 +179,8 @@ export class OneSignal implements IOneSignalOneSignal {
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'oneSignalLogout',
-          namespaceName: '',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.oneSignalLogout()
+        oneSignal.logout()
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -237,18 +193,8 @@ export class OneSignal implements IOneSignalOneSignal {
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'oneSignalSetConsentGiven',
-          namespaceName: '',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.oneSignalSetConsentGiven(consent)
+        oneSignal.setConsentGiven(consent)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -261,155 +207,11 @@ export class OneSignal implements IOneSignalOneSignal {
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'oneSignalSetConsentRequired',
-          namespaceName: '',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.oneSignalSetConsentRequired(requiresConsent)
+        oneSignal.setConsentRequired(requiresConsent)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
-    });
-  }
-
-  notificationsSetDefaultUrl(url: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (isOneSignalScriptFailed) {
-        reject();
-      }
-
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'notificationsSetDefaultUrl',
-          namespaceName: 'Notifications',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
-      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Notifications.notificationsSetDefaultUrl(url)
-          .then((value: Promise<void>) => resolve(value))
-          .catch((error: Error) => reject(error));
-      });
-    });
-  }
-
-  notificationsSetDefaultTitle(title: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (isOneSignalScriptFailed) {
-        reject();
-      }
-
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'notificationsSetDefaultTitle',
-          namespaceName: 'Notifications',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
-      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Notifications.notificationsSetDefaultTitle(title)
-          .then((value: Promise<void>) => resolve(value))
-          .catch((error: Error) => reject(error));
-      });
-    });
-  }
-
-  notificationsGetPermissionStatus(onComplete: Action<NotificationPermission>): Promise<NotificationPermission> {
-    return new Promise((resolve, reject) => {
-      if (isOneSignalScriptFailed) {
-        reject();
-      }
-
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'notificationsGetPermissionStatus',
-          namespaceName: 'Notifications',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
-      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Notifications.notificationsGetPermissionStatus(onComplete)
-          .then((value: Promise<NotificationPermission>) => resolve(value))
-          .catch((error: Error) => reject(error));
-      });
-    });
-  }
-
-  notificationsRequestPermission(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (isOneSignalScriptFailed) {
-        reject();
-      }
-
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'notificationsRequestPermission',
-          namespaceName: 'Notifications',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
-      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Notifications.notificationsRequestPermission()
-          .then((value: Promise<void>) => resolve(value))
-          .catch((error: Error) => reject(error));
-      });
-    });
-  }
-
-notificationsAddEventListener(event: 'click' | 'willDisplay' | 'dismiss', listener: (obj: StructuredNotification) => void): void;
-notificationsAddEventListener(event: 'permissionChange', listener: (obj: { to: NotificationPermission }) => void): void;
-notificationsAddEventListener(event: 'permissionPromptDisplay', listener: () => void): void;
-
-  notificationsAddEventListener(event: NotificationEventName, listener: (obj: any) => void): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'notificationsAddEventListener',
-        namespaceName: 'Notifications',
-        args: arguments,
-      });
-      return;
-    }
-
-    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.notificationsAddEventListener(event, listener);
-    });
-  }
-
-notificationsRemoveEventListener(event: 'click' | 'willDisplay' | 'dismiss', listener: (obj: StructuredNotification) => void): void;
-notificationsRemoveEventListener(event: 'permissionChange', listener: (obj: { to: NotificationPermission }) => void): void;
-notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () => void): void;
-
-  notificationsRemoveEventListener(event: NotificationEventName, listener: (obj: any) => void): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'notificationsRemoveEventListener',
-        namespaceName: 'Notifications',
-        args: arguments,
-      });
-      return;
-    }
-
-    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.notificationsRemoveEventListener(event, listener);
     });
   }
 
@@ -419,18 +221,8 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'slidedownPromptPush',
-          namespaceName: 'Slidedown',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Slidedown.slidedownPromptPush(options)
+        oneSignal.Slidedown.promptPush(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -443,18 +235,8 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'slidedownPromptPushCategories',
-          namespaceName: 'Slidedown',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Slidedown.slidedownPromptPushCategories(options)
+        oneSignal.Slidedown.promptPushCategories(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -467,18 +249,8 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'slidedownPromptSms',
-          namespaceName: 'Slidedown',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Slidedown.slidedownPromptSms(options)
+        oneSignal.Slidedown.promptSms(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -491,18 +263,8 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'slidedownPromptEmail',
-          namespaceName: 'Slidedown',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Slidedown.slidedownPromptEmail(options)
+        oneSignal.Slidedown.promptEmail(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -515,18 +277,8 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'slidedownPromptSmsAndEmail',
-          namespaceName: 'Slidedown',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Slidedown.slidedownPromptSmsAndEmail(options)
+        oneSignal.Slidedown.promptSmsAndEmail(options)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -534,47 +286,90 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
   }
 
   slidedownAddEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'slidedownAddEventListener',
-        namespaceName: 'Slidedown',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.slidedownAddEventListener(event, listener);
+      oneSignal.Slidedown.addEventListener(event, listener);
     });
   }
 
   slidedownRemoveEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'slidedownRemoveEventListener',
-        namespaceName: 'Slidedown',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.slidedownRemoveEventListener(event, listener);
+      oneSignal.Slidedown.removeEventListener(event, listener);
     });
   }
 
-  debugSetLogLevel(logLevel: string): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'debugSetLogLevel',
-        namespaceName: 'Debug',
-        args: arguments,
-      });
-      return;
-    }
+  notificationsSetDefaultUrl(url: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (isOneSignalScriptFailed) {
+        reject();
+      }
 
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+        oneSignal.Notifications.setDefaultUrl(url)
+          .then((value: Promise<void>) => resolve(value))
+          .catch((error: Error) => reject(error));
+      });
+    });
+  }
+
+  notificationsSetDefaultTitle(title: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (isOneSignalScriptFailed) {
+        reject();
+      }
+
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+        oneSignal.Notifications.setDefaultTitle(title)
+          .then((value: Promise<void>) => resolve(value))
+          .catch((error: Error) => reject(error));
+      });
+    });
+  }
+
+  notificationsGetPermissionStatus(onComplete: Action<NotificationPermission>): Promise<NotificationPermission> {
+    return new Promise((resolve, reject) => {
+      if (isOneSignalScriptFailed) {
+        reject();
+      }
+
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+        oneSignal.Notifications.getPermissionStatus(onComplete)
+          .then((value: Promise<NotificationPermission>) => resolve(value))
+          .catch((error: Error) => reject(error));
+      });
+    });
+  }
+
+  notificationsRequestPermission(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (isOneSignalScriptFailed) {
+        reject();
+      }
+
+      window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+        oneSignal.Notifications.requestPermission()
+          .then((value: Promise<void>) => resolve(value))
+          .catch((error: Error) => reject(error));
+      });
+    });
+  }
+
+notificationsAddEventListener(event: 'click' | 'willDisplay' | 'dismiss', listener: (obj: StructuredNotification) => void): void;
+notificationsAddEventListener(event: 'permissionChange', listener: (obj: { to: NotificationPermission }) => void): void;
+notificationsAddEventListener(event: 'permissionPromptDisplay', listener: () => void): void;
+
+  notificationsAddEventListener(event: NotificationEventName, listener: (obj: any) => void): void {
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.debugSetLogLevel(logLevel);
+      oneSignal.Notifications.addEventListener(event, listener);
+    });
+  }
+
+notificationsRemoveEventListener(event: 'click' | 'willDisplay' | 'dismiss', listener: (obj: StructuredNotification) => void): void;
+notificationsRemoveEventListener(event: 'permissionChange', listener: (obj: { to: NotificationPermission }) => void): void;
+notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () => void): void;
+
+  notificationsRemoveEventListener(event: NotificationEventName, listener: (obj: any) => void): void {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+      oneSignal.Notifications.removeEventListener(event, listener);
     });
   }
 
@@ -584,18 +379,8 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'sessionSendOutcome',
-          namespaceName: 'Session',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Session.sessionSendOutcome(outcomeName, outcomeWeight)
+        oneSignal.Session.sendOutcome(outcomeName, outcomeWeight)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -608,18 +393,8 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'sessionSendUniqueOutcome',
-          namespaceName: 'Session',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.Session.sessionSendUniqueOutcome(outcomeName)
+        oneSignal.Session.sendUniqueOutcome(outcomeName)
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -627,122 +402,50 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
   }
 
   userAddAlias(label: string, id: string): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'userAddAlias',
-        namespaceName: 'User',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.userAddAlias(label, id);
+      oneSignal.User.addAlias(label, id);
     });
   }
 
   userAddAliases(aliases: { [key: string]: string }): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'userAddAliases',
-        namespaceName: 'User',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.userAddAliases(aliases);
+      oneSignal.User.addAliases(aliases);
     });
   }
 
   userRemoveAlias(label: string): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'userRemoveAlias',
-        namespaceName: 'User',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.userRemoveAlias(label);
+      oneSignal.User.removeAlias(label);
     });
   }
 
   userRemoveAliases(labels: string[]): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'userRemoveAliases',
-        namespaceName: 'User',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.userRemoveAliases(labels);
+      oneSignal.User.removeAliases(labels);
     });
   }
 
   userAddEmail(email: string): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'userAddEmail',
-        namespaceName: 'User',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.userAddEmail(email);
+      oneSignal.User.addEmail(email);
     });
   }
 
   userRemoveEmail(email: string): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'userRemoveEmail',
-        namespaceName: 'User',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.userRemoveEmail(email);
+      oneSignal.User.removeEmail(email);
     });
   }
 
   userAddSms(smsNumber: string): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'userAddSms',
-        namespaceName: 'User',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.userAddSms(smsNumber);
+      oneSignal.User.addSms(smsNumber);
     });
   }
 
   userRemoveSms(smsNumber: string): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'userRemoveSms',
-        namespaceName: 'User',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.userRemoveSms(smsNumber);
+      oneSignal.User.removeSms(smsNumber);
     });
   }
 
@@ -752,18 +455,8 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'pushSubscriptionOptIn',
-          namespaceName: 'PushSubscription',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.PushSubscription.pushSubscriptionOptIn()
+        oneSignal.User.PushSubscription.optIn()
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -776,51 +469,29 @@ notificationsRemoveEventListener(event: 'permissionPromptDisplay', listener: () 
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: 'pushSubscriptionOptOut',
-          namespaceName: 'PushSubscription',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.PushSubscription.pushSubscriptionOptOut()
+        oneSignal.User.PushSubscription.optOut()
           .then((value: Promise<void>) => resolve(value))
           .catch((error: Error) => reject(error));
       });
     });
   }
 
-  pushSubscriptionAddEventListener(event: string, listener: (change: SubscriptionChangeEvent) => void): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'pushSubscriptionAddEventListener',
-        namespaceName: 'PushSubscription',
-        args: arguments,
-      });
-      return;
-    }
-
+  pushSubscriptionAddEventListener(event: 'subscriptionChange', listener: (change: SubscriptionChangeEvent) => void): void {
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.pushSubscriptionAddEventListener(event, listener);
+      oneSignal.User.PushSubscription.addEventListener(event, listener);
     });
   }
 
-  pushSubscriptionRemoveEventListener(event: string, listener: (change: SubscriptionChangeEvent) => void): void {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: 'pushSubscriptionRemoveEventListener',
-        namespaceName: 'PushSubscription',
-        args: arguments,
-      });
-      return;
-    }
-
+  pushSubscriptionRemoveEventListener(event: 'subscriptionChange', listener: (change: SubscriptionChangeEvent) => void): void {
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.pushSubscriptionRemoveEventListener(event, listener);
+      oneSignal.User.PushSubscription.removeEventListener(event, listener);
+    });
+  }
+
+  debugSetLogLevel(logLevel: string): void {
+    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+      oneSignal.Debug.setLogLevel(logLevel);
     });
   }
 }

@@ -13,7 +13,7 @@ import IOneSignalApi from "../models/OneSignalApi";
 export class CodeGenManager {
   /**
    * @param  {Shim} shim - Vue, React, or Angular
-   * @param  {IFunctionSignature[]} functions - Function signature array
+   * @param {IOneSignalApi} api - API spec
    * @param  {BuildSubdirectory} subdir? - *optional* argument to create separate build subdirectory (e.g: vue/v2 and vue/v3)
    */
   constructor(readonly shim: Shim, readonly api: IOneSignalApi, readonly subdir: BuildSubdirectory = "") {}
@@ -49,7 +49,7 @@ export class CodeGenManager {
           break;
       }
       await oneSignalWriter.writeSupportCode();
-      oneSignalWriter.writeOneSignalFunctions(this.api);
+      oneSignalWriter.writeOneSignalFunctions(this.api, ["OneSignal"]);
       await oneSignalWriter.writeExportCode(this.api);
     });
   }
@@ -65,7 +65,7 @@ export class CodeGenManager {
       const typingsWriter = new NgTypingsWriterManager(writer);
       await typingsWriter.writeInterfaces(0);
       await oneSignalWriter.writeSupportCode();
-      oneSignalWriter.writeOneSignalFunctions(this.api);
+      oneSignalWriter.writeOneSignalFunctions(this.api, ["OneSignal"]);
       oneSignalWriter.writeLine('}');
     })
   }
