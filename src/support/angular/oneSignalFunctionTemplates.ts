@@ -11,16 +11,6 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, unique
         reject();
       }
 
-      if (!this.doesOneSignalExist()) {
-        this.ngOneSignalFunctionQueue.push({
-          name: '${uniqueFunctionName}',
-          namespaceName: '${namespaceName}',
-          args: arguments,
-          promiseResolver: resolve,
-        });
-        return;
-      }
-
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
           .then((value: ${sig.returnType}) => resolve(value))
@@ -35,15 +25,6 @@ export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunct
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
   ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
-    if (!this.doesOneSignalExist()) {
-      this.ngOneSignalFunctionQueue.push({
-        name: '${uniqueFunctionName}',
-        namespaceName: '${namespaceName}',
-        args: arguments,
-      });
-      return;
-    }
-
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)});
     });

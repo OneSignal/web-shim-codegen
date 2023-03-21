@@ -11,16 +11,6 @@ function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType ||
       reject();
     }
 
-    if (!doesOneSignalExist()) {
-      reactOneSignalFunctionQueue.push({
-        name: '${uniqueFunctionName}',
-        namespaceName: '${namespaceName}',
-        args: arguments,
-        promiseResolver: resolve,
-      });
-      return;
-    }
-
     try {
       window["OneSignalDeferred"].push((OneSignal: IOneSignalOneSignal) => {
         OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
@@ -39,17 +29,8 @@ export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFu
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
 function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
-  if (!doesOneSignalExist()) {
-    reactOneSignalFunctionQueue.push({
-      name: '${uniqueFunctionName}',
-      namespaceName: '${namespaceName}',
-      args: arguments,
-    });
-    return;
-  }
-
-  window["OneSignalDeferred"].push((OneSignal) => {
-    OneSignal.${namespaceName}${namespaceName !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
+  window["OneSignalDeferred"].push((OneSignal: IOneSignalOneSignal) => {
+    OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
   });
 }`
 };

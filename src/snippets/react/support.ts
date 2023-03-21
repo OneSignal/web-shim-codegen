@@ -1,9 +1,6 @@
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
 const ONE_SIGNAL_SCRIPT_SRC = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
 
-type FunctionQueueItem = { name: string; args: IArguments; namespaceName: string, promiseResolver?: (result: any) => any };
-const reactOneSignalFunctionQueue: FunctionQueueItem[] = [];
-
 // true if the script is successfully loaded from CDN.
 let isOneSignalInitialized = false;
 // true if the script fails to load from CDN. A separate flag is necessary
@@ -26,32 +23,8 @@ declare global {
 
 /* H E L P E R S */
 
-function doesOneSignalExist() {
-  if (window['OneSignalDeferred']) {
-    return true;
-  }
-  return false;
-}
-
-const processQueuedOneSignalFunctions = () => {
-  reactOneSignalFunctionQueue.forEach(element => {
-    const { name, args, namespaceName, promiseResolver } = element;
-
-    if (!!promiseResolver) {
-      OneSignalNamespace[namespaceName][name](...args).then(result => {
-        promiseResolver(result);
-      });
-    } else {
-      OneSignalNamespace[namespaceName][name](...args);
-    }
-  });
-}
-
 function handleOnError() {
   isOneSignalScriptFailed = true;
-  // Ensure that any unresolved functions are cleared from the queue,
-  // even in the event of a CDN load failure.
-  processQueuedOneSignalFunctions();
 }
 
 function addSDKScript() {
@@ -59,10 +32,6 @@ function addSDKScript() {
   script.id = ONESIGNAL_SDK_ID;
   script.defer = true;
   script.src = ONE_SIGNAL_SCRIPT_SRC;
-
-  script.onload = () => {
-    processQueuedOneSignalFunctions();
-  };
 
   // Always resolve whether or not the script is successfully initialized.
   // This is important for users who may block cdn.onesignal.com w/ adblock.

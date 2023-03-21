@@ -11,16 +11,6 @@ function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType ||
       reject();
     }
 
-    if (!doesOneSignalExist()) {
-      vueOneSignalFunctionQueue.push({
-        name: '${uniqueFunctionName}',
-        namespaceName: '${namespaceName}',
-        args: arguments,
-        promiseResolver: resolve,
-      });
-      return;
-    }
-
     try {
       window["OneSignalDeferred"].push((OneSignal) => {
         OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
@@ -39,15 +29,6 @@ export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunc
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
 function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
-  if (!doesOneSignalExist()) {
-    vueOneSignalFunctionQueue.push({
-      name: '${uniqueFunctionName}',
-      namespaceName: '${namespaceName}',
-      args: arguments,
-    });
-    return;
-  }
-
   window["OneSignalDeferred"].push((OneSignal) => {
     OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
   });
