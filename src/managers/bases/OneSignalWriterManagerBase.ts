@@ -39,28 +39,39 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
     super(writer);
   }
 
-  public writeOneSignalFunctions(api: IOneSignalApi): void {
-    const apiCopy = JSON.parse(JSON.stringify(api));
+  public writeOneSignalFunctions(api: IOneSignalApi, namespaceChain: string[]): void {
+    const apiCopy: IOneSignalApi = JSON.parse(JSON.stringify(api));
 
-    Object.keys(apiCopy).forEach(namespaceName => {
-      const { functions } = apiCopy[namespaceName];
+    // get last namespace in nest chain
+    const currentNamespace = namespaceChain[namespaceChain.length - 1];
+
+    if (!apiCopy[currentNamespace]) {
+      return;
+    }
+
+    const { functions, namespaces } = apiCopy[currentNamespace];
 
     functions?.forEach((sig: IFunctionSignature) => {
-        if (FUNCTION_IGNORE.indexOf(sig.name) !== -1) {
-          return;
-        }
+      if (FUNCTION_IGNORE.indexOf(sig.name) !== -1) {
+        return;
+      }
 
-        // prefix with the namespace to avoid function name conflicts
-        const uniqueFunctionName = generateUniqueFunctionName(namespaceName, sig.name);
+      // prefix with the namespace to avoid function name conflicts
+      const uniqueFunctionName = generateUniqueFunctionName(currentNamespace, sig.name);
 
-        this._generateFunctionOverloadsIfNeeded(uniqueFunctionName);
+      this._generateFunctionOverloadsIfNeeded(uniqueFunctionName);
 
-        const mapKey = sig.isAsync ? "async" : "sync";
-        const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
-        const finalNamespace = namespaceName === 'OneSignal' ? '' : namespaceName;
-        this.writeLine(templateFunction(sig, uniqueFunctionName, finalNamespace));
-      });
+      const mapKey = sig.isAsync ? "async" : "sync";
+      const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
+      this.writeLine(templateFunction(sig, uniqueFunctionName, namespaceChain));
     });
+
+    namespaces?.forEach((namespaceName: string) => {
+      const chainCopy = JSON.parse(JSON.stringify(namespaceChain));
+      chainCopy.push(namespaceName);
+      this.writeOneSignalFunctions(api, chainCopy);
+    });
+
   }
 
   private _generateFunctionOverloadsIfNeeded(functionName: string): void {

@@ -49,7 +49,7 @@ export class CodeGenManager {
           break;
       }
       await oneSignalWriter.writeSupportCode();
-      oneSignalWriter.writeOneSignalFunctions(this.api);
+      oneSignalWriter.writeOneSignalFunctions(this.api, ["OneSignal"]);
       await oneSignalWriter.writeExportCode(this.api);
     });
   }
@@ -65,7 +65,7 @@ export class CodeGenManager {
       const typingsWriter = new NgTypingsWriterManager(writer);
       await typingsWriter.writeInterfaces(0);
       await oneSignalWriter.writeSupportCode();
-      oneSignalWriter.writeOneSignalFunctions(this.api);
+      oneSignalWriter.writeOneSignalFunctions(this.api, ["OneSignal"]);
       oneSignalWriter.writeLine('}');
     })
   }
