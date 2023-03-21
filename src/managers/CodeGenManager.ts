@@ -13,7 +13,7 @@ import IOneSignalApi from "../models/OneSignalApi";
 export class CodeGenManager {
   /**
    * @param  {Shim} shim - Vue, React, or Angular
-   * @param  {IFunctionSignature[]} functions - Function signature array
+   * @param {IOneSignalApi} api - API spec
    * @param  {BuildSubdirectory} subdir? - *optional* argument to create separate build subdirectory (e.g: vue/v2 and vue/v3)
    */
   constructor(readonly shim: Shim, readonly api: IOneSignalApi, readonly subdir: BuildSubdirectory = "") {}

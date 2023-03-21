@@ -45,7 +45,7 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
     Object.keys(apiCopy).forEach(namespaceName => {
       const { functions } = apiCopy[namespaceName];
 
-      functions.forEach((sig: IFunctionSignature) => {
+    functions?.forEach((sig: IFunctionSignature) => {
         if (FUNCTION_IGNORE.indexOf(sig.name) !== -1) {
           return;
         }
