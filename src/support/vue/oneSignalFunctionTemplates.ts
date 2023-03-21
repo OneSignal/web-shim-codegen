@@ -12,7 +12,7 @@ function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType ||
     }
 
     try {
-      window["OneSignalDeferred"].push((OneSignal) => {
+      window.OneSignalDeferred?.push((OneSignal) => {
         OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
           .then(value => resolve(value))
           .catch(error => reject(error));
@@ -29,7 +29,7 @@ export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunc
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
 function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
-  window["OneSignalDeferred"].push((OneSignal) => {
+  window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
   });
 }`

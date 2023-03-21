@@ -10,7 +10,7 @@ let isOneSignalInitialized = false;
 // OneSignal#init.
 let isOneSignalScriptFailed = false;
 
-window['OneSignalDeferred'] = window['OneSignalDeferred'] || [];
+window.OneSignalDeferred = window.OneSignalDeferred || [];
 
 addSDKScript();
 
@@ -71,7 +71,7 @@ declare global {
   }
 
   return new Promise<void>((resolve) => {
-    window['OneSignalDeferred'].push((OneSignal) => {
+    window.OneSignalDeferred?.push((OneSignal) => {
       OneSignal.init(options).then(() => {
         isOneSignalInitialized = true;
         resolve();

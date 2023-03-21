@@ -12,7 +12,7 @@ function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType ||
     }
 
     try {
-      window["OneSignalDeferred"].push((OneSignal: IOneSignalOneSignal) => {
+      window.OneSignalDeferred?.push((OneSignal: IOneSignalOneSignal) => {
         OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
           .then((value: any) => resolve(value))
           .catch((error: any) => reject(error));
@@ -29,7 +29,7 @@ export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFu
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
 function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
-  window["OneSignalDeferred"].push((OneSignal: IOneSignalOneSignal) => {
+  window.OneSignalDeferred?.push((OneSignal: IOneSignalOneSignal) => {
     OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
   });
 }`
