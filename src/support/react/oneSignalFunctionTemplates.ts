@@ -1,8 +1,9 @@
 import { IFunctionSignature } from "../../models/FunctionSignature";
-import { spreadArgs, spreadArgsWithTypes } from "../utils";
+import { getChainedNamespaceString, spreadArgs, spreadArgsWithTypes } from "../utils";
 
-export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceName: string) => {
+export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceChain: string[]) => {
   const args = sig.args?.map(arg => arg.name);
+  const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
 function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   return new Promise((resolve, reject) => {
@@ -21,8 +22,8 @@ function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType ||
     }
 
     try {
-      window["OneSignalDeferred"].push((OneSignal) => {
-        OneSignal.${namespaceName}${namespaceName !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
+      window["OneSignalDeferred"].push((OneSignal: IOneSignalOneSignal) => {
+        OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
           .then((value: any) => resolve(value))
           .catch((error: any) => reject(error));
       });
@@ -33,8 +34,9 @@ function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType ||
 }`
 };
 
-export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceName: string) => {
+export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceChain: string[]) => {
   const args = sig.args?.map(arg => arg.name);
+  const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
 function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   if (!doesOneSignalExist()) {

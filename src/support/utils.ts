@@ -77,6 +77,15 @@ export function spreadArgsWithTypes(signature: IFunctionSignature): string {
   return acc;
 }
 
+export function getChainedNamespaceString(chainedNamespaces: string[]): string {
+  // remove 'OneSignal' from front
+  const copy = [...chainedNamespaces];
+  copy.shift();
+  return copy.join('.');
+}
+
+
+
 /**
  * Returns an IArgument list from raw arguments (stuff between parentheses, including types)
  * @param  {string} rawArgs

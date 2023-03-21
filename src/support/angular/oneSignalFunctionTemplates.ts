@@ -1,8 +1,9 @@
 import { IFunctionSignature } from "../../models/FunctionSignature";
-import { spreadArgs, spreadArgsWithTypes } from "../utils";
+import { getChainedNamespaceString, spreadArgs, spreadArgsWithTypes } from "../utils";
 
-export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceName: string) => {
+export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceChain: string[]) => {
   const args = sig.args?.map(arg => arg.name);
+  const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
   ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     return new Promise((resolve, reject) => {
@@ -21,7 +22,7 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, unique
       }
 
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.${namespaceName}${namespaceName !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
+        oneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
           .then((value: ${sig.returnType}) => resolve(value))
           .catch((error: Error) => reject(error));
       });
@@ -29,8 +30,9 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, unique
   }`
 };
 
-export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceName: string) => {
+export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceChain: string[]) => {
   const args = sig.args?.map(arg => arg.name);
+  const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
   ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
     if (!this.doesOneSignalExist()) {
@@ -43,7 +45,7 @@ export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunct
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.${sig.name}(${spreadArgs(args)});
+      oneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)});
     });
   }`
 };
