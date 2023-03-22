@@ -57,7 +57,7 @@ declare global {
 /**
  * @PublicApi
  */
- const init = (options: IInitObject) => new Promise<void>(resolve => {
+ const init = (options: IInitObject): Promise<void> => {
   if (isOneSignalInitialized) {
     return Promise.reject(`OneSignal is already initialized.`);
   }
@@ -78,7 +78,8 @@ declare global {
       });
     });
   });
-});
+};
+
 
 /**
  * The following code is copied directly from the native SDK source file BrowserSupportsPush.ts
