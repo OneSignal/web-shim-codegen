@@ -6,9 +6,9 @@ import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterM
 import { VueOneSignalWriterManager } from "./shims/vue/VueOneSignalWriterManager";
 import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
 import { NgOneSignalWriterManager } from "./shims/angular/NgOneSignalWriterManager";
-import { NgTypingsWriterManager } from "./shims/angular/NgTypingsWriterManager";
 import { BuildSubdirectory } from "../models/BuildSubdirectory";
 import IOneSignalApi from "../models/OneSignalApi";
+import { TypingsWriterManager } from "./TypingsWriterManager";
 
 export class CodeGenManager {
   /**
@@ -62,10 +62,21 @@ export class CodeGenManager {
       }
 
       const oneSignalWriter = new NgOneSignalWriterManager(writer, this.api);
-      const typingsWriter = new NgTypingsWriterManager(writer);
+      const typingsWriter = new TypingsWriterManager(writer);
       await typingsWriter.writeInterfaces(0);
-      await oneSignalWriter.writeSupportCode();
+      typingsWriter.writeOneSignalInterfaces(this.api);
+      // write all the OneSignal functions we need to the outer-most scope of the file
       oneSignalWriter.writeOneSignalFunctions(this.api, ["OneSignal"]);
+      oneSignalWriter.writeLine();
+      // write the individual namespaces like User, Notification, etc. containing the previously written functions
+      oneSignalWriter.defineFunctionNamespaces();
+      // write the OneSignal class (open)
+      await oneSignalWriter.writeSupportCode();
+      // assign the previously written namespaces to the OneSignal class
+      oneSignalWriter.assignOneSignalNamespaces();
+      // assign the previously written functions to the OneSignal class
+      oneSignalWriter.assignOneSignalFunctions();
+      // close the OneSignal class
       oneSignalWriter.writeLine('}');
     })
   }
