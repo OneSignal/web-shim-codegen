@@ -7,27 +7,21 @@ import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
 import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '../../support/angular/oneSignalFunctionTemplates';
 import IOneSignalApi from '../../models/OneSignalApi';
 import { generateUniqueFunctionName } from '../../support/utils';
-import { NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS, NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX } from '../../snippets/EventListenerOverloads';
+import { NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX } from '../../snippets/EventListenerOverloads';
 import { IFunctionSignature } from '../../models/FunctionSignature';
 
 const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
   [Shim.React]: {
     sync: reactOneSignalFunctionTemplate,
     async: reactOneSignalAsyncFunctionTemplate,
-    addListenerOverloads: NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX,
-    removeListenerOverloads: NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX
   },
   [Shim.Vue]: {
     sync: vueOneSignalFunctionTemplate,
     async: vueOneSignalAsyncFunctionTemplate,
-    addListenerOverloads: NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX,
-    removeListenerOverloads: NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX
   },
   [Shim.Angular]: {
     sync: ngOneSignalFunctionTemplate,
     async: ngOneSignalAsyncFunctionTemplate,
-    addListenerOverloads: NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS,
-    removeListenerOverloads: NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS
   }
 }
 
@@ -77,10 +71,10 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
   private _generateFunctionOverloadsIfNeeded(functionName: string): void {
     switch (functionName) {
       case 'notificationsAddEventListener':
-        this.writeLine('\n'+TEMPLATE_FUNCTION_MAP[this.shim].addListenerOverloads);
+        this.writeLine('\n'+NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX);
         break;
       case 'notificationsRemoveEventListener':
-        this.writeLine('\n'+TEMPLATE_FUNCTION_MAP[this.shim].removeListenerOverloads);
+        this.writeLine('\n'+NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX);
         break;
       default:
         break;
