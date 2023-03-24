@@ -1,5 +1,6 @@
 import { CodeWriter } from "@yellicode/core";
-import { IFunctionSignature } from "../../models/FunctionSignature";
+import { IFunctionSignature } from "../models/FunctionSignature";
+import IOneSignalApi from "../models/OneSignalApi";
 import { ACTION,
   AUTO_PROMPT_OPTIONS,
   CATEGORY_OPTIONS,
@@ -11,11 +12,11 @@ import { ACTION,
   SLIDEDOWN_OPTIONS,
   STRUCTURED_NOTIFICATION,
   SUBSCRIPTION_CHANGE_EVENT,
-  TAG_CATEGORY } from "../../snippets/types";
-import { INTERFACE_PREFIX } from "../../support/constants";
-import { ReaderManager } from "../ReaderManager";
+  TAG_CATEGORY } from "../snippets/types";
+import { INTERFACE_PREFIX } from "../support/constants";
+import { ReaderManager } from "./ReaderManager";
 
-export abstract class TypingsWriterManagerBase extends CodeWriter {
+export class TypingsWriterManager extends CodeWriter {
   public getFunctionSignatureString(sig: IFunctionSignature): string {
     let argumentsString = "";
 
@@ -32,11 +33,28 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
   public writeFunctionTypes(functions: IFunctionSignature[], tabs?: number): void {
     const prefix = '\t'.repeat(tabs || 1);
     [...functions].forEach(func => {
-      this.writeLine(`${prefix}${this.getFunctionSignatureString(func)}`);
+      this.writeLine(`${prefix}${this.getFunctionSignatureString(func)};`);
     });
   }
 
-  public writeNamespaces(namespaces: string[], tabs?: number): void {
+  public writeOneSignalInterfaces(api: IOneSignalApi): void {
+    Object.keys(api).forEach(key => {
+      const namespace = api[key];
+      const { functions } = namespace;
+      this.writeLine(`interface ${INTERFACE_PREFIX}${key} {`);
+
+      // Declaration of instance field not allowed after declaration of instance method. Instead, this should come at the beginning of the class/interface.
+      if (namespace.namespaces) {
+        this._writeNamespaces(namespace.namespaces, 1);
+      }
+
+      this.writeFunctionTypes(functions, 1);
+
+      this.writeLine(`}`);
+    });
+  }
+
+  private _writeNamespaces(namespaces: string[], tabs?: number): void {
     const prefix = '\t'.repeat(tabs || 1);
     namespaces.forEach(namespace => {
       this.writeLine(`${prefix}${namespace}: ${INTERFACE_PREFIX}${namespace};`);
@@ -48,7 +66,7 @@ export abstract class TypingsWriterManagerBase extends CodeWriter {
    * @returns void
    */
   public async writeInterfaces(tabs: number): Promise<void> {
-    const initObjectInterfaceContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../../snippets/InitObject.ts`);
+    const initObjectInterfaceContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../snippets/InitObject.ts`);
 
     const prefix = "\t".repeat(tabs);
     this.writeLine(prefix+ACTION);
