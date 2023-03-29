@@ -81,6 +81,9 @@ interface IOneSignalUser {
 	removeSms(smsNumber: string): void;
 }
 interface IOneSignalPushSubscription {
+	id: string | null | undefined;
+	token: string | null | undefined;
+	optedIn: boolean | undefined;
 	optIn(): Promise<void>;
 	optOut(): Promise<void>;
 	addEventListener(event: 'subscriptionChange', listener: (change: SubscriptionChangeEvent) => void): void;
@@ -424,6 +427,9 @@ function debugSetLogLevel(logLevel: string): void {
 }
 
 const PushSubscriptionNamespace: IOneSignalPushSubscription = {
+	get id(): string | null | undefined { return window.OneSignal?.User?.PushSubscription?.id },
+	get token(): string | null | undefined { return window.OneSignal?.User?.PushSubscription?.token },
+	get optedIn(): boolean | undefined { return window.OneSignal?.User?.PushSubscription?.optedIn },
 	optIn: pushSubscriptionOptIn,
 	optOut: pushSubscriptionOptOut,
 	addEventListener: pushSubscriptionAddEventListener,
@@ -546,6 +552,7 @@ function addSDKScript(): void {
 declare global {
   interface Window {
     OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
+    OneSignal?: IOneSignalOneSignal;
     safari?: {
       pushNotification: any;
     };

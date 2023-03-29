@@ -84,9 +84,17 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
   protected async writeNamespaceExport(api: IOneSignalApi, namespaceName: string, tabs?: number): Promise<void> {
     const prefix = '\t'.repeat(tabs || 1);
     const namespaceApi = api[namespaceName];
-    const { functions, namespaces } = namespaceApi;
+    const { functions, namespaces, properties } = namespaceApi;
 
     this.writeLine(`const ${namespaceName}Namespace: ${INTERFACE_PREFIX}${namespaceName} = {`);
+
+    // TO DO: add support for properties in all namespaces (even though only PushSubscription has any right now)
+    if (properties && namespaceName === 'PushSubscription') {
+      properties.forEach(prop => {
+        this.writeLine(`\tget ${prop.name}(): ${prop.type} { return window.OneSignal?.User?.PushSubscription?.${prop.name} },`);
+      });
+    }
+
     functions.forEach(func => {
       if (FUNCTION_IGNORE.indexOf(func.name) !== -1) {
         this.writeLine(`${prefix}${func.name},`);
