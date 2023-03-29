@@ -45,6 +45,7 @@ declare module '@vue/runtime-core' {
 declare global {
   interface Window {
     OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
+    OneSignal?: IOneSignalOneSignal;
     safari?: {
       pushNotification: any;
     };

@@ -15,6 +15,7 @@ addSDKScript();
 declare global {
   interface Window {
     OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
+    OneSignal?: IOneSignalOneSignal;
     safari?: {
       pushNotification: any;
     };
