@@ -40,12 +40,18 @@ export class TypingsWriterManager extends CodeWriter {
   public writeOneSignalInterfaces(api: IOneSignalApi): void {
     Object.keys(api).forEach(key => {
       const namespace = api[key];
-      const { functions } = namespace;
+      const { functions, namespaces, properties } = namespace;
       this.writeLine(`interface ${INTERFACE_PREFIX}${key} {`);
 
+      if (properties) {
+        properties.forEach(prop => {
+          this.writeLine(`\t${prop.name}: ${prop.type};`);
+        });
+      }
+
       // Declaration of instance field not allowed after declaration of instance method. Instead, this should come at the beginning of the class/interface.
-      if (namespace.namespaces) {
-        this._writeNamespaces(namespace.namespaces, 1);
+      if (namespaces) {
+        this._writeNamespaces(namespaces, 1);
       }
 
       this.writeFunctionTypes(functions, 1);
