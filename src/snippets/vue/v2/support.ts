@@ -12,9 +12,10 @@ let isOneSignalScriptFailed = false;
 
 const VueApp: any = Vue;
 
-window.OneSignalDeferred = window?.OneSignalDeferred || [];
-
-addSDKScript();
+if (window) {
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  addSDKScript();
+}
 
 /* H E L P E R S */
 
