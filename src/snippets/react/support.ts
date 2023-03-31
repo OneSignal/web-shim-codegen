@@ -8,9 +8,10 @@ let isOneSignalInitialized = false;
 // OneSignal#init.
 let isOneSignalScriptFailed = false;
 
-window.OneSignalDeferred = window?.OneSignalDeferred || [];
-
-addSDKScript();
+if (window) {
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  addSDKScript();
+}
 
 declare global {
   interface Window {
