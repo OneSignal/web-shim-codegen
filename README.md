@@ -17,6 +17,11 @@ If you just cloned the repo run the command:
 If you already bootstrapped the remotes you just need to run:
 `scripts/update-subtrees`
 
+## Upstream API Spec
+The code generator uses an `api.json` spec file from the [OneSignal-Website-SDK](https://github.com/OneSignal/OneSignal-Website-SDK) repo as the input. Modify this file in that repo to change what the generator ultimately builds.
+
+The generator uses the URL hard-coded as a constant in the `src/support/constants.ts` file to fetch the spec. Make sure to update this URL as needed.
+
 ## Building For Release
 
 **Update version in `package.json` files**
@@ -35,6 +40,11 @@ yarn build
 
 *ATTENTION: note regarding hidden files:*
 The `settings.json` file in the `.vscode` directory hides all `*.js` files automatically. This is to keep the workspace uncluttered. Alternatively, you can turn those settings off by flipping to `false` and cleaning / decluttering with the command `yarn clean` (see below).
+
+## Special Types File
+The repo contains a file `types.ts` that contains all the type definitions for arguments and return values. These types must be kept updated (synchronized) with the upstream. To add new ones:
+- add the type to `src/snippets/types.ts`
+- write the type via `TypingsWriterManagerBase.ts`
 
 ## Cleaning
 You can clean the generated `.js` files by running `yarn clean`
@@ -115,11 +125,6 @@ In your test app, modify the package.json so that that the package points to the
 
 ## Rebuilding to test changes to package
 `rm -rf node_modules/react-onesignal && rm yarn.lock && yarn build`
-
-## Special Types File
-The repo contains a file `types.ts` that contains all the type definitions for arguments and return values. These types must be kept updated (synchronized) with the upstream. To add new ones:
-- add the type to `src/snippets/types.ts`
-- write the type via `TypingsWriterManagerBase.ts`
 
 ## Troubleshooting
 ### Changes not showing?
