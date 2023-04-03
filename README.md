@@ -25,9 +25,7 @@ The generator uses the URL hard-coded as a constant in the `src/support/constant
 ## Building For Release
 
 **Update version in `package.json` files**
-* React: `src/static/react/package.json`
-* Vue: `src/static/vue/v*/package.json`
-* Angular: `src/scaffolds/angular-workspace/projects/onesignal-ngx/package.json` <-- note this is in a different place than the others
+Run the `update-version-numbers` script in the `scripts` folder and input the update type (major, minor, patch, beta).
 
 **Update `README.md` files where needed**
 * React: `src/static/react/README.md`

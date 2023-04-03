@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# Check if jq is installed
+if ! command -v jq >/dev/null; then
+  echo "Error: jq is not installed."
+  echo "Please install jq using the following command (for MacOS):"
+  echo "brew install jq"
+  exit 1
+fi
+
+# Function to increment version numbers
+increment_version() {
+  local version="$1"
+  local increment_type="$2"
+  IFS='.' read -ra version_parts <<< "${version%-*}"
+
+  case "$increment_type" in
+    major)
+      version_parts[0]=$((version_parts[0] + 1))
+      ;;
+    minor)
+      version_parts[1]=$((version_parts[1] + 1))
+      ;;
+    patch)
+      version_parts[2]=$((version_parts[2] + 1))
+      ;;
+    beta)
+      if [[ $version == *"-beta."* ]]; then
+        beta_version=$(echo "$version" | perl -ne 'print $1 if /-beta\.(\d+)/')
+        beta_version=$((beta_version + 1))
+      else
+        beta_version=1
+        version_parts[2]=$((version_parts[2]))
+      fi
+      echo "${version_parts[0]}.${version_parts[1]}.${version_parts[2]}-beta.$beta_version"
+      return
+      ;;
+    *)
+      echo "Invalid increment type"
+      exit 1
+      ;;
+  esac
+
+  echo "${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
+}
+
+# Prompt the user to select an update type
+echo "Select an update type:"
+echo "1. Major"
+echo "2. Minor"
+echo "3. Patch"
+echo "4. Beta"
+read -rp "Enter the number (1-4): " choice
+
+case "$choice" in
+  1)
+    update_type="major"
+    ;;
+  2)
+    update_type="minor"
+    ;;
+  3)
+    update_type="patch"
+    ;;
+  4)
+    update_type="beta"
+    ;;
+  *)
+    echo "Invalid choice"
+    exit 1
+    ;;
+esac
+
+# Loop through the provided file paths
+for package_file in "$@"; do
+  # Check if the file exists and is a regular file
+  if [[ -f "$package_file" ]]; then
+    # Get the current version from the package.json file
+    current_version=$(jq -r '.version' "$package_file")
+
+    # Update the version
+    updated_version=$(increment_version "$current_version" "$update_type")
+
+    # Replace the version in the package.json file
+    perl -i -pe "s/\"version\": \"$current_version\"/\"version\": \"$updated_version\"/g" "$package_file"
+    echo "Updated $package_file to version $updated_version"
+  else
+    echo "File not found: $package_file"
+  fi
+done

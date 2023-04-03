@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Get the script's directory
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+# Call the version-updater script with the file paths
+"$script_dir/version-updater" \
+  "$script_dir/../src/static/react/package.json" \
+  "$script_dir/../src/static/vue/v2/package.json" \
+  "$script_dir/../src/static/vue/v3/package.json" \
+  "$script_dir/../src/scaffolds/angular-workspace/projects/onesignal-ngx/package.json"
