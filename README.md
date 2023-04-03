@@ -25,6 +25,7 @@ The generator uses the URL hard-coded as a constant in the `src/support/constant
 ## Building For Release
 
 **Update version in `package.json` files**
+
 Run the `update-version-numbers` script in the `scripts` folder and input the update type (major, minor, patch, beta).
 
 **Update `README.md` files where needed**
