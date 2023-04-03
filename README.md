@@ -64,15 +64,17 @@ import { Injectable, NgModule, Component, OnInit } from '@angular/core';
 It is unlikely that Angular would introduce a regression in a future release, in particular with `Injectable` which is our main dependency injection method. For context, it is a decorator (e.g: `@Injectable()`) which Angular uses to know what to inject. However, keep an eye out for changes related to any of these when looking to determine compatibility.
 
 ## Publishing
-1. Copy the ENTIRE contents of the build folder to the final package directory (see below section on copying changes)
-2. Discard any unwanted changes to the README file
-3. Create a new PR and merge to master
-3. `npm publish .` -- for onesignal-vue3 you must pass the `--access public` to the publish command as it is a scoped package.
+1. Merge your changes to `main` to kick off the build and cd_update process. Or trigger the workflow manually through the "Submit Downstream PRs" Github Actions workflow.
+2. Review the downstream PR (branch `cd_update`) and merge into each respective SDK's `main` or feature branch (e.g: `user-model/v1`).
+3. Pull the remote changes via `git pull` for the SDKs.
+4. Publish with `npm publish .`
+   * For onesignal-vue3 you must pass the `--access public` to the publish command as it is a scoped package.
+   * For **beta releases** run `npm publish --tag beta`
 
 
 ### Publishing changes to the downstream repositories:
 GitHub CD action will kick off after a PR has been merged.
-It will take care of updating all the downstream repositories and create a pull request for each of them (if there are changes to be committed). 
+It will take care of updating all the downstream repositories and create a pull request for each of them (if there are changes to be committed).
 
 Before running the commands mentioned bellow make sure that the current repo does not have uncommitted changes, otherwise
 you may need to remove some origins manually afterwords.
