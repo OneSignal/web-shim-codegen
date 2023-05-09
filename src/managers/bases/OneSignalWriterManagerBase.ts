@@ -24,6 +24,15 @@ const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
   }
 }
 
+// if the namespace is a child of another namespace, we need to prefix the parent namespace to the namespace name
+const PARENT_PATH_FOR_NAMESPACE_MAP: { [key: string]: string } = {
+  PushSubscription: 'User?.'
+};
+
+const PROPERTY_DEFAULT_MAP: { [key: string]: string } = {
+  permissionNative: ` ?? 'default';`
+};
+
 export abstract class OneSignalWriterManagerBase extends CodeWriter {
   abstract writeSupportCode(): Promise<void>;
   abstract writeExportCode(api: IOneSignalApi): Promise<void>;
@@ -72,10 +81,11 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
 
     this.writeLine(`const ${namespaceName}Namespace: ${INTERFACE_PREFIX}${namespaceName} = {`);
 
-    // TO DO: add support for properties in all namespaces (even though only PushSubscription has any right now)
-    if (properties && namespaceName === 'PushSubscription') {
+    // write properties
+    if (properties) {
       properties.forEach(prop => {
-        this.writeLine(`\tget ${prop.name}(): ${prop.type} { return window.OneSignal?.User?.PushSubscription?.${prop.name} },`);
+        const defaultValue = PROPERTY_DEFAULT_MAP[prop.name] ?? '';
+        this.writeLine(`\tget ${prop.name}(): ${prop.type} { return window.OneSignal?.${PARENT_PATH_FOR_NAMESPACE_MAP[namespaceName] ?? ''}${namespaceName}?.${prop.name}${defaultValue} },`);
       });
     }
 
