@@ -5,7 +5,7 @@ export const vueOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uniqu
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
-function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   return new Promise(function (resolve, reject) {
     if (isOneSignalScriptFailed) {
       reject();
@@ -28,7 +28,7 @@ export const vueOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunc
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
-function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
   });
