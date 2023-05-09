@@ -7,7 +7,6 @@ import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
 import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '../../support/angular/oneSignalFunctionTemplates';
 import IOneSignalApi from '../../models/OneSignalApi';
 import { generateUniqueFunctionName } from '../../support/utils';
-import { NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX } from '../../snippets/EventListenerOverloads';
 import { IFunctionSignature } from '../../models/FunctionSignature';
 
 const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
@@ -53,8 +52,6 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
       // prefix with the namespace to avoid function name conflicts
       const uniqueFunctionName = generateUniqueFunctionName(currentNamespace, sig.name);
 
-      this._generateFunctionOverloadsIfNeeded(uniqueFunctionName);
-
       const mapKey = sig.isAsync ? "async" : "sync";
       const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
       this.writeLine(templateFunction(sig, uniqueFunctionName, namespaceChain));
@@ -66,19 +63,6 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
       this.writeOneSignalFunctions(api, chainCopy);
     });
 
-  }
-
-  private _generateFunctionOverloadsIfNeeded(functionName: string): void {
-    switch (functionName) {
-      case 'notificationsAddEventListener':
-        this.writeLine('\n'+NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX);
-        break;
-      case 'notificationsRemoveEventListener':
-        this.writeLine('\n'+NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX);
-        break;
-      default:
-        break;
-    }
   }
 
   protected async writeNamespaceExport(api: IOneSignalApi, namespaceName: string, tabs?: number): Promise<void> {
