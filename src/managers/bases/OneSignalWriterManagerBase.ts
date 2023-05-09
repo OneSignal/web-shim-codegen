@@ -79,6 +79,7 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
       });
     }
 
+    // write functions
     functions.forEach(func => {
       if (FUNCTION_IGNORE.indexOf(func.name) !== -1) {
         this.writeLine(`${prefix}${func.name},`);
@@ -88,6 +89,7 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
       this.writeLine(`${prefix}${func.name}: ${generateUniqueFunctionName(namespaceName, func.name)},`);
     });
 
+    // write namespaces
     if (namespaces) {
       namespaces.forEach(namespace => {
         this.writeLine(`${prefix}${namespace}: ${namespace}Namespace,`);
