@@ -5,7 +5,7 @@ export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uni
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
-function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject();
@@ -28,7 +28,7 @@ export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFu
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
-function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   window.OneSignalDeferred?.push((OneSignal: IOneSignalOneSignal) => {
     OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
   });

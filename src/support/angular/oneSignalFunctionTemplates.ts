@@ -5,7 +5,7 @@ export const ngOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, unique
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
-function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject();
@@ -24,7 +24,7 @@ export const ngOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunct
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   return `
-function ${uniqueFunctionName}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
   window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     oneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)});
   });

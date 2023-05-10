@@ -7,7 +7,6 @@ import { ITemplateFunctionMap } from '../../models/TemplateFunctionMap';
 import { ngOneSignalAsyncFunctionTemplate, ngOneSignalFunctionTemplate } from '../../support/angular/oneSignalFunctionTemplates';
 import IOneSignalApi from '../../models/OneSignalApi';
 import { generateUniqueFunctionName } from '../../support/utils';
-import { NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX, NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX } from '../../snippets/EventListenerOverloads';
 import { IFunctionSignature } from '../../models/FunctionSignature';
 
 const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
@@ -24,6 +23,15 @@ const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
     async: ngOneSignalAsyncFunctionTemplate,
   }
 }
+
+// if the namespace is a child of another namespace, we need to prefix the parent namespace to the namespace name
+const PARENT_PATH_FOR_NAMESPACE_MAP: { [key: string]: string } = {
+  PushSubscription: 'User?.'
+};
+
+const PROPERTY_DEFAULT_MAP: { [key: string]: string } = {
+  permissionNative: ` ?? 'default';`
+};
 
 export abstract class OneSignalWriterManagerBase extends CodeWriter {
   abstract writeSupportCode(): Promise<void>;
@@ -53,8 +61,6 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
       // prefix with the namespace to avoid function name conflicts
       const uniqueFunctionName = generateUniqueFunctionName(currentNamespace, sig.name);
 
-      this._generateFunctionOverloadsIfNeeded(uniqueFunctionName);
-
       const mapKey = sig.isAsync ? "async" : "sync";
       const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
       this.writeLine(templateFunction(sig, uniqueFunctionName, namespaceChain));
@@ -68,19 +74,6 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
 
   }
 
-  private _generateFunctionOverloadsIfNeeded(functionName: string): void {
-    switch (functionName) {
-      case 'notificationsAddEventListener':
-        this.writeLine('\n'+NOTIFICATIONS_ADD_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX);
-        break;
-      case 'notificationsRemoveEventListener':
-        this.writeLine('\n'+NOTIFICATIONS_REMOVE_EVENT_LISTENER_OVERLOADS_WITH_FUNCTION_PREFIX);
-        break;
-      default:
-        break;
-    }
-  }
-
   protected async writeNamespaceExport(api: IOneSignalApi, namespaceName: string, tabs?: number): Promise<void> {
     const prefix = '\t'.repeat(tabs || 1);
     const namespaceApi = api[namespaceName];
@@ -88,13 +81,15 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
 
     this.writeLine(`const ${namespaceName}Namespace: ${INTERFACE_PREFIX}${namespaceName} = {`);
 
-    // TO DO: add support for properties in all namespaces (even though only PushSubscription has any right now)
-    if (properties && namespaceName === 'PushSubscription') {
+    // write properties
+    if (properties) {
       properties.forEach(prop => {
-        this.writeLine(`\tget ${prop.name}(): ${prop.type} { return window.OneSignal?.User?.PushSubscription?.${prop.name} },`);
+        const defaultValue = PROPERTY_DEFAULT_MAP[prop.name] ?? '';
+        this.writeLine(`\tget ${prop.name}(): ${prop.type} { return window.OneSignal?.${PARENT_PATH_FOR_NAMESPACE_MAP[namespaceName] ?? ''}${namespaceName}?.${prop.name}${defaultValue} },`);
       });
     }
 
+    // write functions
     functions.forEach(func => {
       if (FUNCTION_IGNORE.indexOf(func.name) !== -1) {
         this.writeLine(`${prefix}${func.name},`);
@@ -104,6 +99,7 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
       this.writeLine(`${prefix}${func.name}: ${generateUniqueFunctionName(namespaceName, func.name)},`);
     });
 
+    // write namespaces
     if (namespaces) {
       namespaces.forEach(namespace => {
         this.writeLine(`${prefix}${namespace}: ${namespace}Namespace,`);

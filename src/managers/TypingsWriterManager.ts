@@ -4,13 +4,18 @@ import IOneSignalApi from "../models/OneSignalApi";
 import { ACTION,
   AUTO_PROMPT_OPTIONS,
   CATEGORY_OPTIONS,
+  NOTIFICATION_ACTION_BUTTON,
   NOTIFICATION_BUTTON_DATA,
+  NOTIFICATION_CLICK_RESULT,
   NOTIFICATION_EVENT_NAME,
+  NOTIFICATION_EVENT_TYPE_MAP,
+  NOTIFICATION_FOREGROUND_WILL_DISPLAY_EVENT,
   ONESIGNAL_DEFERRED_CALLBACK,
+  OS_NOTIFICATION,
+  OS_NOTIFICATION_DATA_PAYLOAD,
   PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES,
   SLIDEDOWN_EVENT_NAME,
   SLIDEDOWN_OPTIONS,
-  STRUCTURED_NOTIFICATION,
   SUBSCRIPTION_CHANGE_EVENT,
   TAG_CATEGORY } from "../snippets/types";
 import { INTERFACE_PREFIX } from "../support/constants";
@@ -27,7 +32,7 @@ export class TypingsWriterManager extends CodeWriter {
       });
       argumentsString = argumentsString.trim();
     }
-    return `${sig.name}(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
+    return `${sig.name}${sig.genericTypeParameter ?? ''}(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
   }
 
   public writeFunctionTypes(functions: IFunctionSignature[], tabs?: number): void {
@@ -84,9 +89,14 @@ export class TypingsWriterManager extends CodeWriter {
     this.writeLine(prefix+SUBSCRIPTION_CHANGE_EVENT);
     this.writeLine(prefix+NOTIFICATION_EVENT_NAME);
     this.writeLine(prefix+NOTIFICATION_BUTTON_DATA);
-    this.writeLine(prefix+STRUCTURED_NOTIFICATION);
     this.writeLine(prefix+SLIDEDOWN_EVENT_NAME);
     this.writeLine(prefix+ONESIGNAL_DEFERRED_CALLBACK);
+    this.writeLine(prefix+OS_NOTIFICATION);
+    this.writeLine(prefix+NOTIFICATION_ACTION_BUTTON);
+    this.writeLine(prefix+NOTIFICATION_CLICK_RESULT);
+    this.writeLine(prefix+NOTIFICATION_EVENT_TYPE_MAP);
+    this.writeLine(prefix+NOTIFICATION_FOREGROUND_WILL_DISPLAY_EVENT);
+    this.writeLine(prefix+OS_NOTIFICATION_DATA_PAYLOAD);
     this.writeLine();
     this.writeLine(initObjectInterfaceContents);
   }
