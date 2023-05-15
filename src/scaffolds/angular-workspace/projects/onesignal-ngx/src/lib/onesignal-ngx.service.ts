@@ -50,11 +50,11 @@ interface IOneSignalOneSignal {
 	setConsentRequired(requiresConsent: boolean): Promise<void>;
 }
 interface IOneSignalNotifications {
-	permissionNative: 'granted' | 'denied' | 'default';
+	permissionNative: NotificationPermission;
+	permission: boolean;
 	setDefaultUrl(url: string): Promise<void>;
 	setDefaultTitle(title: string): Promise<void>;
 	isPushSupported(): boolean;
-	getPermissionStatus(onComplete: Action<NotificationPermission>): Promise<NotificationPermission>;
 	requestPermission(): Promise<void>;
 	addEventListener<K extends NotificationEventName>(event: K, listener: (obj: NotificationEventTypeMap[K]) => void): void;
 	removeEventListener<K extends NotificationEventName>(event: K, listener: (obj: NotificationEventTypeMap[K]) => void): void;
@@ -96,8 +96,8 @@ interface IOneSignalPushSubscription {
 	optedIn: boolean | undefined;
 	optIn(): Promise<void>;
 	optOut(): Promise<void>;
-	addEventListener(event: 'subscriptionChange', listener: (change: SubscriptionChangeEvent) => void): void;
-	removeEventListener(event: 'subscriptionChange', listener: (change: SubscriptionChangeEvent) => void): void;
+	addEventListener(event: 'change', listener: (change: SubscriptionChangeEvent) => void): void;
+	removeEventListener(event: 'change', listener: (change: SubscriptionChangeEvent) => void): void;
 }
 
 function oneSignalLogin(externalId: string, jwtToken?: string): Promise<void> {
@@ -266,20 +266,6 @@ function notificationsSetDefaultTitle(title: string): Promise<void> {
   });
 }
 
-function notificationsGetPermissionStatus(onComplete: Action<NotificationPermission>): Promise<NotificationPermission> {
-  return new Promise((resolve, reject) => {
-    if (isOneSignalScriptFailed) {
-      reject();
-    }
-
-    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Notifications.getPermissionStatus(onComplete)
-        .then((value: any) => resolve(value))
-        .catch((error: Error) => reject(error));
-    });
-  });
-}
-
 function notificationsRequestPermission(): Promise<void> {
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
@@ -434,13 +420,13 @@ function pushSubscriptionOptOut(): Promise<void> {
   });
 }
 
-function pushSubscriptionAddEventListener(event: 'subscriptionChange', listener: (change: SubscriptionChangeEvent) => void): void {
+function pushSubscriptionAddEventListener(event: 'change', listener: (change: SubscriptionChangeEvent) => void): void {
   window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     oneSignal.User.PushSubscription.addEventListener(event, listener);
   });
 }
 
-function pushSubscriptionRemoveEventListener(event: 'subscriptionChange', listener: (change: SubscriptionChangeEvent) => void): void {
+function pushSubscriptionRemoveEventListener(event: 'change', listener: (change: SubscriptionChangeEvent) => void): void {
   window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     oneSignal.User.PushSubscription.removeEventListener(event, listener);
   });
@@ -498,11 +484,11 @@ const SlidedownNamespace: IOneSignalSlidedown = {
 };
 
 const NotificationsNamespace: IOneSignalNotifications = {
-	get permissionNative(): 'granted' | 'denied' | 'default' { return window.OneSignal?.Notifications?.permissionNative ?? 'default'; },
+	get permissionNative(): NotificationPermission { return window.OneSignal?.Notifications?.permissionNative ?? 'default'; },
+	get permission(): boolean { return window.OneSignal?.Notifications?.permission ?? false; },
 	setDefaultUrl: notificationsSetDefaultUrl,
 	setDefaultTitle: notificationsSetDefaultTitle,
 	isPushSupported,
-	getPermissionStatus: notificationsGetPermissionStatus,
 	requestPermission: notificationsRequestPermission,
 	addEventListener: notificationsAddEventListener,
 	removeEventListener: notificationsRemoveEventListener,
