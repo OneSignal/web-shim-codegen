@@ -30,7 +30,8 @@ const PARENT_PATH_FOR_NAMESPACE_MAP: { [key: string]: string } = {
 };
 
 const PROPERTY_DEFAULT_MAP: { [key: string]: string } = {
-  permissionNative: ` ?? 'default';`
+  permissionNative: ` ?? 'default';`,
+  permission: ` ?? false;`
 };
 
 export abstract class OneSignalWriterManagerBase extends CodeWriter {
