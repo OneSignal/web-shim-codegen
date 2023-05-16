@@ -5,7 +5,7 @@ export const TAG_CATEGORY = `interface IOneSignalTagCategory { tag: string; labe
 export const PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES = `type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };`;
 export const SUBSCRIPTION_CHANGE_EVENT = `type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };`;
 export const NOTIFICATION_EVENT_NAME = `type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';`
-export const NOTIFICATION_BUTTON_DATA = 'interface NotificationButtonData extends NotificationAction { url: string; };';
+export const NOTIFICATION_BUTTON_DATA = 'interface NotificationButtonData extends NotificationAction { url: string; }';
 export const SLIDEDOWN_EVENT_NAME = `type SlidedownEventName = 'slidedownShown';`;
 export const ONESIGNAL_DEFERRED_CALLBACK = `type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;`;
 export const OS_NOTIFICATION = 'type OSNotification = { id?: string; title?: string; body?: string; data?: any; url?: string; icon?: string; image?: string; tag?: string; requireInteraction?: boolean; renotify?: true; actions?: Array<NotificationActionButton>; };'
