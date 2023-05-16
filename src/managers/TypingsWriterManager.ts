@@ -1,7 +1,7 @@
 import { CodeWriter } from "@yellicode/core";
 import { IFunctionSignature } from "../models/FunctionSignature";
 import IOneSignalApi from "../models/OneSignalApi";
-import { ACTION,
+import {
   AUTO_PROMPT_OPTIONS,
   CATEGORY_OPTIONS,
   NOTIFICATION_ACTION_BUTTON,
@@ -80,7 +80,6 @@ export class TypingsWriterManager extends CodeWriter {
     const initObjectInterfaceContents = await ReaderManager.readFile(__dirname.replace('ts-to-es6/', '') + `/../snippets/InitObject.ts`);
 
     const prefix = "\t".repeat(tabs);
-    this.writeLine(prefix+ACTION);
     this.writeLine(prefix+AUTO_PROMPT_OPTIONS);
     this.writeLine(prefix+SLIDEDOWN_OPTIONS);
     this.writeLine(prefix+CATEGORY_OPTIONS);
