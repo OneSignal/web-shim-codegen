@@ -59,3 +59,26 @@ git diff --diff-filter=RD --name-status --no-index outputs/react build/react | c
 git diff --diff-filter=RD --name-status --no-index outputs/vue/v2 build/vue/v2 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue/v2.rmfiles  || true
 git diff --diff-filter=RD --name-status --no-index outputs/vue/v3 build/vue/v3 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue/v3.rmfiles  || true
 echo 'Done.'
+
+# This is required to use 'npm link' when testing local builds
+echo 'yarn init for local dev testing'
+
+echo 'yarn init Vue3...'
+cd build/vue/v3
+yarn
+cd ../../../
+
+echo 'yarn init Vue2...'
+cd build/vue/v2
+yarn
+cd ../../../
+
+echo 'yarn init react...'
+cd build/react
+yarn
+cd ../../
+
+echo 'yarn init ngx...'
+cd build/onesignal-ngx
+yarn
+cd ../../
