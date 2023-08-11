@@ -61,6 +61,7 @@ git diff --diff-filter=RD --name-status --no-index outputs/vue/v3 build/vue/v3 |
 echo 'Done.'
 
 # This is required to use 'npm link' when testing local builds
+# We do this last so unneed files are not included in the releases.
 echo 'yarn init for local dev testing'
 
 echo 'yarn init Vue3...'

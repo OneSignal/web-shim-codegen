@@ -80,44 +80,47 @@ Set up a new React, Vue, or Angular App so the new app and final package repo is
 ## Creating Test Apps
 ### React Example App
 ```
-npx create-react-app my-app
-cd my-app
+cd ~/tmp
+npx create-react-app web-shim-test-react --template typescript
+cd web-shim-test-react
+npm link {YOUR_PATH_HERE}/web-shim-codegen/build/react
 ```
 
 ### Vue Example App
 ```
-vue create my-app
+cd ~/tmp
+npm create vue@latest vue-web-shim-test
 // follow the instructions
+npm link {YOUR_PATH_HERE}/web-shim-codegen/build/vue/v3
 ```
 
 ### Angular Example App
 ```
+cd ~/tmp
 ng new angular-example-app
+// follow the instructions
+npm link {YOUR_PATH_HERE}/web-shim-codegen/build/onesignal-ngx
 ```
 
-## Modify Package.json
-In your test app, modify the package.json so that that the package points to the `web-shim-codegen/build/<shim>` directory OR to the final package repo directory (just make sure to remember to copy the new build to that directory first before rebuilding `node_modules`).
-
-```json
-"dependencies": {
-  "<package-name>": "file:../web-shim-codegen/build/<shim>",
-}
-```
-
-**OR**
-
-```json
-"dependencies": {
-  "<package-name>": "file:../<shim>",
-}
-```
+## Link Builds with Local Project
+Creates a symlink to allow test projects to automatically pick up changes from builds.
+### React
+`npm link {YOUR_PATH_HERE}/web-shim-codegen/build/react`
+### Vue3
+`npm link {YOUR_PATH_HERE}/web-shim-codegen/build/vue/v3`
+### Vue2
+`npm link {YOUR_PATH_HERE}/web-shim-codegen/build/vue/v2`
+### Angular
+`npm link {YOUR_PATH_HERE}/web-shim-codegen/build/onesignal-ngx`
 
 ## Rebuilding to test changes to package
-`rm -rf node_modules/react-onesignal && rm yarn.lock && yarn build`
+Run `yarn build` here to rebuild all packages
+* Your test projects should automatically be pick up the changes, since `npm link` does a symlink for you.
 
 ## Troubleshooting
-### Changes not showing?
-Try removing the file's top level package import and re-importing via VSCode auto-import (start typing package name, hit enter)
+### Changes not showing in your test project?
+* Try re-link with the `npm link ...` command noted above, as the symlink may have broken
+* Try removing the file's top level package import and re-importing via VSCode auto-import (start typing package name, hit enter)
 
 ### Check the module
 Check the package in the `node_modules` directory to see if it is updated with latest changes
