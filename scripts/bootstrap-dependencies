@@ -53,3 +53,5 @@ echo "installing yellicode generator"
 npm install @yellicode/cli -g
 
 yarn add eslint --dev
+
+yarn
