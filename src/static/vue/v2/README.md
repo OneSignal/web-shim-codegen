@@ -193,76 +193,11 @@ Use listeners to react to OneSignal-related events:
 ### Notifications Namespace
 | Event Name | Callback Argument Type |
 |-|-|
-|'click'      | NotificationClickResult|
+|'click'      | NotificationClickEvent|
 |'foregroundWillDisplay'| NotificationForegroundWillDisplayEvent
-| 'dismiss'| OSNotificationDataPayload|
+| 'dismiss'| NotificationDismissEvent|
 |'permissionChange'| boolean|
 |'permissionPromptDisplay'| void|
-
-<details>
-  <summary>Expand to see associated types</summary>
-
-#### `NotificationClickResult`
-| Property                    | Description                                 |
-|-------------------------|---------------------------------------------|
-| `actionId`              | A string representing the action ID associated with the click event |
-| `url`                   | A string representing the URL associated with the click event |
-
-#### `NotificationForegroundWillDisplayEvent`
-| Property                    | Description                                 |
-|-------------------------|---------------------------------------------|
-| `notification`              | An `OSNotification` type object |
-
-#### `OSNotification`
-| Property              | Description                                                                                                          |
-|-----------------------|----------------------------------------------------------------------------------------------------------------------|
-| `id`                  | Optional string representing the unique identifier of the notification.                                              |
-| `title`               | Optional string representing the title of the notification.                                                          |
-| `body`                | Optional string representing the body of the notification.                                                           |
-| `data`                | Optional data object associated with the notification.                                                               |
-| `url`                 | Optional string representing the URL to be opened when the notification is clicked.                                  |
-| `icon`                | Optional string representing the URL of the icon to be displayed with the notification.                              |
-| `image`               | Optional string representing the URL of the image to be displayed with the notification.                             |
-| `tag`                 | Optional string representing a unique identifier for a group of notifications.                                       |
-| `requireInteraction`  | Optional boolean indicating whether the notification requires user interaction or not.                               |
-| `renotify`            | Optional boolean indicating whether the notification should be replaced or not, if a notification with the same tag is already displayed. |
-| `actions`             | Optional array of `NotificationActionButton` objects representing the action buttons associated with the notification.                         |
-
-#### `NotificationActionButton`
-| Property    | Description                                                                                   |
-|-------------|-----------------------------------------------------------------------------------------------|
-| `action`    | A string representing the action associated with the button.                                 |
-| `title`     | A string representing the title of the button.                                               |
-| `icon`      | Optional string representing the URL of the icon to be displayed with the button.            |
-| `url`       | Optional string representing the URL to be opened when the button is clicked.                |
-
-#### `OSNotificationDataPayload`
-| Property    | Description                                                                                   |
-|-------------|-----------------------------------------------------------------------------------------------|
-| `id`        | A string representing the unique identifier of the notification data payload.                |
-| `content`   | A string representing the content of the notification data payload.                          |
-| `heading`   | Optional string representing the heading of the notification data payload.                   |
-| `url`       | Optional string representing the URL to be opened when the notification data payload is clicked. |
-| `data`      | Optional object containing additional data associated with the notification data payload.     |
-| `rr`        | Optional string with value 'y' or 'n' representing whether or not the notification has [Confirmed Delivery](https://documentation.onesignal.com/docs/confirmed-deliveries).              |
-| `icon`      | Optional string representing the URL of the icon to be displayed with the notification data payload. |
-| `image`     | Optional string representing the URL of the image to be displayed with the notification data payload. |
-| `tag`       | Optional string representing a unique identifier for a group of notification data payloads.   |
-| `badge`     | Optional string representing the URL of the badge to be displayed with the notification data payload. |
-| `vibrate`   | Optional array of numbers representing the vibration pattern of the notification data payload. |
-| `buttons`   | Optional array of `NotificationButtonData` objects representing the button data associated with the notification data payload. |
-
-#### `NotificationButtonData`
-| Property | Description                                                                                          |
-|----------|------------------------------------------------------------------------------------------------------|
-| `url`    | A string representing the URL to be opened when the button is clicked.                                 |
-| `id`     | A string representing the ID of the action.                                                          |
-| `action` | A string representing the type of the action (inherited from `NotificationAction`).                  |
-| `title`  | A string representing the title of the action button (inherited from `NotificationAction`).          |
-| `icon`   | Optional string representing the URL of the icon to be displayed with the action button.              |
-
-</details>
-
 
 ### Slidedown Namespace
 | Event Name | Callback Argument Type |
@@ -276,8 +211,8 @@ Use listeners to react to OneSignal-related events:
 
 **Example**
 ```js
-OneSignal.Notifications.addEventListener('click', (result) => {
-  console.log("The notification was clicked!", result);
+OneSignal.Notifications.addEventListener('click', (event) => {
+  console.log("The notification was clicked!", event);
 });
 ```
 
