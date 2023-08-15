@@ -169,25 +169,9 @@ OneSignal.Debug.setLogLevel(“trace”);
 | `setLogLevel`      | Turns on logging with the given log level.                                    | `setLogLevel: string`<br>- `"trace"`<br>- `"debug"`<br>- `"info"`<br>- `"warn"`<br>- `"error"` |
 
 # Limitations
-## May 2023
-## Version 16 (beta)
-Please test thoroughly prior to production use.
-* Any User namespace calls must be invoked **after** initialization (async). Example: `OneSignal.User.addTag("tag", "2");`
-* HTTP environments are not supported.
+* HTTP environments are no longer supported.
 * AMP environments are not supported.
-* Identity verification is not functional.
-
-## January 2023
-### Version 16 (alpha)
-It is recommended this version is used **only** in development and staging envrionments.
-* Switching between users via `login()` and `logout()` is unsafe. **Please stick to single user testing.**
-* Any User namespace calls must be invoked **after** initialization (async). Example: `OneSignal.User.addTag("tag", "2");`
-* Aliases will be available in a future release,
-* HTTP environments are not supported.
-* AMP environments are not supported.
-* Identity verification is not functional.
-* Outcomes are not functional.
-
+* Identity verification not available yet, coming soon.
 
 # Glossary
 
