@@ -24,8 +24,8 @@ OneSignal is the world's leader for Mobile Push Notifications, Web Push, and In-
 
 You can find more information on OneSignal [here](https://onesignal.com/).
 
-> 🚧 Version 2 now in Beta!
-See our [migration guide](./MigrationGuide.md) to get started.
+> Upgrading from Version 1?
+See our [migration guide](./MigrationGuide.md) if coming from v1.
 
 ## Contents
 - [Install](#install)
@@ -109,7 +109,8 @@ export default {
     msg: String
   },
   beforeCreate() {
-    this.$OneSignal.showSlidedownPrompt()
+    // Example prompting for notification permission
+    this.$OneSignal.User.PushSubscription.optIn();
   }
 }
 </script>

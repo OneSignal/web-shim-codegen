@@ -56,7 +56,7 @@ You can clean the generated `.js` files by running `yarn clean`
 As frameworks put out new major releases, we should ensure our shims remain compatible with the new versions.
 
 ### Vue 2 & 3
-There were some breaking changes in Vue 3 that required the plugin to be updated to support it. Instead of making a major release, we opted to create a separate plugin: `onesignal-vue3` as this will greatly simplify managing future major releases (e.g: w/ upcoming user-model).
+There were some breaking changes in Vue 3 that required the plugin to be updated to support it. Instead of making a major release, we opted to create a separate plugin: `onesignal-vue3` as this will greatly simplify managing future major releases (e.g: w/ user-model).
 
 ### Angular
 Angular puts out a new major release more frequently: once or twice per year. Our plugin is almost a pure JS module with the exception of a couple imports including `Injectable` needed for the eventual dependency injection. These are:
