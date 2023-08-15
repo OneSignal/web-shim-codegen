@@ -4,7 +4,7 @@
   "description": "Used to build Web SDK libraries for various web frameworks",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint . --ext .ts",
+    "lint": "yarn run eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./scripts/build"
   },
