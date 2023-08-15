@@ -6,12 +6,6 @@
 * [Angular](https://github.com/OneSignal/onesignal-ngx)
 
 ## Start
-`npm install @yellicode/cli -g`
-
-or
-
-`yarn`
-
 If you just cloned the repo run the command:
 `scripts/bootstrap`
 `scripts/update-subtrees`

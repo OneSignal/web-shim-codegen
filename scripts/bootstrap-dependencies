@@ -11,6 +11,9 @@ function bootstrap_macos() {
 
   echo "updating brew"
   brew update
+
+  echo "installing nvm"
+  brew install nvm
 }
 
 
@@ -22,6 +25,15 @@ function bootstrap_linux() {
 
   echo "updating apt"
   sudo apt update
+
+  if ! command -v nvm &> /dev/null; then
+    # Unfortunately there's no easy link to latest release. We'll have to update
+    # this link if we want a newer version of nvm.
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+  fi
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 }
 
 if [[ "$(uname)" = "Darwin" ]]; then
@@ -30,7 +42,16 @@ elif [[ "$(uname)" = "Linux" ]]; then
   bootstrap_linux
 fi
 
+echo "installing node"
+nvm install `cat .nvmrc`
+nvm use `cat .nvmrc`
+
+echo "installing yarn"
+npm install yarn -g yarn@1.22.19
+
 echo "installing yellicode generator"
 npm install @yellicode/cli -g
 
 yarn add eslint --dev
+
+yarn
