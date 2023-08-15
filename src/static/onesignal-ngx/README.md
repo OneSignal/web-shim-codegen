@@ -24,7 +24,7 @@ OneSignal is the world's leader for Mobile Push Notifications, Web Push, and In-
 
 You can find more information on OneSignal [here](https://onesignal.com/).
 
-> 🚧 Version 2 now in Beta!
+> Upgrading from Version 1?
 See our [migration guide](./MigrationGuide.md) to get started.
 
 ## Contents

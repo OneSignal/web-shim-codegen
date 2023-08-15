@@ -112,16 +112,16 @@ await OneSignal.Notifications.requestPermission();
 ```
 
 
-| Sync/Async | Function / Property       | Description                                                                                                                                                                             | Argument List                                                                                                                                                    |
-| ---------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `async`    | `setDefaultUrl()`         | Sets the default URL for notifications.                                                                                                                                                 | `url` (string)                                                                                                                                                   |
-| `async`    | `setDefaultTitle()`       | Sets the default title for notifications.                                                                                                                                               | `title` (string)                                                                                                                                                 |
-| `sync`     | `isPushSupported()`       | Returns true if the current browser supports web push.                                                                                                                                  |                                                                                                                                                                  |
-| `async`    | `requestPermission()`     | Requests push notifications permission via the native browser prompt.                                                                                                                   |                                                                                                                                                                  |
-| `sync`     | `addEventListener()`      | Adds an event listener for the following events:<br><br>- `click`<br>- `willDisplay`<br>- `dismiss`<br>- `permissionPromptDisplay`<br>- `permissionChange`*<br> * argument type: bool | - `<event>` (string)<br>- `(arg: <type>) => {}` (callback)                                                                                                       |
-| `sync`     | `removeEventListener()`   | Removes the event listener.                                                                                                                                                             | `() => {}` (the event listener you want to remove)                                                                                                               |
-|  | `permission`             | A boolean representing whether or not the user has granted permission for push notifications.                                                                                           |                                                                                                                                                                  |
-|  | `permissionNative`       | A string representing the native push permission status: 'default', 'granted', or 'denied'.                                                                                            |                                                                                                                                                                  |
+| Sync/Async | Property/Function       | Description                                                                                                                                                                             | Argument List                                                                                                                                                     |
+| ---------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `async`    | `setDefaultUrl()`       | Sets the default URL for notifications.                                                                                                                                                 | `url` (string)                                                                                                                                                   |
+| `async`    | `setDefaultTitle()`     | Sets the default title for notifications.                                                                                                                                               | `title` (string)                                                                                                                                                 |
+| `sync`     | `isPushSupported()`     | Returns true if the current browser supports web push.                                                                                                                                  |                                                                                                                                                                  |
+| `async`    | `requestPermission()`   | Requests push notifications permission via the native browser prompt.                                                                                                                   |                                                                                                                                                                  |
+|            | `permission`            | Returns true if your site has permission to display notifications.                                                                                    |                                 |
+|            | `permissionNative`      | Returns browser's native notification permission status; `"default"`(end-user has not accept or decided yet), `"granted"`, or `"denied"`.             |                                 |
+| `sync`     | `addEventListener()`    | Adds an event listener for the following events:<br><br>- `click`<br>- `foregroundWillDisplay`<br>- `dismiss`<br>- `permissionPromptDisplay`<br>- `permissionChange`*<br> * argument type: bool | - `<event>` (string)<br>- `(arg: <type>) => {}` (callback)                                                                                                       |
+| `sync`     | `removeEventListener()` | Removes the event listener.                                                                                                                                                             | `() => {}` (the event listener you want to remove)                                                                                                               |
 
 
 
@@ -158,8 +158,8 @@ OneSignal.User.PushSubscription.optIn();
 |            | `optedIn`               | Gets a boolean value indicating whether the current user is subscribed to push notifications. |                                                                                              |
 | `async`    | `optIn()`               | Subscribes the current user to push notifications.                                            |                                                                                              |
 | `async`    | `optOut()`              | Unsubscribes the current user from push notifications.                                        |                                                                                              |
-| `sync`     | `addEventListener()`    | Adds an event listener for the `subscriptionChange` event.                                    | - `event` ("subscriptionChange")<br>- `listener` ((change: SubscriptionChangeEvent) => void) |
-| `sync`     | `removeEventListener()` | Removes an event listener for the `subscriptionChange` event.                                 | - `event` ("subscriptionChange")<br>- `listener` ((change: SubscriptionChangeEvent) => void) |
+| `sync`     | `addEventListener()`    | Adds an event listener for the `change` event.                                    | - `event` ("change")<br>- `listener` ((change: SubscriptionChangeEvent) => void) |
+| `sync`     | `removeEventListener()` | Removes an event listener for the `change` event.                                 | - `event` ("change")<br>- `listener` ((change: SubscriptionChangeEvent) => void) |
 
 ### Debug Namespace
 
@@ -173,26 +173,9 @@ OneSignal.Debug.setLogLevel(“trace”);
 | `setLogLevel`      | Turns on logging with the given log level.                                    | `setLogLevel: string`<br>- `"trace"`<br>- `"debug"`<br>- `"info"`<br>- `"warn"`<br>- `"error"` |
 
 # Limitations
-
-## May 2023
-## Version 16 (beta)
-Please test thoroughly prior to production use.
-* Any User namespace calls must be invoked **after** initialization (async). Example: `OneSignal.User.addTag("tag", "2");`
-* HTTP environments are not supported.
+* HTTP environments are no longer supported.
 * AMP environments are not supported.
-* Identity verification is not functional.
-
-## January 2023
-### Version 16 (alpha)
-It is recommended this version is used **only** in development and staging envrionments.
-* Switching between users via `login()` and `logout()` is unsafe. **Please stick to single user testing.**
-* Any User namespace calls must be invoked **after** initialization (async). Example: `OneSignal.User.addTag("tag", "2");`
-* Aliases will be available in a future release,
-* HTTP environments are not supported.
-* AMP environments are not supported.
-* Identity verification is not functional.
-* Outcomes are not functional.
-
+* Identity verification not available yet, coming soon.
 
 # Glossary
 

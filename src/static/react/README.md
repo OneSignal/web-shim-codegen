@@ -24,9 +24,7 @@ OneSignal is the world's leader for Mobile Push Notifications, Web Push, and In-
 You can find more information on OneSignal [here](https://onesignal.com/).
 
 ### Migration Guides
-Versions 2.0 and 3.0 were recently released and include breaking changes. See the [Migration Guide](https://github.com/OneSignal/react-onesignal/blob/user-model/v1/MigrationGuide.md) to update your implementation.
-
-> ATTENTION: v3 is currently in Beta 🚧 and includes a fundamental shift to the OneSignal subscriber ("player") model. Learn more [here](https://documentation.onesignal.com/v11.0/docs/user-model).
+Versions 3.0 were recently released and include breaking changes. See the [Migration Guide](https://github.com/OneSignal/react-onesignal/blob/main/MigrationGuide.md) to update your implementation.
 
 ## Contents
 - [Install](#install)
