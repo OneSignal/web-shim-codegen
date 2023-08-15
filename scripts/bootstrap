@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+scripts/bootstrap-dev-env
 scripts/bootstrap-dependencies
 scripts/bootstrap-remotes
 scripts/update-subtrees
