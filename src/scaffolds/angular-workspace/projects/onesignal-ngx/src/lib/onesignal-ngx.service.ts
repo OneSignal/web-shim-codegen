@@ -5,15 +5,118 @@ interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean;
 type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };
 type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };
 type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';
-interface NotificationButtonData extends NotificationAction { url: string; };
 type SlidedownEventName = 'slidedownShown';
 type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;
-type OSNotification = { id?: string; title?: string; body?: string; data?: any; url?: string; icon?: string; image?: string; tag?: string; requireInteraction?: boolean; renotify?: true; actions?: Array<NotificationActionButton>; };
-type NotificationActionButton = { action: string; title: string; icon?: string; url?: string; }
-export type NotificationClickResult = { actionId?: string; url?: string; }
-type NotificationEventTypeMap = { 'click': NotificationClickResult; 'foregroundWillDisplay': NotificationForegroundWillDisplayEvent; 'dismiss': OSNotificationDataPayload; 'permissionChange': boolean; 'permissionPromptDisplay': void; };
-export type NotificationForegroundWillDisplayEvent = { notification: OSNotification; preventDefault(): void; }
-type OSNotificationDataPayload = { id: string; content: string; heading?: string; url?: string; data?: object; rr?: string; icon?: string; image?: string; tag?: string; badge?: string; vibrate?: VibratePattern; buttons?: NotificationButtonData[]; };
+interface IOSNotification {
+  /**
+   * The OneSignal notification id;
+   *  - Primary id on OneSignal's REST API and dashboard
+   */
+  readonly notificationId: string;
+
+  /**
+   * Visible title text on the notification
+   */
+  readonly title?: string;
+
+  /**
+   * Visible body text on the notification
+   */
+  readonly body: string;
+
+  /**
+   * Visible icon the notification; URL format
+   */
+  readonly icon?: string;
+
+  /**
+   * Visible small badgeIcon that displays on some devices; URL format
+   * Example: On Android's status bar
+   */
+  readonly badgeIcon?: string;
+
+  /**
+   * Visible image on the notification; URL format
+   */
+  readonly image?: string;
+
+  /**
+   * Visible buttons on the notification
+   */
+  readonly actionButtons?: IOSNotificationActionButton[];
+
+  /**
+   * If this value is the same as existing notification, it will replace it
+   * Can be set when creating the notification with "Web Push Topic" on the dashboard
+   * or web_push_topic from the REST API.
+  */
+  readonly topic?: string;
+
+  /**
+   * Custom object that was sent with the notification;
+   * definable when creating the notification from the OneSignal REST API or dashboard
+   */
+  readonly additionalData?: object;
+
+  /**
+   * URL to open when clicking or tapping on the notification
+   */
+  readonly launchURL?: string;
+
+  /**
+   * Confirm the push was received by reporting back to OneSignal
+   */
+  readonly confirmDelivery: boolean;
+}
+
+interface IOSNotificationActionButton {
+  /**
+   * Any unique identifier to represent which button was clicked. This is typically passed back to the service worker
+   * and host page through events to identify which button was clicked.
+   * e.g. 'like-button'
+   */
+  readonly actionId: string;
+  /**
+   * The notification action button's text.
+   */
+  readonly text: string;
+  /**
+   * A valid publicly reachable HTTPS URL to an image.
+   */
+  readonly icon?: string;
+  /**
+   * The URL to open the web browser to when this action button is clicked.
+   */
+  readonly launchURL?: string;
+}
+
+interface NotificationClickResult {
+  readonly actionId?: string;
+  readonly url?: string;
+}
+
+type NotificationEventTypeMap = {
+  'click': NotificationClickEvent;
+  'foregroundWillDisplay': NotificationForegroundWillDisplayEvent;
+  'dismiss': NotificationDismissEvent;
+  'permissionChange': boolean;
+  'permissionPromptDisplay': void;
+}
+
+interface NotificationForegroundWillDisplayEvent {
+  readonly notification: IOSNotification;
+  preventDefault(): void;
+}
+
+interface NotificationDismissEvent {
+  notification: IOSNotification;
+}
+
+interface NotificationClickEvent {
+  readonly notification: IOSNotification;
+  readonly result: NotificationClickResult;
+}
+
 
 interface IInitObject {
   appId: string;
@@ -511,7 +614,7 @@ let isOneSignalInitialized = false;
 // OneSignal#init.
 let isOneSignalScriptFailed = false;
 
-if (window) {
+if (typeof window !== 'undefined') {
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   addSDKScript();
 }

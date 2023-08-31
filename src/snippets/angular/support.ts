@@ -16,7 +16,7 @@ let isOneSignalInitialized = false;
 // OneSignal#init.
 let isOneSignalScriptFailed = false;
 
-if (window) {
+if (typeof window !== 'undefined') {
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   addSDKScript();
 }
