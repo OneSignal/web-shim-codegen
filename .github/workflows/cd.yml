@@ -41,7 +41,7 @@ jobs:
           tar zxvvf dist/onesignal-ngx.tgz -C __clone/
           cd __clone/onesignal-ngx
           while read file; do git rm "$file"; done < ../../build/onesignal-ngx.rmfiles
-          git add .
+          git add -A
           if git commit -m "Update onesignal-ngx"; then
             echo "onesignal-ngx repository has been updated"
           else
@@ -81,7 +81,7 @@ jobs:
           tar zxvvf dist/react.tgz -C __clone/
           cd __clone/react
           while read file; do git rm "$file"; done < ../../build/react.rmfiles
-          git add .
+          git add -A
           if git commit -m "Update react-onesignal"; then
             echo "react-onesignal repository has been updated"
           else
@@ -120,7 +120,7 @@ jobs:
           tar zxvvf dist/vue/v2.tgz -C __clone/
           cd __clone/vue/v2
           while read file; do git rm "$file"; done < ../../build/vue/v2.rmfiles
-          git add .
+          git add -A
           if git commit -m "Update onesignal-vue"; then
             echo "onesignal-vue repository has been updated"
           else
@@ -159,7 +159,7 @@ jobs:
           tar zxvvf dist/vue/v3.tgz -C __clone/
           cd __clone/vue/v3
           while read file; do git rm "$file"; done < ../../build/vue/v3.rmfiles
-          git add .
+          git add -A
           if git commit -m "Update onesignal-vue3"; then
             echo "onesignal-vue3 repository has been updated"
           else
