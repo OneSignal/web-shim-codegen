@@ -53,13 +53,6 @@ mv build/vue/v2.tgz dist/vue/v2.tgz
 mv build/vue/v3.tgz dist/vue/v3.tgz
 echo 'Done.'
 
-echo 'Diff between current build and the content of the downstream repo.'
-git diff --diff-filter=RD --name-status --no-index outputs/onesignal-ngx build/onesignal-ngx | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/onesignal-ngx.rmfiles  || true
-git diff --diff-filter=RD --name-status --no-index outputs/react build/react | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/react.rmfiles || true
-git diff --diff-filter=RD --name-status --no-index outputs/vue/v2 build/vue/v2 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue/v2.rmfiles  || true
-git diff --diff-filter=RD --name-status --no-index outputs/vue/v3 build/vue/v3 | cut -f 2 | perl -pe 's{outputs/[^/]+/}{}' >> build/vue/v3.rmfiles  || true
-echo 'Done.'
-
 # This is required to use 'npm link' when testing local builds
 # We do this last so unneed files are not included in the releases.
 echo 'yarn init for local dev testing'
