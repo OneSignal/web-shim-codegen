@@ -48,7 +48,7 @@ jobs:
             echo "onesignal-ngx repository has NOT been updated, no changes to commit"
           fi
       - name: "[onesignal-ngx] Push"
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.6.0
         with:
           repository: OneSignal/onesignal-ngx
           directory: __clone/onesignal-ngx
@@ -88,7 +88,7 @@ jobs:
             echo "react-onesignal repository has NOT been updated, no changes to commit"
           fi
       - name: "[react-onesignal] Push"
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.6.0
         with:
           repository: OneSignal/react-onesignal
           directory: __clone/react
@@ -127,7 +127,7 @@ jobs:
             echo "onesignal-vue repository has NOT been updated, no changes to commit"
           fi
       - name: "[onesignal-vue] Push"
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.6.0
         with:
           repository: OneSignal/onesignal-vue
           directory: __clone/vue/v2
@@ -166,7 +166,7 @@ jobs:
             echo "onesignal-vue3 repository has NOT been updated, no changes to commit"
           fi
       - name: "[onesignal-vue3] Push"
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.6.0
         with:
           repository: OneSignal/onesignal-vue3
           directory: __clone/vue/v3
