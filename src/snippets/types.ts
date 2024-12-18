@@ -70,7 +70,7 @@ export const OS_NOTIFICATION = `interface IOSNotification {
    * If this value is the same as existing notification, it will replace it
    * Can be set when creating the notification with "Web Push Topic" on the dashboard
    * or web_push_topic from the REST API.
-  */
+   */
   readonly topic?: string;
 
   /**
