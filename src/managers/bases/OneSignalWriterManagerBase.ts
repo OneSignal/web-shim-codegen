@@ -30,8 +30,8 @@ const PARENT_PATH_FOR_NAMESPACE_MAP: { [key: string]: string } = {
 };
 
 const PROPERTY_DEFAULT_MAP: { [key: string]: string } = {
-  permissionNative: ` ?? 'default';`,
-  permission: ` ?? false;`
+  permissionNative: ` ?? 'default'`,
+  permission: ` ?? false`
 };
 
 export abstract class OneSignalWriterManagerBase extends CodeWriter {
@@ -86,7 +86,7 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
     if (properties) {
       properties.forEach(prop => {
         const defaultValue = PROPERTY_DEFAULT_MAP[prop.name] ?? '';
-        this.writeLine(`\tget ${prop.name}(): ${prop.type} { return window.OneSignal?.${PARENT_PATH_FOR_NAMESPACE_MAP[namespaceName] ?? ''}${namespaceName}?.${prop.name}${defaultValue} },`);
+        this.writeLine(`\tget ${prop.name}(): ${prop.type} { return window.OneSignal?.${PARENT_PATH_FOR_NAMESPACE_MAP[namespaceName] ?? ''}${namespaceName}?.${prop.name}${defaultValue}; },`);
       });
     }
 
