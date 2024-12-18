@@ -70,7 +70,7 @@ export const OS_NOTIFICATION = `interface IOSNotification {
    * If this value is the same as existing notification, it will replace it
    * Can be set when creating the notification with "Web Push Topic" on the dashboard
    * or web_push_topic from the REST API.
-  */
+   */
   readonly topic?: string;
 
   /**
@@ -106,7 +106,7 @@ export const NOTIFICATION_EVENT_TYPE_MAP = `type NotificationEventTypeMap = {
   'dismiss': NotificationDismissEvent;
   'permissionChange': boolean;
   'permissionPromptDisplay': void;
-}
+};
 `;
 export const NOTIFICATION_DISMISS_EVENT = `interface NotificationDismissEvent {
   notification: IOSNotification;
@@ -117,3 +117,10 @@ export const NOTIFICATION_CLICK_EVENT = `interface NotificationClickEvent {
   readonly result: NotificationClickResult;
 }
 `;
+export const USER_CHANGE_EVENT = `type UserChangeEvent = {
+  current: UserNamespaceProperties;
+};`;
+export const USER_NAMESPACE_PROPERTIES = `type UserNamespaceProperties = {
+  onesignalId: string | undefined;
+  externalId: string | undefined;
+};`;

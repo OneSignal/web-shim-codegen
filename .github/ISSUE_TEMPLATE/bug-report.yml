@@ -1,0 +1,42 @@
+name: 🪳 Bug report
+description: File a bug report
+title: '[Bug]: '
+labels: ['bug', 'triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Provide a thorough description of whats going on.
+      placeholder: e.g. The types need to be updated
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to reproduce?
+      description: Provide as much detail as posible to reproduce the issue.
+      placeholder: |
+        1. Modify file X
+        2. Run script Y
+      render: Markdown
+    validations:
+      required: true
+  - type: textarea
+    id: what-are-expectations
+    attributes:
+      label: What did you expect to happen?
+      description: Also tell us, what did you expect to happen?
+      placeholder: I expected the code to generate
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: Shell

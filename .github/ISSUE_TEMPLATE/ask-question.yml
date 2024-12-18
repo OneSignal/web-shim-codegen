@@ -1,0 +1,13 @@
+name: 🙋‍♂️ Ask a question
+description: Tell us what's on your mind
+title: '[question]: '
+labels: ['question']
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: How can we help?
+      description: Specific question regarding integrating this code generator.
+      placeholder: How do I...?
+    validations:
+      required: true

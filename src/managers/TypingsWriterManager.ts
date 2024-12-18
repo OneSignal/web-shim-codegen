@@ -17,7 +17,9 @@ import {
   SLIDEDOWN_EVENT_NAME,
   SLIDEDOWN_OPTIONS,
   SUBSCRIPTION_CHANGE_EVENT,
-  TAG_CATEGORY } from "../snippets/types";
+  TAG_CATEGORY, 
+  USER_CHANGE_EVENT,
+  USER_NAMESPACE_PROPERTIES} from "../snippets/types";
 import { INTERFACE_PREFIX } from "../support/constants";
 import { ReaderManager } from "./ReaderManager";
 
@@ -96,6 +98,8 @@ export class TypingsWriterManager extends CodeWriter {
     this.writeLine(prefix+NOTIFICATION_FOREGROUND_WILL_DISPLAY_EVENT);
     this.writeLine(prefix+NOTIFICATION_DISMISS_EVENT);
     this.writeLine(prefix+NOTIFICATION_CLICK_EVENT);
+    this.writeLine(prefix+USER_CHANGE_EVENT);
+    this.writeLine(prefix+USER_NAMESPACE_PROPERTIES);
     this.writeLine();
     this.writeLine(initObjectInterfaceContents);
   }
