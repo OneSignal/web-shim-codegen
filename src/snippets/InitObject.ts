@@ -11,10 +11,11 @@ interface IInitObject {
   autoRegister?: boolean;
   notificationClickHandlerMatch?: string;
   notificationClickHandlerAction?: string;
+  path?: string;
   serviceWorkerParam?: { scope: string };
   serviceWorkerPath?: string;
+  serviceWorkerOverrideForTypical?: boolean;
   serviceWorkerUpdaterPath?: string;
-  path?: string;
   allowLocalhostAsSecureOrigin?: boolean;
   [key: string]: any;
 }
