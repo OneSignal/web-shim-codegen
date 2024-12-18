@@ -117,3 +117,10 @@ export const NOTIFICATION_CLICK_EVENT = `interface NotificationClickEvent {
   readonly result: NotificationClickResult;
 }
 `;
+export const USER_CHANGE_EVENT = `type UserChangeEvent = {
+  current: UserNamespaceProperties;
+};`;
+export const USER_NAMESPACE_PROPERTIES = `type UserNamespaceProperties = {
+  onesignalId: string | undefined;
+  externalId: string | undefined;
+};`;
