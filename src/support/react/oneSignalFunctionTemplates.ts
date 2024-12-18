@@ -1,36 +1,54 @@
 import { IFunctionSignature } from "../../models/FunctionSignature";
-import { getChainedNamespaceString, spreadArgs, spreadArgsWithTypes } from "../utils";
+import { getChainedNamespaceString, hasNonVoidReturnType, spreadArgs, spreadArgsWithTypes } from "../utils";
 
-export const reactOneSignalAsyncFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceChain: string[]) => {
+export const reactOneSignalAsyncFunctionTemplate = (
+  sig: IFunctionSignature,
+  uniqueFunctionName: string,
+  namespaceChain: string[]
+): string => {
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
+
   return `
-function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType} {
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
-      reject();
+      reject(new Error('OneSignal script failed to load.'));
+      return;
     }
 
     try {
       window.OneSignalDeferred?.push((OneSignal: IOneSignalOneSignal) => {
-        OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
-          .then((value: any) => resolve(value))
+        ${hasNonVoidReturnType(sig) ? 'resolve(' : ''}OneSignal.${chainedNamespaceString}${
+    chainedNamespaceString !== '' ? '.' : ''
+  }${sig.name}(${spreadArgs(args)})${hasNonVoidReturnType(sig) ? ')' : '.then(() => resolve())'}
           .catch((error: any) => reject(error));
       });
     } catch (error) {
       reject(error);
     }
   });
-}`
+}
+`.trim();
 };
 
-export const reactOneSignalFunctionTemplate = (sig: IFunctionSignature, uniqueFunctionName: string, namespaceChain: string[]) => {
+export const reactOneSignalFunctionTemplate = (
+  sig: IFunctionSignature,
+  uniqueFunctionName: string,
+  namespaceChain: string[]
+): string => {
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
+
   return `
 function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
+  ${hasNonVoidReturnType(sig) ? `let retVal: ${sig.returnType};` : ''}
   window.OneSignalDeferred?.push((OneSignal: IOneSignalOneSignal) => {
-    OneSignal.${chainedNamespaceString}${chainedNamespaceString !== '' ? '.' : ''}${sig.name}(${spreadArgs(args)})
+    ${hasNonVoidReturnType(sig) ? 'retVal = ' : ''}OneSignal.${chainedNamespaceString}${
+    chainedNamespaceString !== '' ? '.' : ''
+  }${sig.name}(${spreadArgs(args)});
   });
-}`
+  ${hasNonVoidReturnType(sig) ? 'return retVal;' : ''}
+}
+`.trim();
 };

@@ -121,3 +121,10 @@ function capitalizeFirstLetter(str: string): string {
 export function generateUniqueFunctionName(namespaceName: string, functionName: string): string {
   return `${toCamelCase(namespaceName)}${capitalizeFirstLetter(functionName)}`;
 }
+
+export function hasNonVoidReturnType(sig: IFunctionSignature): boolean {
+  if (sig.isAsync) {
+    return sig.returnType !== 'Promise<void>';
+  }
+  return sig.returnType !== 'void';
+}
