@@ -106,7 +106,7 @@ export const NOTIFICATION_EVENT_TYPE_MAP = `type NotificationEventTypeMap = {
   'dismiss': NotificationDismissEvent;
   'permissionChange': boolean;
   'permissionPromptDisplay': void;
-}
+};
 `;
 export const NOTIFICATION_DISMISS_EVENT = `interface NotificationDismissEvent {
   notification: IOSNotification;
