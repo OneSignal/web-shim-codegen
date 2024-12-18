@@ -1,6 +1,6 @@
 {
   "name": "web-shim-codegen",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Used to build Web SDK libraries for various web frameworks",
   "main": "index.js",
   "scripts": {
