@@ -18,6 +18,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: "[Setup] Check Dependencies"
+        run: |
+          nvm ls
+          node --version
+          yarn list @types/node typescript --depth=0
       - name: "[Setup] Bootstrap Dependencies"
         run: scripts/bootstrap-dependencies
       - name: "[Setup] Git"
