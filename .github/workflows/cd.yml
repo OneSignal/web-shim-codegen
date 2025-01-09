@@ -22,7 +22,6 @@ jobs:
         run: scripts/bootstrap-dependencies
       - name: "[Setup] Check Dependencies"
         run: |
-          nvm ls
           node --version
           yarn list @types/node typescript --depth=0
       - name: "[Setup] Git"
