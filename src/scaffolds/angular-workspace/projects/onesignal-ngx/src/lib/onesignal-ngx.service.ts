@@ -147,7 +147,7 @@ interface IInitObject {
   [key: string]: any;
 }
 
-interface IOneSignalOneSignal {
+export interface IOneSignalOneSignal {
 	Slidedown: IOneSignalSlidedown;
 	Notifications: IOneSignalNotifications;
 	Session: IOneSignalSession;
@@ -159,7 +159,7 @@ interface IOneSignalOneSignal {
 	setConsentGiven(consent: boolean): Promise<void>;
 	setConsentRequired(requiresConsent: boolean): Promise<void>;
 }
-interface IOneSignalNotifications {
+export interface IOneSignalNotifications {
 	permissionNative: NotificationPermission;
 	permission: boolean;
 	setDefaultUrl(url: string): Promise<void>;
@@ -169,7 +169,7 @@ interface IOneSignalNotifications {
 	addEventListener<K extends NotificationEventName>(event: K, listener: (obj: NotificationEventTypeMap[K]) => void): void;
 	removeEventListener<K extends NotificationEventName>(event: K, listener: (obj: NotificationEventTypeMap[K]) => void): void;
 }
-interface IOneSignalSlidedown {
+export interface IOneSignalSlidedown {
 	promptPush(options?: AutoPromptOptions): Promise<void>;
 	promptPushCategories(options?: AutoPromptOptions): Promise<void>;
 	promptSms(options?: AutoPromptOptions): Promise<void>;
@@ -178,14 +178,14 @@ interface IOneSignalSlidedown {
 	addEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 	removeEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 }
-interface IOneSignalDebug {
+export interface IOneSignalDebug {
 	setLogLevel(logLevel: string): void;
 }
-interface IOneSignalSession {
+export interface IOneSignalSession {
 	sendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void>;
 	sendUniqueOutcome(outcomeName: string): Promise<void>;
 }
-interface IOneSignalUser {
+export interface IOneSignalUser {
 	onesignalId: string | undefined;
 	externalId: string | undefined;
 	PushSubscription: IOneSignalPushSubscription;
@@ -204,8 +204,10 @@ interface IOneSignalUser {
 	getTags(): { [key: string]: string };
 	addEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
 	removeEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
+	setLanguage(language: string): void;
+	getLanguage(): string;
 }
-interface IOneSignalPushSubscription {
+export interface IOneSignalPushSubscription {
 	id: string | null | undefined;
 	token: string | null | undefined;
 	optedIn: boolean | undefined;
@@ -499,6 +501,21 @@ function userRemoveEventListener(event: 'change', listener: (change: UserChangeE
   });
 }
 
+function userSetLanguage(language: string): void {
+  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+    oneSignal.User.setLanguage(language);
+  });
+}
+
+function userGetLanguage(): string {
+  let retVal: string;
+  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+    retVal = oneSignal.User.getLanguage();
+  });
+  // @ts-ignore
+  return retVal;
+}
+
 function pushSubscriptionOptIn(): Promise<void> {
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
@@ -570,6 +587,8 @@ const UserNamespace: IOneSignalUser = {
 	getTags: userGetTags,
 	addEventListener: userAddEventListener,
 	removeEventListener: userRemoveEventListener,
+	setLanguage: userSetLanguage,
+	getLanguage: userGetLanguage,
 	PushSubscription: PushSubscriptionNamespace,
 };
 
@@ -686,7 +705,7 @@ declare global {
   }
 }
 
-interface IOneSignalOneSignal {
+export interface IOneSignalOneSignal {
   [key: string]: any;
 }
 
