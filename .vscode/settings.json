@@ -1,7 +1,11 @@
 {
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "always"
+  },
   "files.exclude": {
-      "**/.git": true,
-      "**/.DS_Store": true,
-      "**/*.map": true
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/*.map": true
   }
 }
