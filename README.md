@@ -137,7 +137,7 @@ Creates a symlink to allow test projects to automatically pick up changes from b
 
 ## Rebuilding to test changes to package
 
-Run `yarn build` here to rebuild all packages
+Run `npm run build` here to rebuild all packages
 
 - Your test projects should automatically be pick up the changes, since `npm link` does a symlink for you.
 

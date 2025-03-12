@@ -5,10 +5,7 @@
 
 set -euo pipefail
 
-echo "installing yarn"
-npm install yarn -g yarn@1.22.19
-
 echo "installing yellicode generator"
 npm install @yellicode/cli -g
 
-yarn
+npm install
