@@ -204,6 +204,8 @@ interface IOneSignalUser {
 	getTags(): { [key: string]: string };
 	addEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
 	removeEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
+	setLanguage(language: string): void;
+	getLanguage(): string;
 }
 interface IOneSignalPushSubscription {
 	id: string | null | undefined;
@@ -499,6 +501,21 @@ function userRemoveEventListener(event: 'change', listener: (change: UserChangeE
   });
 }
 
+function userSetLanguage(language: string): void {
+  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+    oneSignal.User.setLanguage(language);
+  });
+}
+
+function userGetLanguage(): string {
+  let retVal: string;
+  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+    retVal = oneSignal.User.getLanguage();
+  });
+  // @ts-ignore
+  return retVal;
+}
+
 function pushSubscriptionOptIn(): Promise<void> {
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
@@ -570,6 +587,8 @@ const UserNamespace: IOneSignalUser = {
 	getTags: userGetTags,
 	addEventListener: userAddEventListener,
 	removeEventListener: userRemoveEventListener,
+	setLanguage: userSetLanguage,
+	getLanguage: userGetLanguage,
 	PushSubscription: PushSubscriptionNamespace,
 };
 
