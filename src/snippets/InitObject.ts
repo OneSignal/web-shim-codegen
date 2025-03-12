@@ -1,4 +1,4 @@
-interface IInitObject {
+export interface IInitObject {
   appId: string;
   subdomainName?: string;
   requiresUserPrivacyConsent?: boolean;

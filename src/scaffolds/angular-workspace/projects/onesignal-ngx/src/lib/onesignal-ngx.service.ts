@@ -1,13 +1,13 @@
-interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }
-interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; isInUpdateMode?: boolean; categoryOptions?: IOneSignalCategories; }
-interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }
-interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }
-type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };
-type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };
-type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';
-type SlidedownEventName = 'slidedownShown';
-type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;
-interface IOSNotification {
+export interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }
+export interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; isInUpdateMode?: boolean; categoryOptions?: IOneSignalCategories; }
+export interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }
+export interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }
+export type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };
+export type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };
+export type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';
+export type SlidedownEventName = 'slidedownShown';
+export type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;
+export interface IOSNotification {
   /**
    * The OneSignal notification id;
    *  - Primary id on OneSignal's REST API and dashboard
@@ -69,7 +69,7 @@ interface IOSNotification {
   readonly confirmDelivery: boolean;
 }
 
-interface IOSNotificationActionButton {
+export interface IOSNotificationActionButton {
   /**
    * Any unique identifier to represent which button was clicked. This is typically passed back to the service worker
    * and host page through events to identify which button was clicked.
@@ -90,12 +90,12 @@ interface IOSNotificationActionButton {
   readonly launchURL?: string;
 }
 
-interface NotificationClickResult {
+export interface NotificationClickResult {
   readonly actionId?: string;
   readonly url?: string;
 }
 
-type NotificationEventTypeMap = {
+export type NotificationEventTypeMap = {
   'click': NotificationClickEvent;
   'foregroundWillDisplay': NotificationForegroundWillDisplayEvent;
   'dismiss': NotificationDismissEvent;
@@ -103,29 +103,29 @@ type NotificationEventTypeMap = {
   'permissionPromptDisplay': void;
 };
 
-interface NotificationForegroundWillDisplayEvent {
+export interface NotificationForegroundWillDisplayEvent {
   readonly notification: IOSNotification;
   preventDefault(): void;
 }
 
-interface NotificationDismissEvent {
+export interface NotificationDismissEvent {
   notification: IOSNotification;
 }
 
-interface NotificationClickEvent {
+export interface NotificationClickEvent {
   readonly notification: IOSNotification;
   readonly result: NotificationClickResult;
 }
 
-type UserChangeEvent = {
+export type UserChangeEvent = {
   current: UserNamespaceProperties;
 };
-type UserNamespaceProperties = {
+export type UserNamespaceProperties = {
   onesignalId: string | undefined;
   externalId: string | undefined;
 };
 
-interface IInitObject {
+export interface IInitObject {
   appId: string;
   subdomainName?: string;
   requiresUserPrivacyConsent?: boolean;
