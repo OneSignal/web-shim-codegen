@@ -3,8 +3,8 @@
 paths=("onesignal-ngx" "react" "vue/v2" "vue/v3")
 
 for tgt in "${paths[@]}"; do
-  cp -a src/static/$tgt/* build/$tgt; # shim-specific files
-  rsync -t --exclude=node_modules src/static/* build/$tgt/; # shared files (e.g: issue templates)
-  rsync -tr --exclude=node_modules src/static/$tgt/.[^.]* build/$tgt/; # shim-specific hidden files
-  rsync -tr --exclude=node_modules src/static/.[^.]* build/$tgt/; # shared hidden files (e.g: issue templates)
+  rsync -q -t --exclude=node_modules src/static/* build/$tgt/            # shared files (e.g: issue templates)
+  rsync -q -tr --exclude=node_modules src/static/.[^.]* build/$tgt/      # shared hidden files (e.g: issue templates)
+  rsync -q -tr --exclude=node_modules src/static/$tgt/* build/$tgt/      # project-specific files
+  rsync -q -tr --exclude=node_modules src/static/$tgt/.[^.]* build/$tgt/ # project settings like .gitignore
 done

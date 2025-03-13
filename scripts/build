@@ -1,78 +1,52 @@
 #!/bin/bash
-
 set -euo pipefail
 
 # Fixes the following error when "yarn build" is run
 #   You must provide the URL of lib/mappings.wasm
 export NODE_OPTIONS=--no-experimental-fetch
 
-echo "Linting..."
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+log() {
+  echo -e "\n${bold}$1${normal}"
+}
+
+cleanup() {
+  rm -rf build ts-to-es6 dist
+  mkdir -p {build,dist}/vue
+}
+
+log "🔍 Linting"
 npm run lint
-echo 'Done.'
 
-echo "Cleanup..."
-rm -rf build
-rm -rf ts-to-es6
-echo 'Done.'
+log "🧹 Cleanup"
+cleanup
 
-mkdir -p dist/vue
-
-echo "Transpiling..."
+log "🧵 Transpiling"
 tsc
-echo 'Done.'
 
-echo "Code-generation initiating..."
+log "⚡️ Code generation"
 yellicode
-echo 'Done.'
 
-echo 'Bundling Angular SDK...'
-cd src/scaffolds/angular-workspace
-npm install && npm run build -- --configuration=production
-cp -R dist/onesignal-ngx ../../../build
-cd ../../../
-echo 'Done.'
+log '🧶 Bundling Angular SDK'
+(cd src/scaffolds/angular-workspace &&
+  npm i &&
+  npm run build -- --configuration=production &&
+  cp -R dist/onesignal-ngx ../../../build)
 
-echo 'Copying static files...'
+log "📄 Copying static files"
 ./scripts/copy-static
-echo 'Done.'
 
-echo 'Downstream repos setup.'
-cd build
-echo 'Archiving...'
-tar cvfz onesignal-ngx.tgz onesignal-ngx
-tar cvfz react.tgz react
-tar cvfz vue/v2.tgz vue/v2
-tar cvfz vue/v3.tgz vue/v3
-echo 'Done.'
-cd ..
-
-echo 'Moving build files...'
-mv build/onesignal-ngx.tgz dist/onesignal-ngx.tgz
-mv build/react.tgz dist/react.tgz
-mv build/vue/v2.tgz dist/vue/v2.tgz
-mv build/vue/v3.tgz dist/vue/v3.tgz
-echo 'Done.'
+log "📦 Archiving"
+tar cfz dist/onesignal-ngx.tgz build/onesignal-ngx &
+tar cfz dist/react.tgz build/react &
+tar cfz dist/vue/v2.tgz build/vue/v2 &
+tar cfz dist/vue/v3.tgz build/vue/v3
 
 # This is required to use 'npm link' when testing local builds
 # We do this last so unneed files are not included in the releases.
-echo 'npm init for local dev testing'
+log '👀 Install and Linting'
+concurrently --kill-others-on-fail "npm ci --loglevel=error --prefix=build/vue/v3" "npm ci --loglevel=error --prefix=build/vue/v2" "npm ci --loglevel=error --prefix=build/react" "npm i --prefix=build/onesignal-ngx"
 
-echo 'npm init Vue3...'
-cd build/vue/v3
-npm install
-cd ../../../
-
-echo 'npm init Vue2...'
-cd build/vue/v2
-npm install
-cd ../../../
-
-echo 'npm init react...'
-cd build/react
-npm install
-cd ../../
-
-echo 'npm init ngx...'
-cd build/onesignal-ngx
-npm install
-cd ../../
+log '✅ Done!'
