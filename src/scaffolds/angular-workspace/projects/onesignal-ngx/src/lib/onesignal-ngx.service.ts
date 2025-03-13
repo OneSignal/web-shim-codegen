@@ -705,7 +705,7 @@ declare global {
   }
 }
 
-interface IOneSignalOneSignal {
+export interface IOneSignalOneSignal {
   [key: string]: any;
 }
 
