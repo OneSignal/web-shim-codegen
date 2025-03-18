@@ -38,18 +38,16 @@ Versions 3.0 were recently released and include breaking changes. See the [Migra
 
 ## Install
 
-You can use `yarn` or `npm`.
-
-### Yarn
-
-```bash
-yarn add react-onesignal
-```
-
 ### npm
 
 ```bash
 npm install --save react-onesignal
+```
+
+### yarn
+
+```bash
+yarn add react-onesignal
 ```
 
 ---
@@ -59,9 +57,9 @@ npm install --save react-onesignal
 Initialize OneSignal with your `appId` via the `options` parameter:
 
 ```js
-import OneSignal from "react-onesignal";
+import OneSignal from 'react-onesignal';
 
-OneSignal.init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" });
+OneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' });
 ```
 
 The `init` function returns a promise that resolves when OneSignal is loaded.
@@ -69,7 +67,7 @@ The `init` function returns a promise that resolves when OneSignal is loaded.
 **Examples**
 
 ```js
-await OneSignal.init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" });
+await OneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' });
 // do other stuff
 ```
 
@@ -77,7 +75,7 @@ await OneSignal.init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" });
 
 ```js
 const [initialized, setInitialized] = useState(false);
-OneSignal.init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" }).then(() => {
+OneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' }).then(() => {
   setInitialized(true);
   OneSignal.Slidedown.promptPush();
   // do other stuff
@@ -192,8 +190,8 @@ Use listeners to react to OneSignal-related events:
 **Example**
 
 ```js
-OneSignal.Notifications.addEventListener("click", (event) => {
-  console.log("The notification was clicked!", event);
+OneSignal.Notifications.addEventListener('click', (event) => {
+  console.log('The notification was clicked!', event);
 });
 ```
 

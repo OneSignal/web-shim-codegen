@@ -38,16 +38,16 @@ You can find more information on OneSignal [here](https://onesignal.com/).
 
 ## Install
 
-### Yarn
-
-```bash
-yarn add onesignal-ngx
-```
-
 ### npm
 
 ```bash
 npm install --save onesignal-ngx
+```
+
+### yarn
+
+```bash
+yarn add onesignal-ngx
 ```
 
 ---
@@ -55,7 +55,7 @@ npm install --save onesignal-ngx
 ## Library setup
 
 ```js
-import { OneSignal } from "onesignal-ngx";
+import { OneSignal } from 'onesignal-ngx';
 ```
 
 Initialize OneSignal with your `appId` via the `options` parameter:
@@ -82,13 +82,13 @@ The `init` function returns a promise that resolves when OneSignal is loaded.
 **Examples**
 
 ```js
-await this.oneSignal.init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" });
+await this.oneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' });
 // do other stuff
 ```
 
 ```js
 this.oneSignal
-  .init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" })
+  .init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' })
   .then(() => {
     // do other stuff
   });
@@ -139,11 +139,11 @@ In this distribution, you can specify the parameters via the following:
 
 ```js
 this.oneSignal.init({
-  appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
   serviceWorkerParam: {
-    scope: "<path scope>",
+    scope: '<path scope>',
   },
-  serviceWorkerPath: "<path>",
+  serviceWorkerPath: '<path>',
 });
 ```
 
@@ -217,8 +217,8 @@ Use listeners to react to OneSignal-related events:
 **Example**
 
 ```js
-this.oneSignal.Notifications.addEventListener("click", (event) => {
-  console.log("The notification was clicked!", event);
+this.oneSignal.Notifications.addEventListener('click', (event) => {
+  console.log('The notification was clicked!', event);
 });
 ```
 

@@ -46,7 +46,7 @@ Make sure you install a plugin version compatible with your Vue environment.
 
 ## Install
 
-You can use `yarn` or `npm`.
+Run `npm install`
 
 ### Yarn
 
@@ -60,6 +60,12 @@ yarn add @onesignal/onesignal-vue3
 npm install --save @onesignal/onesignal-vue3
 ```
 
+### Yarn
+
+```bash
+yarn add @onesignal/onesignal-vue3
+```
+
 ---
 
 ## Usage
@@ -70,28 +76,28 @@ In Vue 3, you can pass in the OneSignal initialization options directly as an ar
 
 ```js
 // main
-import { createApp } from "vue";
-import OneSignalVuePlugin from "@onesignal/onesignal-vue3";
+import { createApp } from 'vue';
+import OneSignalVuePlugin from '@onesignal/onesignal-vue3';
 
 createApp(App)
   .use(OneSignalVuePlugin, {
-    appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
   })
-  .mount("#app");
+  .mount('#app');
 ```
 
 or
 
 ```js
 //main
-import { createApp } from "vue";
-import OneSignalVuePlugin from "@onesignal/onesignal-vue3";
+import { createApp } from 'vue';
+import OneSignalVuePlugin from '@onesignal/onesignal-vue3';
 
-createApp(App).use(OneSignalVuePlugin).mount("#app");
+createApp(App).use(OneSignalVuePlugin).mount('#app');
 
 // component
 this.$OneSignal.init({
-  appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
 });
 ```
 
@@ -110,13 +116,13 @@ The `init` function returns a promise that resolves when OneSignal is loaded.
 **Examples**
 
 ```js
-await this.$OneSignal.init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" });
+await this.$OneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' });
 // do other stuff
 ```
 
 ```js
 this.$OneSignal
-  .init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" })
+  .init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' })
   .then(() => {
     // do other stuff
   });
@@ -234,8 +240,8 @@ Use listeners to react to OneSignal-related events:
 **Example**
 
 ```js
-this.$OneSignal.Notifications.addEventListener("change", (event) => {
-  console.log("The notification was clicked!", event);
+this.$OneSignal.Notifications.addEventListener('change', (event) => {
+  console.log('The notification was clicked!', event);
 });
 ```
 

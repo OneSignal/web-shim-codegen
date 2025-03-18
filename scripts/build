@@ -7,7 +7,7 @@ set -euo pipefail
 export NODE_OPTIONS=--no-experimental-fetch
 
 echo "Linting..."
-yarn run lint
+npm run lint
 echo 'Done.'
 
 echo "Cleanup..."
@@ -27,7 +27,7 @@ echo 'Done.'
 
 echo 'Bundling Angular SDK...'
 cd src/scaffolds/angular-workspace
-yarn && yarn build --configuration production
+npm install && npm run build -- --configuration=production
 cp -R dist/onesignal-ngx ../../../build
 cd ../../../
 echo 'Done.'
@@ -55,24 +55,24 @@ echo 'Done.'
 
 # This is required to use 'npm link' when testing local builds
 # We do this last so unneed files are not included in the releases.
-echo 'yarn init for local dev testing'
+echo 'npm init for local dev testing'
 
-echo 'yarn init Vue3...'
+echo 'npm init Vue3...'
 cd build/vue/v3
-yarn
+npm install
 cd ../../../
 
-echo 'yarn init Vue2...'
+echo 'npm init Vue2...'
 cd build/vue/v2
-yarn
+npm install
 cd ../../../
 
-echo 'yarn init react...'
+echo 'npm init react...'
 cd build/react
-yarn
+npm install
 cd ../../
 
-echo 'yarn init ngx...'
+echo 'npm init ngx...'
 cd build/onesignal-ngx
-yarn
+npm install
 cd ../../

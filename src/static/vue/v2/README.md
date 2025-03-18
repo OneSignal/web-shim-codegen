@@ -49,18 +49,16 @@ Make sure you install a plugin version compatible with your Vue environment.
 
 ## Install
 
-You can use `yarn` or `npm`.
+### npm
+
+```bash
+npm install --save onesignal-vue
+```
 
 ### Yarn
 
 ```bash
 yarn add onesignal-vue
-```
-
-### npm
-
-```bash
-npm install --save onesignal-vue
 ```
 
 ---
@@ -70,8 +68,8 @@ npm install --save onesignal-vue
 ## Plugin setup
 
 ```js
-import Vue from "vue";
-import OneSignalVue from "onesignal-vue";
+import Vue from 'vue';
+import OneSignalVue from 'onesignal-vue';
 
 Vue.use(OneSignalVue);
 ```
@@ -82,9 +80,9 @@ Initialize OneSignal with your `appId` via the `options` parameter:
 new Vue({
   render: (h) => h(App),
   beforeMount() {
-    this.$OneSignal.init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" });
+    this.$OneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' });
   },
-}).$mount("#app");
+}).$mount('#app');
 ```
 
 The `init` function returns a promise that resolves when OneSignal is loaded.
@@ -92,13 +90,13 @@ The `init` function returns a promise that resolves when OneSignal is loaded.
 **Examples**
 
 ```js
-await this.$OneSignal.init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" });
+await this.$OneSignal.init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' });
 // do other stuff
 ```
 
 ```js
 this.$OneSignal
-  .init({ appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" })
+  .init({ appId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' })
   .then(() => {
     // do other stuff
   });
@@ -111,7 +109,7 @@ For code completion to work correctly, make sure you import the plugin (e.g: in 
 ```vue
 <script>
 export default {
-  name: "HelloWorld",
+  name: 'HelloWorld',
   props: {
     msg: String,
   },
@@ -231,8 +229,8 @@ Use listeners to react to OneSignal-related events:
 **Example**
 
 ```js
-this.$OneSignal.Notifications.addEventListener("click", (event) => {
-  console.log("The notification was clicked!", event);
+this.$OneSignal.Notifications.addEventListener('click', (event) => {
+  console.log('The notification was clicked!', event);
 });
 ```
 
