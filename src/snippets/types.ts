@@ -1,11 +1,11 @@
-export const AUTO_PROMPT_OPTIONS = `interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }`;
-export const SLIDEDOWN_OPTIONS = `interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; isInUpdateMode?: boolean; categoryOptions?: IOneSignalCategories; }`;
-export const CATEGORY_OPTIONS = `interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }`;
-export const TAG_CATEGORY = `interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }`;
-export const PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES = `type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };`;
-export const SUBSCRIPTION_CHANGE_EVENT = `type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };`;
-export const NOTIFICATION_EVENT_NAME = `type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';`
-export const NOTIFICATION_BUTTON_ACTION_BUTTON = `interface IOSNotificationActionButton {
+export const AUTO_PROMPT_OPTIONS = `export interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }`;
+export const SLIDEDOWN_OPTIONS = `export interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; isInUpdateMode?: boolean; categoryOptions?: IOneSignalCategories; }`;
+export const CATEGORY_OPTIONS = `export interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }`;
+export const TAG_CATEGORY = `export interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }`;
+export const PUSH_SUBSCRIPTION_NAMESPACE_PROPERTIES = `export type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };`;
+export const SUBSCRIPTION_CHANGE_EVENT = `export type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };`;
+export const NOTIFICATION_EVENT_NAME = `export type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';`;
+export const NOTIFICATION_BUTTON_ACTION_BUTTON = `export interface IOSNotificationActionButton {
   /**
    * Any unique identifier to represent which button was clicked. This is typically passed back to the service worker
    * and host page through events to identify which button was clicked.
@@ -25,10 +25,10 @@ export const NOTIFICATION_BUTTON_ACTION_BUTTON = `interface IOSNotificationActio
    */
   readonly launchURL?: string;
 }
-`
-export const SLIDEDOWN_EVENT_NAME = `type SlidedownEventName = 'slidedownShown';`;
-export const ONESIGNAL_DEFERRED_CALLBACK = `type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;`;
-export const OS_NOTIFICATION = `interface IOSNotification {
+`;
+export const SLIDEDOWN_EVENT_NAME = `export type SlidedownEventName = 'slidedownShown';`;
+export const ONESIGNAL_DEFERRED_CALLBACK = `export type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;`;
+export const OS_NOTIFICATION = `export interface IOSNotification {
   /**
    * The OneSignal notification id;
    *  - Primary id on OneSignal's REST API and dashboard
@@ -90,17 +90,17 @@ export const OS_NOTIFICATION = `interface IOSNotification {
   readonly confirmDelivery: boolean;
 }
 `;
-export const NOTIFICATION_CLICK_RESULT = `interface NotificationClickResult {
+export const NOTIFICATION_CLICK_RESULT = `export interface NotificationClickResult {
   readonly actionId?: string;
   readonly url?: string;
 }
 `;
-export const NOTIFICATION_FOREGROUND_WILL_DISPLAY_EVENT = `interface NotificationForegroundWillDisplayEvent {
+export const NOTIFICATION_FOREGROUND_WILL_DISPLAY_EVENT = `export interface NotificationForegroundWillDisplayEvent {
   readonly notification: IOSNotification;
   preventDefault(): void;
 }
 `;
-export const NOTIFICATION_EVENT_TYPE_MAP = `type NotificationEventTypeMap = {
+export const NOTIFICATION_EVENT_TYPE_MAP = `export type NotificationEventTypeMap = {
   'click': NotificationClickEvent;
   'foregroundWillDisplay': NotificationForegroundWillDisplayEvent;
   'dismiss': NotificationDismissEvent;
@@ -108,19 +108,19 @@ export const NOTIFICATION_EVENT_TYPE_MAP = `type NotificationEventTypeMap = {
   'permissionPromptDisplay': void;
 };
 `;
-export const NOTIFICATION_DISMISS_EVENT = `interface NotificationDismissEvent {
+export const NOTIFICATION_DISMISS_EVENT = `export interface NotificationDismissEvent {
   notification: IOSNotification;
 }
 `;
-export const NOTIFICATION_CLICK_EVENT = `interface NotificationClickEvent {
+export const NOTIFICATION_CLICK_EVENT = `export interface NotificationClickEvent {
   readonly notification: IOSNotification;
   readonly result: NotificationClickResult;
 }
 `;
-export const USER_CHANGE_EVENT = `type UserChangeEvent = {
+export const USER_CHANGE_EVENT = `export type UserChangeEvent = {
   current: UserNamespaceProperties;
 };`;
-export const USER_NAMESPACE_PROPERTIES = `type UserNamespaceProperties = {
+export const USER_NAMESPACE_PROPERTIES = `export type UserNamespaceProperties = {
   onesignalId: string | undefined;
   externalId: string | undefined;
 };`;

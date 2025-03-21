@@ -1,13 +1,13 @@
-interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }
-interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; isInUpdateMode?: boolean; categoryOptions?: IOneSignalCategories; }
-interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }
-interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }
-type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };
-type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };
-type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';
-type SlidedownEventName = 'slidedownShown';
-type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;
-interface IOSNotification {
+export interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }
+export interface IOneSignalAutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; isInUpdateMode?: boolean; categoryOptions?: IOneSignalCategories; }
+export interface IOneSignalCategories { positiveUpdateButton: string; negativeUpdateButton: string; savingButtonText: string; errorButtonText: string; updateMessage: string; tags: IOneSignalTagCategory[]; }
+export interface IOneSignalTagCategory { tag: string; label: string; checked?: boolean; }
+export type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };
+export type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };
+export type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';
+export type SlidedownEventName = 'slidedownShown';
+export type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;
+export interface IOSNotification {
   /**
    * The OneSignal notification id;
    *  - Primary id on OneSignal's REST API and dashboard
@@ -69,7 +69,7 @@ interface IOSNotification {
   readonly confirmDelivery: boolean;
 }
 
-interface IOSNotificationActionButton {
+export interface IOSNotificationActionButton {
   /**
    * Any unique identifier to represent which button was clicked. This is typically passed back to the service worker
    * and host page through events to identify which button was clicked.
@@ -90,12 +90,12 @@ interface IOSNotificationActionButton {
   readonly launchURL?: string;
 }
 
-interface NotificationClickResult {
+export interface NotificationClickResult {
   readonly actionId?: string;
   readonly url?: string;
 }
 
-type NotificationEventTypeMap = {
+export type NotificationEventTypeMap = {
   'click': NotificationClickEvent;
   'foregroundWillDisplay': NotificationForegroundWillDisplayEvent;
   'dismiss': NotificationDismissEvent;
@@ -103,29 +103,29 @@ type NotificationEventTypeMap = {
   'permissionPromptDisplay': void;
 };
 
-interface NotificationForegroundWillDisplayEvent {
+export interface NotificationForegroundWillDisplayEvent {
   readonly notification: IOSNotification;
   preventDefault(): void;
 }
 
-interface NotificationDismissEvent {
+export interface NotificationDismissEvent {
   notification: IOSNotification;
 }
 
-interface NotificationClickEvent {
+export interface NotificationClickEvent {
   readonly notification: IOSNotification;
   readonly result: NotificationClickResult;
 }
 
-type UserChangeEvent = {
+export type UserChangeEvent = {
   current: UserNamespaceProperties;
 };
-type UserNamespaceProperties = {
+export type UserNamespaceProperties = {
   onesignalId: string | undefined;
   externalId: string | undefined;
 };
 
-interface IInitObject {
+export interface IInitObject {
   appId: string;
   subdomainName?: string;
   requiresUserPrivacyConsent?: boolean;
@@ -147,7 +147,7 @@ interface IInitObject {
   [key: string]: any;
 }
 
-interface IOneSignalOneSignal {
+export interface IOneSignalOneSignal {
 	Slidedown: IOneSignalSlidedown;
 	Notifications: IOneSignalNotifications;
 	Session: IOneSignalSession;
@@ -159,7 +159,7 @@ interface IOneSignalOneSignal {
 	setConsentGiven(consent: boolean): Promise<void>;
 	setConsentRequired(requiresConsent: boolean): Promise<void>;
 }
-interface IOneSignalNotifications {
+export interface IOneSignalNotifications {
 	permissionNative: NotificationPermission;
 	permission: boolean;
 	setDefaultUrl(url: string): Promise<void>;
@@ -169,7 +169,7 @@ interface IOneSignalNotifications {
 	addEventListener<K extends NotificationEventName>(event: K, listener: (obj: NotificationEventTypeMap[K]) => void): void;
 	removeEventListener<K extends NotificationEventName>(event: K, listener: (obj: NotificationEventTypeMap[K]) => void): void;
 }
-interface IOneSignalSlidedown {
+export interface IOneSignalSlidedown {
 	promptPush(options?: AutoPromptOptions): Promise<void>;
 	promptPushCategories(options?: AutoPromptOptions): Promise<void>;
 	promptSms(options?: AutoPromptOptions): Promise<void>;
@@ -178,14 +178,14 @@ interface IOneSignalSlidedown {
 	addEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 	removeEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 }
-interface IOneSignalDebug {
+export interface IOneSignalDebug {
 	setLogLevel(logLevel: string): void;
 }
-interface IOneSignalSession {
+export interface IOneSignalSession {
 	sendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void>;
 	sendUniqueOutcome(outcomeName: string): Promise<void>;
 }
-interface IOneSignalUser {
+export interface IOneSignalUser {
 	onesignalId: string | undefined;
 	externalId: string | undefined;
 	PushSubscription: IOneSignalPushSubscription;
@@ -207,7 +207,7 @@ interface IOneSignalUser {
 	setLanguage(language: string): void;
 	getLanguage(): string;
 }
-interface IOneSignalPushSubscription {
+export interface IOneSignalPushSubscription {
 	id: string | null | undefined;
 	token: string | null | undefined;
 	optedIn: boolean | undefined;
@@ -705,7 +705,7 @@ declare global {
   }
 }
 
-interface IOneSignalOneSignal {
+export interface IOneSignalOneSignal {
   [key: string]: any;
 }
 
