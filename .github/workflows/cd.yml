@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  TERM: xterm-256color
+
 jobs:
   dist:
     runs-on: ubuntu-latest
@@ -30,7 +33,7 @@ jobs:
         run: |
           echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
       - name: '[Setup] Build'
-        run: bash scripts/build
+        run: npm run build
       - name: '[onesignal-ngx] Checkout'
         uses: actions/checkout@v3
         with:
