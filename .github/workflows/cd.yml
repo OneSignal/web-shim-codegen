@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 18
       - name: '[Setup] Bootstrap Dependencies'
-        run: scripts/bootstrap-dependencies
+        run: bash scripts/bootstrap-dependencies
       - name: '[Setup] Git'
         run: |
           git config --global user.email "noreply@onesignal.com"
@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
       - name: '[Setup] Build'
-        run: scripts/build
+        run: bash scripts/build
       - name: '[onesignal-ngx] Checkout'
         uses: actions/checkout@v3
         with:
