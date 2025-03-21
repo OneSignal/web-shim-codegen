@@ -2,7 +2,7 @@
   "name": "react-onesignal",
   "version": "3.1.1",
   "description": "React OneSignal Module: Make it easy to integrate OneSignal with your React App!",
-  "author": "rgomezp",
+  "type": "module",
   "contributors": [
     {
       "name": "Rodrigo Gomez-Palacio"
@@ -12,6 +12,9 @@
     },
     {
       "name": "Graham Marlow"
+    },
+    {
+      "name": "Fadi George"
     }
   ],
   "homepage": "https://onesignal.com",
