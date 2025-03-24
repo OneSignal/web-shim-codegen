@@ -39,10 +39,17 @@ log "📄 Copying static files"
 ./scripts/copy-static
 
 log "📦 Archiving"
-tar cfz dist/onesignal-ngx.tgz build/onesignal-ngx &
-tar cfz dist/react.tgz build/react &
-tar cfz dist/vue/v2.tgz build/vue/v2 &
-tar cfz dist/vue/v3.tgz build/vue/v3
+cd build
+tar cvfz onesignal-ngx.tgz onesignal-ngx
+tar cvfz react.tgz react
+tar cvfz vue/v2.tgz vue/v2
+tar cvfz vue/v3.tgz vue/v3
+cd ..
+
+mv build/onesignal-ngx.tgz dist/onesignal-ngx.tgz
+mv build/react.tgz dist/react.tgz
+mv build/vue/v2.tgz dist/vue/v2.tgz
+mv build/vue/v3.tgz dist/vue/v3.tgz
 
 # This is required to use 'npm link' when testing local builds
 # We do this last so unneed files are not included in the releases.
