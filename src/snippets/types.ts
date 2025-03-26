@@ -26,7 +26,7 @@ export const NOTIFICATION_BUTTON_ACTION_BUTTON = `export interface IOSNotificati
   readonly launchURL?: string;
 }
 `;
-export const SLIDEDOWN_EVENT_NAME = `export type SlidedownEventName = 'slidedownShown';`;
+export const SLIDEDOWN_EVENT_NAME = `export type SlidedownEventName = 'slidedownAllowClick' | 'slidedownCancelClick' | 'slidedownClosed' | 'slidedownQueued' | 'slidedownShown';`;
 export const ONESIGNAL_DEFERRED_CALLBACK = `export type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;`;
 export const OS_NOTIFICATION = `export interface IOSNotification {
   /**

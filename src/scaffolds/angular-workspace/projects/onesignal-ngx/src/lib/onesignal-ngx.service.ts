@@ -5,7 +5,7 @@ export interface IOneSignalTagCategory { tag: string; label: string; checked?: b
 export type PushSubscriptionNamespaceProperties = { id: string | null | undefined; token: string | null | undefined; optedIn: boolean; };
 export type SubscriptionChangeEvent = { previous: PushSubscriptionNamespaceProperties; current: PushSubscriptionNamespaceProperties; };
 export type NotificationEventName = 'click' | 'foregroundWillDisplay' | 'dismiss' | 'permissionChange' | 'permissionPromptDisplay';
-export type SlidedownEventName = 'slidedownShown';
+export type SlidedownEventName = 'slidedownAllowClick' | 'slidedownCancelClick' | 'slidedownClosed' | 'slidedownQueued' | 'slidedownShown';
 export type OneSignalDeferredLoadedCallback = (onesignal: IOneSignalOneSignal) => void;
 export interface IOSNotification {
   /**
