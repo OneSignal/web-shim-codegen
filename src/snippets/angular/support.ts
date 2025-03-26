@@ -7,7 +7,8 @@ function isPushSupported(): boolean {
 
 import { Injectable } from '@angular/core';
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
-const ONE_SIGNAL_SCRIPT_SRC = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
+const ONE_SIGNAL_SCRIPT_SRC =
+  'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
 
 // true if the script is successfully loaded from CDN.
 let isOneSignalInitialized = false;
@@ -34,20 +35,26 @@ function isPushNotificationsSupported(): boolean {
 
 function isMacOSSafariInIframe(): boolean {
   // Fallback detection for Safari on macOS in an iframe context
-  return window.top !== window && // isContextIframe
-  navigator.vendor === 'Apple Computer, Inc.' && // isSafari
-  navigator.platform === 'MacIntel'; // isMacOS
+  return (
+    window.top !== window && // isContextIframe
+    navigator.vendor === 'Apple Computer, Inc.' && // isSafari
+    navigator.platform === 'MacIntel'
+  ); // isMacOS
 }
 
 function supportsSafariPush(): boolean {
-  return (window.safari && typeof window.safari.pushNotification !== 'undefined') ||
-          isMacOSSafariInIframe();
+  return (
+    (window.safari && typeof window.safari.pushNotification !== 'undefined') ||
+    isMacOSSafariInIframe()
+  );
 }
 
 // Does the browser support the standard Push API
 function supportsVapidPush(): boolean {
-  return typeof PushSubscriptionOptions !== 'undefined' &&
-        PushSubscriptionOptions.prototype.hasOwnProperty('applicationServerKey');
+  return (
+    typeof PushSubscriptionOptions !== 'undefined' &&
+    PushSubscriptionOptions.prototype.hasOwnProperty('applicationServerKey')
+  );
 }
 /* E N D */
 
@@ -70,7 +77,6 @@ function addSDKScript(): void {
   document.head.appendChild(script);
 }
 
-
 declare global {
   interface Window {
     OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
@@ -86,12 +92,12 @@ export interface IOneSignalOneSignal {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OneSignal implements IOneSignalOneSignal {
   [key: string]: any;
 
-  constructor() { }
+  constructor() {}
 
   /* P U B L I C */
 
@@ -104,19 +110,22 @@ export class OneSignal implements IOneSignalOneSignal {
     }
 
     if (!options || !options.appId) {
-      throw new Error('You need to provide your OneSignal appId.');
+      return Promise.reject('You need to provide your OneSignal appId.');
     }
 
     if (!document) {
       return Promise.reject(`Document is not defined.`);
     }
 
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-        oneSignal.init(options).then(() => {
-          isOneSignalInitialized = true;
-          resolve();
-        });
+        oneSignal
+          .init(options)
+          .then(() => {
+            isOneSignalInitialized = true;
+            resolve();
+          })
+          .catch(reject);
       });
     });
   }
