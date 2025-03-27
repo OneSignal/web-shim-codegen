@@ -1,4 +1,3 @@
-// Need to keep this for the build
 import { App } from 'vue';
 
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
