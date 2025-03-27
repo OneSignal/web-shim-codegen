@@ -38,7 +38,7 @@ function addSDKScript() {
 }
 /* T Y P E   D E C L A R A T I O N S */
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   export interface ComponentCustomProperties {
     $OneSignal: IOneSignalOneSignal;
   }
