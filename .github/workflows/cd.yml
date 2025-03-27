@@ -43,6 +43,7 @@ jobs:
           path: __clone/onesignal-ngx
       - name: '[onesignal-ngx] Patch'
         run: |
+          (cd __clone/onesignal-ngx && find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +)
           tar zxvvf dist/onesignal-ngx.tgz -C __clone/
           cd __clone/onesignal-ngx
           git add -A
@@ -82,6 +83,7 @@ jobs:
           path: __clone/react
       - name: '[react-onesignal] Patch'
         run: |
+          (cd __clone/react && find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +)
           tar zxvvf dist/react.tgz -C __clone/
           cd __clone/react
           git add -A
@@ -120,8 +122,8 @@ jobs:
           path: __clone/vue/v2
       - name: '[onesignal-vue] Patch'
         run: |
+          (cd __clone/vue/v2 && find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +)
           tar zxvvf dist/vue/v2.tgz -C __clone/
-          cd __clone/vue/v2
           git add -A
           if git commit -m "feat: sync with web-shim-codegen v${{ env.PACKAGE_VERSION }}"; then
             echo "onesignal-vue repository has been updated"
@@ -158,6 +160,7 @@ jobs:
           path: __clone/vue/v3
       - name: '[onesignal-vue3] Patch'
         run: |
+          (cd __clone/vue/v3 && find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +)
           tar zxvvf dist/vue/v3.tgz -C __clone/
           cd __clone/vue/v3
           git add -A
