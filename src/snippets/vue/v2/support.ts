@@ -66,11 +66,9 @@ const init = (options: IInitObject): Promise<void> => {
   if (isOneSignalInitialized) {
     return Promise.reject(`OneSignal is already initialized.`);
   }
-
   if (!options || !options.appId) {
     return Promise.reject('You need to provide your OneSignal appId.');
   }
-
   if (!document) {
     return Promise.reject(`Document is not defined.`);
   }
