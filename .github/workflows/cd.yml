@@ -124,6 +124,7 @@ jobs:
         run: |
           bash scripts/clean-repo.sh __clone/vue/v2
           tar zxvvf dist/vue/v2.tgz -C __clone/
+          cd __clone/vue/v2
           git add -A
           if git commit -m "feat: sync with web-shim-codegen v${{ env.PACKAGE_VERSION }}"; then
             echo "onesignal-vue repository has been updated"
