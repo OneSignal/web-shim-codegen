@@ -2,7 +2,7 @@
 # Usage: clean-repo.sh <repo-path> [additional-files-to-keep...]
 
 # Default files to always keep
-default_files=(".git" "CHANGELOG.md" ".releaserc.json")
+default_files=(".git" "CHANGELOG.md")
 
 repo_path=$1
 shift # Remove first argument, leaving remaining args as additional files
