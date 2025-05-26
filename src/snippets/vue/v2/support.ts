@@ -73,6 +73,11 @@ const init = (options: IInitObject): Promise<void> => {
     return Promise.reject(`Document is not defined.`);
   }
 
+  // Handle both disabled and disable keys for welcome notification
+  if (options.welcomeNotification?.disabled !== undefined) {
+    options.welcomeNotification.disable = options.welcomeNotification.disabled;
+  }
+
   return new Promise<void>((resolve, reject) => {
     window.OneSignalDeferred?.push((OneSignal) => {
       OneSignal.init(options)

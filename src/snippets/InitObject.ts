@@ -84,8 +84,14 @@ export interface IInitObject {
   welcomeNotification?: {
     /**
      * Disables sending a welcome notification to new site visitors. If you want to disable welcome notifications, this is the only option you need.
+     * @deprecated Use 'disable' instead. This will be removed in a future version.
      */
     disabled?: boolean;
+
+    /**
+     * Disables sending a welcome notification to new site visitors. If you want to disable welcome notifications, this is the only option you need.
+     */
+    disable?: boolean;
 
     /**
      * The welcome notification's message. You can localize this to your own language.
