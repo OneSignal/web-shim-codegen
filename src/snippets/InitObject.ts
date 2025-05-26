@@ -103,7 +103,7 @@ export interface IInitObject {
      * By default, clicking the welcome notification does not open any link.
      * This is recommended because the user has just visited your site and subscribed.
      */
-    url: string;
+    url?: string;
   };
 
   /**
