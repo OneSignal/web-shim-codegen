@@ -1,34 +1,41 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <HelloWorld msg="Welcome to Your Vue.js App" />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-// eslint-disable-next-line no-unused-vars
-import OneSignal from '@onesignal/onesignal-vue3';
+import HelloWorld from './components/HelloWorld.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    HelloWorld,
   },
   mounted() {
-    this.$OneSignal.showSlidedownPrompt();
-    this.$OneSignal.on("permissionPromptDisplay", (e) => {
-      console.warn("permissionPromptDisplay", e)
-    })
-    this.$OneSignal.on("subscriptionChange", e => {
-      console.warn("subscriptionChange", e);
-    })
-    this.$OneSignal.on("notificationDisplay", e => {
-      console.warn("notificationDisplay", e);
-    })
-    this.$OneSignal.on("notificationDismiss", e => {
-      console.warn("notificationDismiss", e);
-    })
-  }
-}
+    this.$OneSignal.User.PushSubscription.optIn();
+    this.$OneSignal.Notification.addEventListener(
+      'permissionPromptDisplay',
+      (e) => {
+        console.warn('OneSignal.Notification:permissionPromptDisplay', e);
+      },
+    );
+    this.$OneSignal.User.PushSubscription.addEventListener('change', (e) => {
+      console.warn('OneSignal.User.PushSubscription:change', e);
+    });
+    this.$OneSignal.Notification.addEventListener(
+      'foregroundWillDisplay',
+      (e) => {
+        console.warn(
+          'OneSignal.Notification.addEventListener:foregroundWillDisplay',
+          e,
+        );
+      },
+    );
+    this.$OneSignal.Notification.addEventListener('dismiss', (e) => {
+      console.warn('OneSignal.Notification:dismiss', e);
+    });
+  },
+};
 </script>
 
 <style>
