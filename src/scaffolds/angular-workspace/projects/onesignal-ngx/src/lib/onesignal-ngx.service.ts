@@ -230,7 +230,7 @@ export interface IInitObject {
      * By default, clicking the welcome notification does not open any link.
      * This is recommended because the user has just visited your site and subscribed.
      */
-    url: string;
+    url?: string;
   };
 
   /**
@@ -361,7 +361,7 @@ export interface IOneSignalSlidedown {
 	removeEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 }
 export interface IOneSignalDebug {
-	setLogLevel(logLevel: string): void;
+	setLogLevel(logLevel: "trace" | "debug" | "info" | "warn" | "error" ): void;
 }
 export interface IOneSignalSession {
 	sendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void>;
