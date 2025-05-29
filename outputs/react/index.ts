@@ -108,10 +108,8 @@ const init = (options: IInitObject): Promise<void> => {
   }
 
   // Handle both disabled and disable keys for welcome notification
-  if (options.welcomeNotification) {
-    if (options.welcomeNotification.disabled !== undefined) {
-      options.welcomeNotification.disable = options.welcomeNotification.disabled;
-    }
+  if (options.welcomeNotification?.disabled !== undefined) {
+    options.welcomeNotification.disable = options.welcomeNotification.disabled;
   }
 
   return new Promise<void>((resolve, reject) => {
