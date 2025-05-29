@@ -211,8 +211,14 @@ export interface IInitObject {
   welcomeNotification?: {
     /**
      * Disables sending a welcome notification to new site visitors. If you want to disable welcome notifications, this is the only option you need.
+     * @deprecated Use 'disable' instead. This will be removed in a future version.
      */
     disabled?: boolean;
+
+    /**
+     * Disables sending a welcome notification to new site visitors. If you want to disable welcome notifications, this is the only option you need.
+     */
+    disable?: boolean;
 
     /**
      * The welcome notification's message. You can localize this to your own language.
@@ -921,6 +927,11 @@ export class OneSignal implements IOneSignalOneSignal {
 
     if (!document) {
       return Promise.reject(`Document is not defined.`);
+    }
+
+    // Handle both disabled and disable keys for welcome notification
+    if (options.welcomeNotification?.disabled !== undefined) {
+      options.welcomeNotification.disable = options.welcomeNotification.disabled;
     }
 
     return new Promise<void>((resolve, reject) => {
