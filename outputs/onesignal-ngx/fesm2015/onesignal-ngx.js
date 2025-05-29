@@ -475,6 +475,7 @@ class OneSignal {
      * @PublicApi
      */
     init(options) {
+        var _a;
         if (isOneSignalInitialized) {
             return Promise.reject(`OneSignal is already initialized.`);
         }
@@ -485,10 +486,8 @@ class OneSignal {
             return Promise.reject(`Document is not defined.`);
         }
         // Handle both disabled and disable keys for welcome notification
-        if (options.welcomeNotification) {
-            if (options.welcomeNotification.disabled !== undefined) {
-                options.welcomeNotification.disable = options.welcomeNotification.disabled;
-            }
+        if (((_a = options.welcomeNotification) === null || _a === void 0 ? void 0 : _a.disabled) !== undefined) {
+            options.welcomeNotification.disable = options.welcomeNotification.disabled;
         }
         return new Promise((resolve, reject) => {
             var _a;
