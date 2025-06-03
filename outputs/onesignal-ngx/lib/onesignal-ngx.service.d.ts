@@ -351,7 +351,7 @@ export interface IOneSignalSlidedown {
     removeEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 }
 export interface IOneSignalDebug {
-    setLogLevel(logLevel: string): void;
+    setLogLevel(logLevel: 'trace' | 'debug' | 'info' | 'warn' | 'error'): void;
 }
 export interface IOneSignalSession {
     sendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void>;
@@ -377,13 +377,13 @@ export interface IOneSignalUser {
     }): void;
     removeTag(key: string): void;
     removeTags(keys: string[]): void;
-    getTags(): {
+    getTags(): Promise<{
         [key: string]: string;
-    };
+    }>;
     addEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
     removeEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
     setLanguage(language: string): void;
-    getLanguage(): string;
+    getLanguage(): Promise<string>;
 }
 export interface IOneSignalPushSubscription {
     id: string | null | undefined;
