@@ -8,6 +8,10 @@ export const reactOneSignalAsyncFunctionTemplate = (
 ): string => {
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
+  const needsPromise = hasNonVoidReturnType(sig);
+
+  const resolvePrefix = needsPromise ? 'resolve(' : '';
+  const resolveSuffix = needsPromise ? ')' : '.then(() => resolve())';
 
   return `
 function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType} {
@@ -19,9 +23,9 @@ function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWith
 
     try {
       window.OneSignalDeferred?.push((OneSignal: IOneSignalOneSignal) => {
-        ${hasNonVoidReturnType(sig) ? 'resolve(' : ''}OneSignal.${chainedNamespaceString}${
+        ${resolvePrefix}OneSignal.${chainedNamespaceString}${
     chainedNamespaceString !== '' ? '.' : ''
-  }${sig.name}(${spreadArgs(args)})${hasNonVoidReturnType(sig) ? ')' : '.then(() => resolve())'}
+  }${sig.name}(${spreadArgs(args)})${resolveSuffix}
           .catch((error: any) => reject(error));
       });
     } catch (error) {

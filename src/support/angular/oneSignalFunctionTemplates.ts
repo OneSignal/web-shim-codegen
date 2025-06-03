@@ -8,9 +8,16 @@ export const ngOneSignalAsyncFunctionTemplate = (
 ): string => {
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
+  const needsPromise = hasNonVoidReturnType(sig);
+
+  const asyncModifier = needsPromise ? 'async ' : '';
+  const returnTypePrefix = needsPromise ? 'Promise<' : '';
+  const returnTypeSuffix = needsPromise ? '>' : '';
+  const retValDeclaration = needsPromise ? `let retVal: Promise<${sig.returnType}>;` : '';
 
   return `
-function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType} {
+${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${sig.returnType || 'void'}${returnTypeSuffix} {
+  ${retValDeclaration}
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -18,9 +25,9 @@ function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWith
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      ${hasNonVoidReturnType(sig) ? 'resolve(' : ''}oneSignal.${chainedNamespaceString}${
+      ${needsPromise ? 'resolve(' : ''}oneSignal.${chainedNamespaceString}${
     chainedNamespaceString !== '' ? '.' : ''
-  }${sig.name}(${spreadArgs(args)})${hasNonVoidReturnType(sig) ? ')' : '.then(() => resolve())'};
+  }${sig.name}(${spreadArgs(args)})${needsPromise ? ')' : '.then(() => resolve())'};
     });
   });
 }
