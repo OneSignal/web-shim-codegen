@@ -21,7 +21,7 @@ import {
   USER_CHANGE_EVENT,
   USER_NAMESPACE_PROPERTIES,
 } from '../snippets/types';
-import { INTERFACE_PREFIX } from '../support/constants';
+import { hasNonVoidReturnType } from '../support/utils';
 import { ReaderManager } from './ReaderManager';
 
 export class TypingsWriterManager extends CodeWriter {
@@ -36,9 +36,12 @@ export class TypingsWriterManager extends CodeWriter {
       });
       argumentsString = argumentsString.trim();
     }
+
+    // Use normal logic for non-exception functions
+    const nonVoidReturnType = hasNonVoidReturnType(sig);
     return `${sig.name}${
       sig.genericTypeParameter ?? ''
-    }(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
+    }(${argumentsString.slice(0, -1)}): ${nonVoidReturnType ? 'Promise<' : ''}${sig.returnType}${nonVoidReturnType ? '>' : ''}`;
   }
 
   public writeFunctionTypes(

@@ -1,7 +1,7 @@
-import { IArgument } from "../models/Argument";
-import { GITHUB_URL } from './constants';
 import * as curl from 'curlrequest';
+import { IArgument } from "../models/Argument";
 import { IFunctionSignature } from '../models/FunctionSignature';
+import { GITHUB_URL } from './constants';
 
 export async function remoteFetchFile(path: string): Promise<string> {
   return await new Promise(resolve => {
@@ -126,5 +126,5 @@ export function hasNonVoidReturnType(sig: IFunctionSignature): boolean {
   if (sig.isAsync) {
     return sig.returnType !== 'Promise<void>';
   }
-  return sig.returnType !== 'void';
+  return sig.returnType !== 'void' && sig.returnType !== 'Promise<void>';
 }
