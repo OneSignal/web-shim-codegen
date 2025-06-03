@@ -34,21 +34,20 @@ export const ngOneSignalFunctionTemplate = (
 ): string => {
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
+  const needsPromise = hasNonVoidReturnType(sig);
 
-  const retValDeclaration = hasNonVoidReturnType(sig)
-    ? `let retVal: ${sig.returnType};`
-    : '';
-  const retValAssignment = hasNonVoidReturnType(sig) ? 'retVal = ' : '';
-  const retValReturn = hasNonVoidReturnType(sig)
-    ? `// @ts-ignore\n  return retVal;`
-    : '';
+  const asyncModifier = needsPromise ? 'async ' : '';
+  const returnTypePrefix = needsPromise ? 'Promise<' : '';
+  const returnTypeSuffix = needsPromise ? '>' : '';
+  const retValDeclaration = needsPromise ? `let retVal: Promise<${sig.returnType}>;` : '';
+  const retValAssignment = needsPromise ? 'retVal = ' : '';
+  const retValReturn = needsPromise ? `// @ts-ignore\n  return retVal;` : '';
+  const deferredAwait = needsPromise ? 'await ' : '';
 
   return `
-function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${
-    sig.returnType || 'void'
-  } {
+${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${sig.returnType || 'void'}${returnTypeSuffix} {
   ${retValDeclaration}
-  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+  ${deferredAwait}window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     ${retValAssignment}oneSignal.${chainedNamespaceString}${
     chainedNamespaceString !== '' ? '.' : ''
   }${sig.name}(${spreadArgs(args)});

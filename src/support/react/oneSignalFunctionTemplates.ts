@@ -39,16 +39,25 @@ export const reactOneSignalFunctionTemplate = (
 ): string => {
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
+  const needsPromise = hasNonVoidReturnType(sig);
+
+  const asyncModifier = needsPromise ? 'async ' : '';
+  const returnTypePrefix = needsPromise ? 'Promise<' : '';
+  const returnTypeSuffix = needsPromise ? '>' : '';
+  const retValDeclaration = needsPromise ? `let retVal: Promise<${sig.returnType}>;` : '';
+  const retValAssignment = needsPromise ? 'retVal = ' : '';
+  const retValReturn = needsPromise ? 'return retVal;' : '';
+  const deferredAwait = needsPromise ? 'await ' : '';
 
   return `
-function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType || 'void'} {
-  ${hasNonVoidReturnType(sig) ? `let retVal: ${sig.returnType};` : ''}
-  window.OneSignalDeferred?.push((OneSignal: IOneSignalOneSignal) => {
-    ${hasNonVoidReturnType(sig) ? 'retVal = ' : ''}OneSignal.${chainedNamespaceString}${
+${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${sig.returnType || 'void'}${returnTypeSuffix} {
+  ${retValDeclaration}
+  ${deferredAwait}window.OneSignalDeferred?.push((OneSignal: IOneSignalOneSignal) => {
+    ${retValAssignment}OneSignal.${chainedNamespaceString}${
     chainedNamespaceString !== '' ? '.' : ''
   }${sig.name}(${spreadArgs(args)});
   });
-  ${hasNonVoidReturnType(sig) ? 'return retVal;' : ''}
+  ${retValReturn}
 }
 `.trim();
 };
