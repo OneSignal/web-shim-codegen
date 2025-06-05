@@ -266,6 +266,7 @@ function userRemoveTags(keys) {
         oneSignal.User.removeTags(keys);
     });
 }
+// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred
 function userGetTags() {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -295,6 +296,7 @@ function userSetLanguage(language) {
         oneSignal.User.setLanguage(language);
     });
 }
+// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred
 function userGetLanguage() {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {

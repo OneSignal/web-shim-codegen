@@ -377,13 +377,13 @@ export interface IOneSignalUser {
     }): void;
     removeTag(key: string): void;
     removeTags(keys: string[]): void;
-    getTags(): Promise<{
+    getTags(): {
         [key: string]: string;
-    }>;
+    };
     addEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
     removeEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
     setLanguage(language: string): void;
-    getLanguage(): Promise<string>;
+    getLanguage(): string;
 }
 export interface IOneSignalPushSubscription {
     id: string | null | undefined;

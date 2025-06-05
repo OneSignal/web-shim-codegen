@@ -389,11 +389,11 @@ export interface IOneSignalUser {
 	addTags(tags: { [key: string]: string }): void;
 	removeTag(key: string): void;
 	removeTags(keys: string[]): void;
-	getTags(): Promise<{ [key: string]: string }>;
+	getTags(): { [key: string]: string };
 	addEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
 	removeEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
 	setLanguage(language: string): void;
-	getLanguage(): Promise<string>;
+	getLanguage(): string;
 }
 export interface IOneSignalPushSubscription {
 	id: string | null | undefined;
@@ -682,8 +682,9 @@ function userRemoveTags(keys: string[]): void {
   });
 }
 
-async function userGetTags(): Promise<{ [key: string]: string }> {
-  let retVal: Promise<{ [key: string]: string }>;
+// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred
+async function userGetTags(): { [key: string]: string } {
+  let retVal: { [key: string]: string };
   await window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     retVal = oneSignal.User.getTags();
   });
@@ -709,8 +710,9 @@ function userSetLanguage(language: string): void {
   });
 }
 
-async function userGetLanguage(): Promise<string> {
-  let retVal: Promise<string>;
+// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred
+async function userGetLanguage(): string {
+  let retVal: string;
   await window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     retVal = oneSignal.User.getLanguage();
   });
