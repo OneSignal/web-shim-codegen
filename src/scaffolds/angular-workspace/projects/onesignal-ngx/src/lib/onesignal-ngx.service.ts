@@ -367,7 +367,7 @@ export interface IOneSignalSlidedown {
 	removeEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 }
 export interface IOneSignalDebug {
-	setLogLevel(logLevel: "trace" | "debug" | "info" | "warn" | "error" ): void;
+	setLogLevel(logLevel: 'trace' | 'debug' | 'info' | 'warn' | 'error'): void;
 }
 export interface IOneSignalSession {
 	sendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void>;
@@ -405,6 +405,7 @@ export interface IOneSignalPushSubscription {
 	removeEventListener(event: 'change', listener: (change: SubscriptionChangeEvent) => void): void;
 }
 function oneSignalLogin(externalId: string, jwtToken?: string): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -417,6 +418,7 @@ function oneSignalLogin(externalId: string, jwtToken?: string): Promise<void> {
   });
 }
 function oneSignalLogout(): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -429,6 +431,7 @@ function oneSignalLogout(): Promise<void> {
   });
 }
 function oneSignalSetConsentGiven(consent: boolean): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -441,6 +444,7 @@ function oneSignalSetConsentGiven(consent: boolean): Promise<void> {
   });
 }
 function oneSignalSetConsentRequired(requiresConsent: boolean): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -453,6 +457,7 @@ function oneSignalSetConsentRequired(requiresConsent: boolean): Promise<void> {
   });
 }
 function slidedownPromptPush(options?: AutoPromptOptions): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -465,6 +470,7 @@ function slidedownPromptPush(options?: AutoPromptOptions): Promise<void> {
   });
 }
 function slidedownPromptPushCategories(options?: AutoPromptOptions): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -477,6 +483,7 @@ function slidedownPromptPushCategories(options?: AutoPromptOptions): Promise<voi
   });
 }
 function slidedownPromptSms(options?: AutoPromptOptions): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -489,6 +496,7 @@ function slidedownPromptSms(options?: AutoPromptOptions): Promise<void> {
   });
 }
 function slidedownPromptEmail(options?: AutoPromptOptions): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -501,6 +509,7 @@ function slidedownPromptEmail(options?: AutoPromptOptions): Promise<void> {
   });
 }
 function slidedownPromptSmsAndEmail(options?: AutoPromptOptions): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -525,6 +534,7 @@ function slidedownRemoveEventListener(event: SlidedownEventName, listener: (wasS
 }
 
 function notificationsSetDefaultUrl(url: string): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -537,6 +547,7 @@ function notificationsSetDefaultUrl(url: string): Promise<void> {
   });
 }
 function notificationsSetDefaultTitle(title: string): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -549,6 +560,7 @@ function notificationsSetDefaultTitle(title: string): Promise<void> {
   });
 }
 function notificationsRequestPermission(): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -573,6 +585,7 @@ function notificationsRemoveEventListener<K extends NotificationEventName>(event
 }
 
 function sessionSendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -585,6 +598,7 @@ function sessionSendOutcome(outcomeName: string, outcomeWeight?: number): Promis
   });
 }
 function sessionSendUniqueOutcome(outcomeName: string): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -668,9 +682,10 @@ function userRemoveTags(keys: string[]): void {
   });
 }
 
-function userGetTags(): { [key: string]: string } {
+// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred
+async function userGetTags(): { [key: string]: string } {
   let retVal: { [key: string]: string };
-  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+  await window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     retVal = oneSignal.User.getTags();
   });
   // @ts-ignore
@@ -695,9 +710,10 @@ function userSetLanguage(language: string): void {
   });
 }
 
-function userGetLanguage(): string {
+// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred
+async function userGetLanguage(): string {
   let retVal: string;
-  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+  await window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     retVal = oneSignal.User.getLanguage();
   });
   // @ts-ignore
@@ -705,6 +721,7 @@ function userGetLanguage(): string {
 }
 
 function pushSubscriptionOptIn(): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -717,6 +734,7 @@ function pushSubscriptionOptIn(): Promise<void> {
   });
 }
 function pushSubscriptionOptOut(): Promise<void> {
+  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -740,7 +758,7 @@ function pushSubscriptionRemoveEventListener(event: 'change', listener: (change:
   });
 }
 
-function debugSetLogLevel(logLevel: string): void {
+function debugSetLogLevel(logLevel: 'trace' | 'debug' | 'info' | 'warn' | 'error'): void {
   window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     oneSignal.Debug.setLogLevel(logLevel);
   });

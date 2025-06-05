@@ -502,7 +502,7 @@ export interface IOneSignalSlidedown {
 	removeEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 }
 export interface IOneSignalDebug {
-	setLogLevel(logLevel: string): void;
+	setLogLevel(logLevel: 'trace' | 'debug' | 'info' | 'warn' | 'error'): void;
 }
 export interface IOneSignalSession {
 	sendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void>;
@@ -889,9 +889,10 @@ function userRemoveTags(keys: string[]): void {
   });
   
 }
-function userGetTags(): { [key: string]: string } {
+// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred
+async function userGetTags(): { [key: string]: string } {
   let retVal: { [key: string]: string };
-  window.OneSignalDeferred?.push((OneSignal) => {
+  await window.OneSignalDeferred?.push((OneSignal) => {
     retVal = OneSignal.User.getTags();
   });
   return retVal;
@@ -917,9 +918,10 @@ function userSetLanguage(language: string): void {
   });
   
 }
-function userGetLanguage(): string {
+// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred
+async function userGetLanguage(): string {
   let retVal: string;
-  window.OneSignalDeferred?.push((OneSignal) => {
+  await window.OneSignalDeferred?.push((OneSignal) => {
     retVal = OneSignal.User.getLanguage();
   });
   return retVal;
@@ -972,7 +974,7 @@ function pushSubscriptionRemoveEventListener(event: 'change', listener: (change:
   });
   
 }
-function debugSetLogLevel(logLevel: string): void {
+function debugSetLogLevel(logLevel: 'trace' | 'debug' | 'info' | 'warn' | 'error'): void {
   
   window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.Debug.setLogLevel(logLevel);

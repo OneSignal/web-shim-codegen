@@ -36,9 +36,8 @@ export class TypingsWriterManager extends CodeWriter {
       });
       argumentsString = argumentsString.trim();
     }
-    return `${sig.name}${
-      sig.genericTypeParameter ?? ''
-    }(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
+
+    return `${sig.name}${sig.genericTypeParameter ?? ''}(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
   }
 
   public writeFunctionTypes(

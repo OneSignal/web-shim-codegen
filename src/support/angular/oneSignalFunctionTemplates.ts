@@ -8,9 +8,16 @@ export const ngOneSignalAsyncFunctionTemplate = (
 ): string => {
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
+  const needsPromise = hasNonVoidReturnType(sig);
+
+  const asyncModifier = needsPromise ? 'async ' : '';
+  const returnTypePrefix = needsPromise ? 'Promise<' : '';
+  const returnTypeSuffix = needsPromise ? '>' : '';
+  const retValDeclaration = needsPromise ? `let retVal: Promise<${sig.returnType}>;` : '';
 
   return `
-function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${sig.returnType} {
+${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${sig.returnType || 'void'}${returnTypeSuffix} {
+  ${retValDeclaration}
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -18,9 +25,9 @@ function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWith
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      ${hasNonVoidReturnType(sig) ? 'resolve(' : ''}oneSignal.${chainedNamespaceString}${
+      ${needsPromise ? 'resolve(' : ''}oneSignal.${chainedNamespaceString}${
     chainedNamespaceString !== '' ? '.' : ''
-  }${sig.name}(${spreadArgs(args)})${hasNonVoidReturnType(sig) ? ')' : '.then(() => resolve())'};
+  }${sig.name}(${spreadArgs(args)})${needsPromise ? ')' : '.then(() => resolve())'};
     });
   });
 }
@@ -34,21 +41,21 @@ export const ngOneSignalFunctionTemplate = (
 ): string => {
   const args = sig.args?.map(arg => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
+  const needsPromise = hasNonVoidReturnType(sig);
 
-  const retValDeclaration = hasNonVoidReturnType(sig)
-    ? `let retVal: ${sig.returnType};`
-    : '';
-  const retValAssignment = hasNonVoidReturnType(sig) ? 'retVal = ' : '';
-  const retValReturn = hasNonVoidReturnType(sig)
-    ? `// @ts-ignore\n  return retVal;`
-    : '';
+  const asyncModifier = needsPromise ? 'async ' : '';
+  const returnTypePrefix = needsPromise ? '' : '';
+  const returnTypeSuffix = needsPromise ? '' : '';
+  const retValDeclaration = needsPromise ? `let retVal: ${sig.returnType};` : '';
+  const retValAssignment = needsPromise ? 'retVal = ' : '';
+  const retValReturn = needsPromise ? `// @ts-ignore\n  return retVal;` : '';
+  const deferredAwait = needsPromise ? 'await ' : '';
 
   return `
-function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${
-    sig.returnType || 'void'
-  } {
+${needsPromise ? '// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred' : ''}
+${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${sig.returnType || 'void'}${returnTypeSuffix} {
   ${retValDeclaration}
-  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+  ${deferredAwait}window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     ${retValAssignment}oneSignal.${chainedNamespaceString}${
     chainedNamespaceString !== '' ? '.' : ''
   }${sig.name}(${spreadArgs(args)});

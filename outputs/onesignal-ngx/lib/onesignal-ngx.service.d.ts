@@ -351,7 +351,7 @@ export interface IOneSignalSlidedown {
     removeEventListener(event: SlidedownEventName, listener: (wasShown: boolean) => void): void;
 }
 export interface IOneSignalDebug {
-    setLogLevel(logLevel: string): void;
+    setLogLevel(logLevel: 'trace' | 'debug' | 'info' | 'warn' | 'error'): void;
 }
 export interface IOneSignalSession {
     sendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void>;
