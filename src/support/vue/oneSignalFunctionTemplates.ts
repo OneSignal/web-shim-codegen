@@ -46,14 +46,18 @@ export const vueOneSignalFunctionTemplate = (
   const needsPromise = hasNonVoidReturnType(sig);
 
   const asyncModifier = needsPromise ? 'async ' : '';
-  const returnTypePrefix = needsPromise ? 'Promise<' : '';
-  const returnTypeSuffix = needsPromise ? '>' : '';
-  const retValDeclaration = needsPromise ? `let retVal: Promise<${sig.returnType}>;` : '';
+    // const returnTypePrefix = needsPromise ? 'Promise<' : '';
+    const returnTypePrefix = needsPromise ? '' : '';
+    // const returnTypeSuffix = needsPromise ? '>' : '';
+    const returnTypeSuffix = needsPromise ? '' : '';
+    // const retValDeclaration = needsPromise ? `let retVal: Promise<${sig.returnType}>;` : '';
+    const retValDeclaration = needsPromise ? `let retVal: ${sig.returnType};` : '';
   const retValAssignment = needsPromise ? 'retVal = ' : '';
   const retValReturn = needsPromise ? 'return retVal;' : '';
   const deferredAwait = needsPromise ? 'await ' : '';
 
   return `
+${needsPromise ? '// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred' : ''}
 ${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${sig.returnType || 'void'}${returnTypeSuffix} {
   ${retValDeclaration}
   ${deferredAwait}window.OneSignalDeferred?.push((OneSignal) => {

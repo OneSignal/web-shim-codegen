@@ -21,8 +21,7 @@ import {
   USER_CHANGE_EVENT,
   USER_NAMESPACE_PROPERTIES,
 } from '../snippets/types';
-import { FUNCTION_SIGNATURE_EXCEPTIONS, INTERFACE_PREFIX } from '../support/constants';
-import { hasNonVoidReturnType } from '../support/utils';
+import { INTERFACE_PREFIX } from '../support/constants';
 import { ReaderManager } from './ReaderManager';
 
 export class TypingsWriterManager extends CodeWriter {
@@ -38,18 +37,7 @@ export class TypingsWriterManager extends CodeWriter {
       argumentsString = argumentsString.trim();
     }
 
-    /**
-     * If the function has a return type that is not void, we need to wrap it in a Promise.
-     * This is because we need to await OneSignalDeferred to complete before we can return the value.
-     *
-     * Certain exceptions apply: if a function is defined to be excluded from this rule, then we will fallback to the type specified in FUNCTION_SIGNATURE_EXCEPTIONS.
-     */
-    const exception = FUNCTION_SIGNATURE_EXCEPTIONS[sig.name];
-    const nonVoidReturnType = hasNonVoidReturnType(sig);
-    const returnType = exception ? exception.returnType : 
-                      `${nonVoidReturnType ? 'Promise<' : ''}${sig.returnType}${nonVoidReturnType ? '>' : ''}`;
-    
-    return `${sig.name}${sig.genericTypeParameter ?? ''}(${argumentsString.slice(0, -1)}): ${returnType}`;
+    return `${sig.name}${sig.genericTypeParameter ?? ''}(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
   }
 
   public writeFunctionTypes(

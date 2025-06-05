@@ -10,8 +10,3 @@ export const INTERFACE_PREFIX = "IOneSignal";
 
 // skip the 'OneSignal' namespace since it is the root, and skip the 'PushSubscription' namespace since it is nested
 export const NAMESPACE_IGNORE = ["OneSignal", "PushSubscription"];
-
-// Functions that need special return type handling in the generated interfaces
-export const FUNCTION_SIGNATURE_EXCEPTIONS: { [key: string]: { returnType: string } } = {
-  isPushSupported: { returnType: 'boolean' }
-};
