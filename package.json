@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "build": "./scripts/build",
+    "build:outputs": "npm run build && ./scripts/copy-build-to-outputs",
     "prepare": "husky"
   },
   "keywords": [

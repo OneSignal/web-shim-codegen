@@ -30,5 +30,15 @@
     "notification",
     "push notification",
     "angular"
+  ],
+  "files": [
+    "bundles/",
+    "lib/",
+    "fesm2015/",
+    "*.d.ts",
+    "*.metadata.json",
+    "LICENSE",
+    "README.md",
+    "MigrationGuide.md"
   ]
 }
