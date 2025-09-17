@@ -4,7 +4,7 @@ set -euo pipefail
 
 function bootstrap_macos() {
   # ensure we have homebrew installed
-  if ! command -v brew &> /dev/null; then
+  if ! command -v brew &>/dev/null; then
     echo "You must install homebrew to install the dependencies."
     exit 1
   fi
@@ -14,25 +14,31 @@ function bootstrap_macos() {
 
   echo "installing nvm"
   brew install nvm
+
+  # Add these lines to source nvm (like the Linux version does)
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+
 }
 
 function bootstrap_linux() {
-  if ! command -v sudo &> /dev/null; then
-      echo "Please install sudo before running this script"
-      exit
+  if ! command -v sudo &>/dev/null; then
+    echo "Please install sudo before running this script"
+    exit
   fi
 
   echo "updating apt"
   sudo apt update
 
-  if ! command -v nvm &> /dev/null; then
+  if ! command -v nvm &>/dev/null; then
     # Unfortunately there's no easy link to latest release. We'll have to update
     # this link if we want a newer version of nvm.
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
   fi
   export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 }
 
 if [[ "$(uname)" = "Darwin" ]]; then
@@ -42,5 +48,5 @@ elif [[ "$(uname)" = "Linux" ]]; then
 fi
 
 echo "installing node"
-nvm install `cat .nvmrc`
-nvm use `cat .nvmrc`
+nvm install $(cat .nvmrc)
+nvm use $(cat .nvmrc)
