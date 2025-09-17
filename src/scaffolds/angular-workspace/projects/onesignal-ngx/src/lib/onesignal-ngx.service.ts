@@ -406,7 +406,6 @@ export interface IOneSignalPushSubscription {
 	removeEventListener(event: 'change', listener: (change: SubscriptionChangeEvent) => void): void;
 }
 function oneSignalLogin(externalId: string, jwtToken?: string): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -414,12 +413,13 @@ function oneSignalLogin(externalId: string, jwtToken?: string): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.login(externalId, jwtToken).then(() => resolve());
+      oneSignal.login(externalId, jwtToken)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function oneSignalLogout(): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -427,12 +427,13 @@ function oneSignalLogout(): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.logout().then(() => resolve());
+      oneSignal.logout()
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function oneSignalSetConsentGiven(consent: boolean): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -440,12 +441,13 @@ function oneSignalSetConsentGiven(consent: boolean): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.setConsentGiven(consent).then(() => resolve());
+      oneSignal.setConsentGiven(consent)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function oneSignalSetConsentRequired(requiresConsent: boolean): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -453,12 +455,13 @@ function oneSignalSetConsentRequired(requiresConsent: boolean): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.setConsentRequired(requiresConsent).then(() => resolve());
+      oneSignal.setConsentRequired(requiresConsent)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function slidedownPromptPush(options?: AutoPromptOptions): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -466,12 +469,13 @@ function slidedownPromptPush(options?: AutoPromptOptions): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Slidedown.promptPush(options).then(() => resolve());
+      oneSignal.Slidedown.promptPush(options)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function slidedownPromptPushCategories(options?: AutoPromptOptions): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -479,12 +483,13 @@ function slidedownPromptPushCategories(options?: AutoPromptOptions): Promise<voi
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Slidedown.promptPushCategories(options).then(() => resolve());
+      oneSignal.Slidedown.promptPushCategories(options)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function slidedownPromptSms(options?: AutoPromptOptions): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -492,12 +497,13 @@ function slidedownPromptSms(options?: AutoPromptOptions): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Slidedown.promptSms(options).then(() => resolve());
+      oneSignal.Slidedown.promptSms(options)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function slidedownPromptEmail(options?: AutoPromptOptions): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -505,12 +511,13 @@ function slidedownPromptEmail(options?: AutoPromptOptions): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Slidedown.promptEmail(options).then(() => resolve());
+      oneSignal.Slidedown.promptEmail(options)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function slidedownPromptSmsAndEmail(options?: AutoPromptOptions): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -518,7 +525,9 @@ function slidedownPromptSmsAndEmail(options?: AutoPromptOptions): Promise<void> 
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Slidedown.promptSmsAndEmail(options).then(() => resolve());
+      oneSignal.Slidedown.promptSmsAndEmail(options)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
@@ -535,7 +544,6 @@ function slidedownRemoveEventListener(event: SlidedownEventName, listener: (wasS
 }
 
 function notificationsSetDefaultUrl(url: string): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -543,12 +551,13 @@ function notificationsSetDefaultUrl(url: string): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Notifications.setDefaultUrl(url).then(() => resolve());
+      oneSignal.Notifications.setDefaultUrl(url)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function notificationsSetDefaultTitle(title: string): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -556,12 +565,13 @@ function notificationsSetDefaultTitle(title: string): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Notifications.setDefaultTitle(title).then(() => resolve());
+      oneSignal.Notifications.setDefaultTitle(title)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
-async function notificationsRequestPermission(): Promise<boolean> {
-  let retVal: Promise<boolean>;
+function notificationsRequestPermission(): Promise<boolean> {
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -569,7 +579,9 @@ async function notificationsRequestPermission(): Promise<boolean> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      resolve(oneSignal.Notifications.requestPermission());
+      oneSignal.Notifications.requestPermission()
+        .then(result => resolve(result))
+        .catch(error => reject(error));
     });
   });
 }
@@ -586,7 +598,6 @@ function notificationsRemoveEventListener<K extends NotificationEventName>(event
 }
 
 function sessionSendOutcome(outcomeName: string, outcomeWeight?: number): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -594,12 +605,13 @@ function sessionSendOutcome(outcomeName: string, outcomeWeight?: number): Promis
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Session.sendOutcome(outcomeName, outcomeWeight).then(() => resolve());
+      oneSignal.Session.sendOutcome(outcomeName, outcomeWeight)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function sessionSendUniqueOutcome(outcomeName: string): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -607,7 +619,9 @@ function sessionSendUniqueOutcome(outcomeName: string): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Session.sendUniqueOutcome(outcomeName).then(() => resolve());
+      oneSignal.Session.sendUniqueOutcome(outcomeName)
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
@@ -728,7 +742,6 @@ function userTrackEvent(name: string, properties?: Record<string, unknown>): voi
 }
 
 function pushSubscriptionOptIn(): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -736,12 +749,13 @@ function pushSubscriptionOptIn(): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.User.PushSubscription.optIn().then(() => resolve());
+      oneSignal.User.PushSubscription.optIn()
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
 function pushSubscriptionOptOut(): Promise<void> {
-  
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -749,7 +763,9 @@ function pushSubscriptionOptOut(): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.User.PushSubscription.optOut().then(() => resolve());
+      oneSignal.User.PushSubscription.optOut()
+        .then(() => resolve())
+        .catch(error => reject(error));
     });
   });
 }
