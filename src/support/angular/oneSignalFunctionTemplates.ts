@@ -1,22 +1,38 @@
-import { IFunctionSignature } from "../../models/FunctionSignature";
-import { getChainedNamespaceString, hasNonVoidReturnType, spreadArgs, spreadArgsWithTypes } from "../utils";
+import { IFunctionSignature } from '../../models/FunctionSignature';
+import {
+  getChainedNamespaceString,
+  hasNonVoidReturnType,
+  spreadArgs,
+  spreadArgsWithTypes,
+} from '../utils';
 
 export const ngOneSignalAsyncFunctionTemplate = (
   sig: IFunctionSignature,
   uniqueFunctionName: string,
-  namespaceChain: string[]
+  namespaceChain: string[],
 ): string => {
-  const args = sig.args?.map(arg => arg.name);
+  const args = sig.args?.map((arg) => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   const needsPromise = hasNonVoidReturnType(sig);
 
   const asyncModifier = needsPromise ? 'async ' : '';
-  const returnTypePrefix = needsPromise ? 'Promise<' : '';
-  const returnTypeSuffix = needsPromise ? '>' : '';
-  const retValDeclaration = needsPromise ? `let retVal: Promise<${sig.returnType}>;` : '';
+
+  // Check if returnType already includes Promise
+  const isAlreadyPromise = sig.returnType?.includes('Promise<');
+  const returnType =
+    needsPromise && !isAlreadyPromise
+      ? `Promise<${sig.returnType}>`
+      : sig.returnType || 'void';
+  const retValType =
+    needsPromise && !isAlreadyPromise
+      ? `Promise<${sig.returnType}>`
+      : sig.returnType;
+  const retValDeclaration = needsPromise ? `let retVal: ${retValType};` : '';
 
   return `
-${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${sig.returnType || 'void'}${returnTypeSuffix} {
+${asyncModifier}function ${uniqueFunctionName}${
+    sig.genericTypeParameter ?? ''
+  }(${spreadArgsWithTypes(sig)}): ${returnType} {
   ${retValDeclaration}
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
@@ -27,7 +43,9 @@ ${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       ${needsPromise ? 'resolve(' : ''}oneSignal.${chainedNamespaceString}${
     chainedNamespaceString !== '' ? '.' : ''
-  }${sig.name}(${spreadArgs(args)})${needsPromise ? ')' : '.then(() => resolve())'};
+  }${sig.name}(${spreadArgs(args)})${
+    needsPromise ? ')' : '.then(() => resolve())'
+  };
     });
   });
 }
@@ -37,23 +55,33 @@ ${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(
 export const ngOneSignalFunctionTemplate = (
   sig: IFunctionSignature,
   uniqueFunctionName: string,
-  namespaceChain: string[]
+  namespaceChain: string[],
 ): string => {
-  const args = sig.args?.map(arg => arg.name);
+  const args = sig.args?.map((arg) => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   const needsPromise = hasNonVoidReturnType(sig);
 
   const asyncModifier = needsPromise ? 'async ' : '';
   const returnTypePrefix = needsPromise ? '' : '';
   const returnTypeSuffix = needsPromise ? '' : '';
-  const retValDeclaration = needsPromise ? `let retVal: ${sig.returnType};` : '';
+  const retValDeclaration = needsPromise
+    ? `let retVal: ${sig.returnType};`
+    : '';
   const retValAssignment = needsPromise ? 'retVal = ' : '';
   const retValReturn = needsPromise ? `// @ts-ignore\n  return retVal;` : '';
   const deferredAwait = needsPromise ? 'await ' : '';
 
   return `
-${needsPromise ? '// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred' : ''}
-${asyncModifier}function ${uniqueFunctionName}${sig.genericTypeParameter ?? ''}(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${sig.returnType || 'void'}${returnTypeSuffix} {
+${
+  needsPromise
+    ? '// @ts-expect-error - return non-Promise type despite needing to await OneSignalDeferred'
+    : ''
+}
+${asyncModifier}function ${uniqueFunctionName}${
+    sig.genericTypeParameter ?? ''
+  }(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${
+    sig.returnType || 'void'
+  }${returnTypeSuffix} {
   ${retValDeclaration}
   ${deferredAwait}window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     ${retValAssignment}oneSignal.${chainedNamespaceString}${

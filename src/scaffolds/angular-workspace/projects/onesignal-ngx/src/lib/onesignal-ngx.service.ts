@@ -353,7 +353,7 @@ export interface IOneSignalNotifications {
 	setDefaultUrl(url: string): Promise<void>;
 	setDefaultTitle(title: string): Promise<void>;
 	isPushSupported(): boolean;
-	requestPermission(): Promise<void>;
+	requestPermission(): Promise<boolean>;
 	addEventListener<K extends NotificationEventName>(event: K, listener: (obj: NotificationEventTypeMap[K]) => void): void;
 	removeEventListener<K extends NotificationEventName>(event: K, listener: (obj: NotificationEventTypeMap[K]) => void): void;
 }
@@ -394,6 +394,7 @@ export interface IOneSignalUser {
 	removeEventListener(event: 'change', listener: (change: UserChangeEvent) => void): void;
 	setLanguage(language: string): void;
 	getLanguage(): string;
+	trackEvent(name: string, properties?: Record<string, unknown>): void;
 }
 export interface IOneSignalPushSubscription {
 	id: string | null | undefined;
@@ -559,8 +560,8 @@ function notificationsSetDefaultTitle(title: string): Promise<void> {
     });
   });
 }
-function notificationsRequestPermission(): Promise<void> {
-  
+async function notificationsRequestPermission(): Promise<boolean> {
+  let retVal: Promise<boolean>;
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
@@ -568,7 +569,7 @@ function notificationsRequestPermission(): Promise<void> {
     }
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.Notifications.requestPermission().then(() => resolve());
+      resolve(oneSignal.Notifications.requestPermission());
     });
   });
 }
@@ -720,6 +721,12 @@ async function userGetLanguage(): string {
   return retVal;
 }
 
+function userTrackEvent(name: string, properties?: Record<string, unknown>): void {
+  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+    oneSignal.User.trackEvent(name, properties);
+  });
+}
+
 function pushSubscriptionOptIn(): Promise<void> {
   
   return new Promise((resolve, reject) => {
@@ -795,6 +802,7 @@ const UserNamespace: IOneSignalUser = {
 	removeEventListener: userRemoveEventListener,
 	setLanguage: userSetLanguage,
 	getLanguage: userGetLanguage,
+	trackEvent: userTrackEvent,
 	PushSubscription: PushSubscriptionNamespace,
 };
 
