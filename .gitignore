@@ -6,3 +6,4 @@ npm-debug.log
 dist/
 ts-to-es6/
 .idea
+outputs/

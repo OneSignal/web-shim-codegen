@@ -6,15 +6,6 @@
 - [Vue](https://github.com/OneSignal/onesignal-vue)
 - [Angular](https://github.com/OneSignal/onesignal-ngx)
 
-## Start
-
-If you just cloned the repo run the command:
-`scripts/bootstrap`
-`scripts/update-subtrees`
-
-If you already bootstrapped the remotes you just need to run:
-`scripts/update-subtrees`
-
 ## Upstream API Spec
 
 The code generator uses an `api.json` spec file from the [OneSignal-Website-SDK](https://github.com/OneSignal/OneSignal-Website-SDK) repo as the input. Modify this file in that repo to change what the generator ultimately builds.
