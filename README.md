@@ -12,17 +12,14 @@ The code generator uses an `api.json` spec file from the [OneSignal-Website-SDK]
 
 The generator uses the URL hard-coded as a constant in the `src/support/constants.ts` file to fetch the spec. Make sure to update this URL as needed.
 
+## Making Changes
+
+If you made changes to templates, dependencies or other items that affect the downstream builds. When changes are merged to main, a pr is made to the downstreams prs.
+**PLEASE UPDATE THE COMMIT MESSAGE** to be accurate to the change. E.g. `fix: ...` or `feat: ...` depending on the type of change.
+
 ## Building For Release
 
-**Update version in `package.json` files**
-
-Run the `update-version-numbers` script in the `scripts` folder and input the update type (major, minor, patch, beta).
-
-**Update `README.md` files where needed**
-
-- React: `src/static/react/README.md`
-- Vue: `src/static/vue/README.md`
-- Angular: `src/static/onesignal-ngx/README.md`
+Can run the build script to bundle release for each package. Used in CD.
 
 ```
 npm run build
