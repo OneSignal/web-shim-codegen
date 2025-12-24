@@ -9,8 +9,10 @@ env:
   TERM: xterm-256color
 
 jobs:
-  dist:
+  setup:
     runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.version.outputs.version }}
     steps:
       - name: '[Setup] Checkout Repository'
         uses: actions/checkout@v6
@@ -23,139 +25,86 @@ jobs:
       - name: '[Setup] Bootstrap Dependencies'
         run: npm ci
 
+      - name: 'Get current web-shim-codegen version'
+        id: version
+        run: |
+          echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: '[Setup] Build'
+        run: npm run build
+
+      - name: 'Upload dist artifacts'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  sync-repo:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - repo: onesignal-ngx
+            dist_path: dist/onesignal-ngx.tgz
+            clone_path: __clone/onesignal-ngx
+            has_submodules: false
+          - repo: react-onesignal
+            dist_path: dist/react.tgz
+            clone_path: __clone/react
+            has_submodules: true
+          - repo: onesignal-vue
+            dist_path: dist/vue/v2.tgz
+            clone_path: __clone/vue/v2
+            has_submodules: false
+          - repo: onesignal-vue3
+            dist_path: dist/vue/v3.tgz
+            clone_path: __clone/vue/v3
+            has_submodules: false
+    steps:
+      - name: '[Setup] Checkout Repository'
+        uses: actions/checkout@v6
+
       - name: '[Setup] Git'
         run: |
           git config --global user.email "noreply@onesignal.com"
           git config --global user.name "OneSignal"
 
-      - name: 'Get current web-shim-codegen version'
-        run: |
-          echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+      - name: 'Download dist artifacts'
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
-      - name: '[Setup] Build'
-        run: npm run build
-
-      - name: '[onesignal-ngx] Checkout'
+      - name: '[${{ matrix.repo }}] Checkout'
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.GH_PUSH_TOKEN }}
-          repository: OneSignal/onesignal-ngx
+          repository: OneSignal/${{ matrix.repo }}
           fetch-depth: 0
-          path: __clone/onesignal-ngx
+          submodules: ${{ matrix.has_submodules }}
+          path: ${{ matrix.clone_path }}
 
-      - name: '[onesignal-ngx] Patch'
+      - name: '[${{ matrix.repo }}] Patch'
         run: |
-          bash scripts/patch-repo.sh dist/onesignal-ngx.tgz __clone/onesignal-ngx onesignal-ngx
+          bash scripts/patch-repo.sh ${{ matrix.dist_path }} ${{ matrix.clone_path }} ${{ matrix.repo }}
         env:
-          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
+          PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
 
-      - name: '[onesignal-ngx] Push'
+      - name: '[${{ matrix.repo }}] Push'
         uses: ad-m/github-push-action@v0.6.0
         with:
-          repository: OneSignal/onesignal-ngx
-          directory: __clone/onesignal-ngx
+          repository: OneSignal/${{ matrix.repo }}
+          directory: ${{ matrix.clone_path }}
           force: true
           branch: cd_update
           github_token: ${{ secrets.GH_PUSH_TOKEN }}
 
-      - name: '[onesignal-ngx] Submit PR'
+      - name: '[${{ matrix.repo }}] Submit PR'
         uses: ./.github/actions/create-pr
         with:
           owner: 'OneSignal'
-          repo: 'onesignal-ngx'
-          package_version: ${{ env.PACKAGE_VERSION }}
-          github_token: ${{ secrets.GH_PUSH_TOKEN }}
-
-      - name: '[react-onesignal] Checkout'
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GH_PUSH_TOKEN }}
-          repository: OneSignal/react-onesignal
-          fetch-depth: 0
-          submodules: true
-          path: __clone/react
-
-      - name: '[react-onesignal] Patch'
-        run: |
-          bash scripts/patch-repo.sh dist/react.tgz __clone/react react-onesignal
-        env:
-          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
-
-      - name: '[react-onesignal] Push'
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          repository: OneSignal/react-onesignal
-          directory: __clone/react
-          force: true
-          branch: cd_update
-          github_token: ${{ secrets.GH_PUSH_TOKEN }}
-
-      - name: '[react-onesignal] Submit PR'
-        uses: ./.github/actions/create-pr
-        with:
-          owner: 'OneSignal'
-          repo: 'react-onesignal'
-          package_version: ${{ env.PACKAGE_VERSION }}
-          github_token: ${{ secrets.GH_PUSH_TOKEN }}
-
-      - name: '[onesignal-vue] Checkout'
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GH_PUSH_TOKEN }}
-          repository: OneSignal/onesignal-vue
-          fetch-depth: 0
-          path: __clone/vue/v2
-
-      - name: '[onesignal-vue] Patch'
-        run: |
-          bash scripts/patch-repo.sh dist/vue/v2.tgz __clone/vue/v2 onesignal-vue
-        env:
-          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
-
-      - name: '[onesignal-vue] Push'
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          repository: OneSignal/onesignal-vue
-          directory: __clone/vue/v2
-          force: true
-          branch: cd_update
-          github_token: ${{ secrets.GH_PUSH_TOKEN }}
-
-      - name: '[onesignal-vue] Submit PR'
-        uses: ./.github/actions/create-pr
-        with:
-          owner: 'OneSignal'
-          repo: 'onesignal-vue'
-          package_version: ${{ env.PACKAGE_VERSION }}
-          github_token: ${{ secrets.GH_PUSH_TOKEN }}
-
-      - name: '[onesignal-vue3] Checkout'
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GH_PUSH_TOKEN }}
-          repository: OneSignal/onesignal-vue3
-          fetch-depth: 0
-          path: __clone/vue/v3
-
-      - name: '[onesignal-vue3] Patch'
-        run: |
-          bash scripts/patch-repo.sh dist/vue/v3.tgz __clone/vue/v3 onesignal-vue3
-        env:
-          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
-
-      - name: '[onesignal-vue3] Push'
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          repository: OneSignal/onesignal-vue3
-          directory: __clone/vue/v3
-          force: true
-          branch: cd_update
-          github_token: ${{ secrets.GH_PUSH_TOKEN }}
-
-      - name: '[onesignal-vue3] Submit PR'
-        uses: ./.github/actions/create-pr
-        with:
-          owner: 'OneSignal'
-          repo: 'onesignal-vue3'
-          package_version: ${{ env.PACKAGE_VERSION }}
+          repo: ${{ matrix.repo }}
+          package_version: ${{ needs.setup.outputs.package_version }}
           github_token: ${{ secrets.GH_PUSH_TOKEN }}
