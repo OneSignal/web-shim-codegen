@@ -42,26 +42,30 @@ jobs:
 
   sync-repo:
     needs: setup
+    name: ${{ matrix.sdk_name }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     strategy:
       matrix:
         include:
           - repo: onesignal-ngx
+            sdk_name: angular
             dist_path: dist/onesignal-ngx.tgz
             clone_path: __clone/onesignal-ngx
-            has_submodules: false
           - repo: react-onesignal
+            sdk_name: react
             dist_path: dist/react.tgz
             clone_path: __clone/react
-            has_submodules: true
           - repo: onesignal-vue
+            sdk_name: vue2
             dist_path: dist/vue/v2.tgz
             clone_path: __clone/vue/v2
-            has_submodules: false
           - repo: onesignal-vue3
+            sdk_name: vue3
             dist_path: dist/vue/v3.tgz
             clone_path: __clone/vue/v3
-            has_submodules: false
     steps:
       - name: '[Setup] Checkout Repository'
         uses: actions/checkout@v6
@@ -83,7 +87,6 @@ jobs:
           token: ${{ secrets.GH_PUSH_TOKEN }}
           repository: OneSignal/${{ matrix.repo }}
           fetch-depth: 0
-          submodules: ${{ matrix.has_submodules }}
           path: ${{ matrix.clone_path }}
 
       - name: '[${{ matrix.repo }}] Patch'
