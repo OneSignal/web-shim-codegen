@@ -55,7 +55,7 @@ mv build/vue/v3.tgz dist/vue/v3.tgz
 # We do this last so unneed files are not included in the releases.
 log '👀 Install + Linting + Build'
 
-if concurrently --kill-others-on-fail "npm ci --loglevel=error --prefix=build/vue/v3" "npm ci --loglevel=error --prefix=build/vue/v2" "npm ci --loglevel=error --prefix=build/react" "npm i --prefix=build/onesignal-ngx"; then
+if npx concurrently --kill-others-on-fail "npm ci --loglevel=error --prefix=build/vue/v3" "npm ci --loglevel=error --prefix=build/vue/v2" "npm ci --loglevel=error --prefix=build/react" "npm i --prefix=build/onesignal-ngx"; then
   log '✅ Done!'
 else
   log '❌ Build failed!'
