@@ -2,6 +2,7 @@ export interface IInitObject {
   appId: string;
   requiresUserPrivacyConsent?: boolean;
   safari_web_id?: string;
+  subdomainName?: string;
   promptOptions?: {
     slidedown: {
       prompts: {
@@ -203,6 +204,5 @@ export interface IInitObject {
   serviceWorkerParam?: { scope: string };
   serviceWorkerPath?: string;
   serviceWorkerOverrideForTypical?: boolean;
-  subdomainName?: string;
   [key: string]: unknown;
 }
