@@ -195,7 +195,7 @@ OneSignal.Notifications.addEventListener('click', (event) => {
 });
 ```
 
-See the [OneSignal WebSDK Reference](https://documentation.onesignal.com/docs/web-sdk-reference#addeventlistener-push-notification) for all available event listeners.
+See the [OneSignal WebSDK Reference](https://documentation.onesignal.com/docs/en/web-sdk-reference#addeventlistener-notifications) for all available event listeners.
 
 ## Troubleshooting
 
