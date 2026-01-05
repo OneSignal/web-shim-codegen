@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "build": "./scripts/build",
-    "build:outputs": "npm run build && ./scripts/copy-build-to-outputs",
+    "build": "./scripts/build.sh",
+    "build:outputs": "npm run build && ./scripts/copy-build-to-outputs.sh",
     "prepare": "husky"
   },
   "keywords": [
