@@ -331,6 +331,13 @@ export interface IInitObject {
   serviceWorkerParam?: { scope: string };
   serviceWorkerPath?: string;
   serviceWorkerOverrideForTypical?: boolean;
+  /**
+   * Overrides the default OneSignal SDK script URL.
+   * Use this to self-host the SDK script on your own domain, e.g. to comply
+   * with strict Cross-Origin-Embedder-Policy (COEP) or Content-Security-Policy (CSP) headers.
+   * @default 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js'
+   */
+  scriptSrc?: string;
   [key: string]: unknown;
 }
 
@@ -860,19 +867,14 @@ function isPushSupported(): boolean {
 
 import { Injectable } from '@angular/core';
 const ONESIGNAL_SDK_ID = 'onesignal-sdk';
-const ONE_SIGNAL_SCRIPT_SRC =
+const DEFAULT_SCRIPT_SRC =
   'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
 
-// true if the script is successfully loaded from CDN.
 let isOneSignalInitialized = false;
-// true if the script fails to load from CDN. A separate flag is necessary
-// to disambiguate between a CDN load failure and a delayed call to
-// OneSignal#init.
 let isOneSignalScriptFailed = false;
 
 if (typeof window !== 'undefined') {
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-  addSDKScript();
 }
 
 /**
@@ -915,11 +917,15 @@ function handleOnError(): void {
   isOneSignalScriptFailed = true;
 }
 
-function addSDKScript(): void {
+function addSDKScript(scriptSrc?: string): void {
+  if (document.getElementById(ONESIGNAL_SDK_ID)) {
+    return;
+  }
+
   const script = document.createElement('script');
   script.id = ONESIGNAL_SDK_ID;
   script.defer = true;
-  script.src = ONE_SIGNAL_SCRIPT_SRC;
+  script.src = scriptSrc || DEFAULT_SCRIPT_SRC;
 
   // Always resolve whether or not the script is successfully initialized.
   // This is important for users who may block cdn.onesignal.com w/ adblock.
@@ -974,6 +980,8 @@ export class OneSignal implements IOneSignalOneSignal {
     if (options.welcomeNotification?.disabled !== undefined) {
       options.welcomeNotification.disable = options.welcomeNotification.disabled;
     }
+
+    addSDKScript(options.scriptSrc);
 
     return new Promise<void>((resolve, reject) => {
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
