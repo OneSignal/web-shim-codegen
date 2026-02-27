@@ -95,8 +95,12 @@ export const NOTIFICATION_CLICK_RESULT = `export interface NotificationClickResu
   readonly url?: string;
 }
 `;
+export const DISPLAYABLE_OS_NOTIFICATION = `export interface IDisplayableOSNotification extends IOSNotification {
+  display(): void;
+}
+`;
 export const NOTIFICATION_FOREGROUND_WILL_DISPLAY_EVENT = `export interface NotificationForegroundWillDisplayEvent {
-  readonly notification: IOSNotification;
+  readonly notification: IDisplayableOSNotification;
   preventDefault(): void;
 }
 `;
