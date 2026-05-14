@@ -1,18 +1,18 @@
-import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
+import { defineConfig } from "vite-plus";
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
   build: {
     sourcemap: true,
     lib: {
-      entry: './index.ts',
-      name: 'react-onesignal',
-      formats: ['es', 'cjs'],
+      entry: "./index.ts",
+      name: "react-onesignal",
+      formats: ["es", "cjs"],
       fileName: (format) => {
-        if (format === 'es') {
-          return 'index.js';
+        if (format === "es") {
+          return "index.js";
         }
-        return 'index.cjs';
+        return "index.cjs";
       },
     },
   },
