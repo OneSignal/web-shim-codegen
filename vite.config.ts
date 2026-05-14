@@ -4,9 +4,25 @@ export default defineConfig({
   staged: {
     "*": "vp check --fix",
   },
-  fmt: { ignorePatterns: ["outputs/**", "build/**", "dist/**", "ts-to-es6/**"] },
+  fmt: {
+    ignorePatterns: [
+      "build",
+      "src/static/*",
+      "src/snippets/*",
+      "src/scaffolds/*",
+      "ts-to-es6",
+      "outputs",
+    ],
+  },
   lint: {
-    ignorePatterns: ["outputs/**", "build/**", "dist/**", "ts-to-es6/**"],
+    ignorePatterns: [
+      "build",
+      "src/static/*",
+      "src/snippets/*",
+      "src/scaffolds/*",
+      "ts-to-es6",
+      "outputs",
+    ],
     options: { typeAware: true, typeCheck: true },
   },
 });

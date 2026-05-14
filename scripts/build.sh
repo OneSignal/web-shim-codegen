@@ -14,21 +14,21 @@ cleanup() {
 }
 
 log "🔍 Linting"
-npm run lint
+vp lint
 
 log "🧹 Cleanup"
 cleanup
 
 log "🧵 Transpiling"
-tsc
+vpx tsc
 
 log "⚡️ Code generation"
-yellicode
+vpx yellicode
 
 log '🧶 Bundling Angular SDK'
 (cd src/scaffolds/angular-workspace &&
-  npm i &&
-  npm run build -- --configuration=production &&
+  vp install &&
+  vp run build -- --configuration=production &&
   cp -R dist/onesignal-ngx ../../../build)
 
 log "📄 Copying static files"
@@ -48,10 +48,14 @@ mv build/vue/v2.tgz dist/vue/v2.tgz
 mv build/vue/v3.tgz dist/vue/v3.tgz
 
 # This is required to use 'npm link' when testing local builds
-# We do this last so unneed files are not included in the releases.
+# We do this last so unneeded files are not included in the releases.
 log '👀 Install + Linting + Build'
 
-if npx concurrently --kill-others-on-fail "npm ci --loglevel=error --prefix=build/vue/v3" "npm ci --loglevel=error --prefix=build/vue/v2" "npm ci --loglevel=error --prefix=build/react" "npm i --prefix=build/onesignal-ngx"; then
+if vpx concurrently --kill-others-on-fail \
+  "cd build/vue/v3 && vp install --frozen-lockfile" \
+  "cd build/vue/v2 && vp install --frozen-lockfile" \
+  "cd build/react && vp install --frozen-lockfile" \
+  "cd build/onesignal-ngx && vp install"; then
   log '✅ Done!'
 else
   log '❌ Build failed!'
