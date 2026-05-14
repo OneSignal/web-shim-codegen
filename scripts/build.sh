@@ -52,9 +52,9 @@ mv build/vue/v3.tgz dist/vue/v3.tgz
 log '👀 Install + Linting + Build'
 
 if vpx concurrently --kill-others-on-fail \
-  "cd build/vue/v3 && vp install --frozen-lockfile" \
-  "cd build/vue/v2 && vp install --frozen-lockfile" \
-  "cd build/react && vp install --frozen-lockfile" \
+  "cd build/vue/v3 && vp install" \
+  "cd build/vue/v2 && vp install" \
+  "cd build/react && vp install" \
   "cd build/onesignal-ngx && vp install"; then
   log '✅ Done!'
 else

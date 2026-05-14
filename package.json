@@ -14,7 +14,7 @@
     "lint": "vp check",
     "lint:fix": "vp check --fix",
     "build": "./scripts/build.sh",
-    "build:outputs": "npm run build && ./scripts/copy-build-to-outputs.sh",
+    "build:outputs": "vp run build && ./scripts/copy-build-to-outputs.sh",
     "prepare": "vp config"
   },
   "dependencies": {
