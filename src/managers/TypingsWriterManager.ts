@@ -1,6 +1,7 @@
-import { CodeWriter } from '@yellicode/core';
-import { IFunctionSignature } from '../models/FunctionSignature';
-import IOneSignalApi from '../models/OneSignalApi';
+import * as path from "path";
+import { CodeWriter } from "@yellicode/core";
+import { IFunctionSignature } from "../models/FunctionSignature";
+import IOneSignalApi from "../models/OneSignalApi";
 import {
   AUTO_PROMPT_OPTIONS,
   CATEGORY_OPTIONS,
@@ -21,31 +22,27 @@ import {
   TAG_CATEGORY,
   USER_CHANGE_EVENT,
   USER_NAMESPACE_PROPERTIES,
-} from '../snippets/types';
-import { INTERFACE_PREFIX } from '../support/constants';
-import { ReaderManager } from './ReaderManager';
+} from "../snippets/types";
+import { INTERFACE_PREFIX } from "../support/constants";
+import { ReaderManager } from "./ReaderManager";
 
 export class TypingsWriterManager extends CodeWriter {
   public getFunctionSignatureString(sig: IFunctionSignature): string {
-    let argumentsString = '';
+    let argumentsString = "";
 
     if (sig.args) {
       sig.args.forEach((arg) => {
-        const optionalValue = arg.optional ? '?' : '';
-        argumentsString =
-          argumentsString + arg.name + optionalValue + ': ' + arg.type + ', ';
+        const optionalValue = arg.optional ? "?" : "";
+        argumentsString = argumentsString + arg.name + optionalValue + ": " + arg.type + ", ";
       });
       argumentsString = argumentsString.trim();
     }
 
-    return `${sig.name}${sig.genericTypeParameter ?? ''}(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
+    return `${sig.name}${sig.genericTypeParameter ?? ""}(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
   }
 
-  public writeFunctionTypes(
-    functions: IFunctionSignature[],
-    tabs?: number,
-  ): void {
-    const prefix = '\t'.repeat(tabs || 1);
+  public writeFunctionTypes(functions: IFunctionSignature[], tabs?: number): void {
+    const prefix = "\t".repeat(tabs || 1);
     [...functions].forEach((func) => {
       this.writeLine(`${prefix}${this.getFunctionSignatureString(func)};`);
     });
@@ -75,7 +72,7 @@ export class TypingsWriterManager extends CodeWriter {
   }
 
   private _writeNamespaces(namespaces: string[], tabs?: number): void {
-    const prefix = '\t'.repeat(tabs || 1);
+    const prefix = "\t".repeat(tabs || 1);
     namespaces.forEach((namespace) => {
       this.writeLine(`${prefix}${namespace}: ${INTERFACE_PREFIX}${namespace};`);
     });
@@ -87,10 +84,10 @@ export class TypingsWriterManager extends CodeWriter {
    */
   public async writeInterfaces(tabs: number): Promise<void> {
     const initObjectInterfaceContents = await ReaderManager.readFile(
-      __dirname.replace('ts-to-es6/', '') + `/../snippets/InitObject.ts`,
+      path.resolve(__dirname, "..", "src", "snippets", "InitObject.ts"),
     );
 
-    const prefix = '\t'.repeat(tabs);
+    const prefix = "\t".repeat(tabs);
     this.writeLine(prefix + AUTO_PROMPT_OPTIONS);
     this.writeLine(prefix + SLIDEDOWN_OPTIONS);
     this.writeLine(prefix + CATEGORY_OPTIONS);

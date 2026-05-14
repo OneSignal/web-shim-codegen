@@ -20,7 +20,7 @@ log "🧹 Cleanup"
 cleanup
 
 log "🧵 Transpiling"
-vpx tsc
+vp pack main.ts -d ts-to-es6 -f cjs
 
 log "⚡️ Code generation"
 vpx yellicode
@@ -28,7 +28,7 @@ vpx yellicode
 log '🧶 Bundling Angular SDK'
 (cd src/scaffolds/angular-workspace &&
   vp install &&
-  vp run build -- --configuration=production &&
+  vp run build --configuration=production &&
   cp -R dist/onesignal-ngx ../../../build)
 
 log "📄 Copying static files"

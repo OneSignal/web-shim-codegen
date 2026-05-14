@@ -355,7 +355,7 @@ export interface IOneSignalOneSignal {
 	logout(): Promise<void>;
 	init(options: IInitObject): Promise<void>;
 	setConsentGiven(consent: boolean): Promise<void>;
-	setConsentRequired(requiresConsent: boolean): Promise<void>;
+	setConsentRequired(requiresConsent: boolean): void;
 }
 export interface IOneSignalNotifications {
 	permissionNative: NotificationPermission;
@@ -457,20 +457,12 @@ function oneSignalSetConsentGiven(consent: boolean): Promise<void> {
     });
   });
 }
-function oneSignalSetConsentRequired(requiresConsent: boolean): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (isOneSignalScriptFailed) {
-      reject(new Error('OneSignal script failed to load.'));
-      return;
-    }
-
-    window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
-      oneSignal.setConsentRequired(requiresConsent)
-        .then(() => resolve())
-        .catch(error => reject(error));
-    });
+function oneSignalSetConsentRequired(requiresConsent: boolean): void {
+  window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
+    oneSignal.setConsentRequired(requiresConsent);
   });
 }
+
 function slidedownPromptPush(options?: AutoPromptOptions): Promise<void> {
   return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
