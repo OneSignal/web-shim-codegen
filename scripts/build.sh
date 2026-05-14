@@ -1,10 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# Fixes the following error when "yarn build" is run
-#   You must provide the URL of lib/mappings.wasm
-export NODE_OPTIONS=--no-experimental-fetch
-
 bold=$(tput bold)
 normal=$(tput sgr0)
 
