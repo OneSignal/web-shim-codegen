@@ -17,10 +17,6 @@
     "build:outputs": "vp run build && ./scripts/copy-build-to-outputs.sh",
     "prepare": "vp config"
   },
-  "dependencies": {
-    "@vitejs/plugin-react": "^6.0.2",
-    "curlrequest": "^1.0.1"
-  },
   "devDependencies": {
     "@types/node": "^25.8.0",
     "@yellicode/cli": "^1.3.0",

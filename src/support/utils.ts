@@ -1,14 +1,10 @@
-import * as curl from "curlrequest";
 import { IArgument } from "../models/Argument";
 import { IFunctionSignature } from "../models/FunctionSignature";
 import { GITHUB_URL } from "./constants";
 
 export async function remoteFetchFile(path: string): Promise<string> {
-  return await new Promise<string>((resolve) => {
-    curl.request({ url: GITHUB_URL + path }, (_err: unknown, stdout: string) => {
-      resolve(stdout);
-    });
-  });
+  const res = await fetch(GITHUB_URL + path);
+  return await res.text();
 }
 
 /**
