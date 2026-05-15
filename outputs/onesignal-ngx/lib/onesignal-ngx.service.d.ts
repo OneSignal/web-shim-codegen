@@ -338,7 +338,7 @@ export interface IOneSignalOneSignal {
     logout(): Promise<void>;
     init(options: IInitObject): Promise<void>;
     setConsentGiven(consent: boolean): Promise<void>;
-    setConsentRequired(requiresConsent: boolean): Promise<void>;
+    setConsentRequired(requiresConsent: boolean): void;
 }
 export interface IOneSignalNotifications {
     permissionNative: NotificationPermission;
@@ -407,7 +407,7 @@ export interface IOneSignalPushSubscription {
 declare function oneSignalLogin(externalId: string, jwtToken?: string): Promise<void>;
 declare function oneSignalLogout(): Promise<void>;
 declare function oneSignalSetConsentGiven(consent: boolean): Promise<void>;
-declare function oneSignalSetConsentRequired(requiresConsent: boolean): Promise<void>;
+declare function oneSignalSetConsentRequired(requiresConsent: boolean): void;
 declare global {
     interface Window {
         OneSignalDeferred?: OneSignalDeferredLoadedCallback[];
