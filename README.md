@@ -81,13 +81,13 @@ building the codegen (`npm run build`), the easiest way to try the shims
 locally is:
 
 ```
-cd build/react/example         # or build/vue/v2/example, build/vue/v3/example
+cd build/react/example         # or build/vue/v2/example, build/vue/v3/example, build/onesignal-ngx/example
 vp run start
 ```
 
 The `prestart` hook invokes `scripts/setup.sh`, which builds the parent shim,
 packs it as a tarball, and installs it into the example before launching the
-dev server on http://localhost:3000.
+dev server on http://localhost:4000.
 
 ### React Example App (alternative)
 

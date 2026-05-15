@@ -14,7 +14,7 @@ In the project directory, you can run:
 
 Builds the parent `onesignal-vue` package, packs it as a tarball, installs it
 locally, and runs the dev server. Open
-[http://localhost:3000](http://localhost:3000) to view the app.
+[http://localhost:4000](http://localhost:4000) to view the app.
 
 The page will reload if you make edits.
 

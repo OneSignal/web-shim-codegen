@@ -9,7 +9,9 @@ if [ -d "build" ]; then
     if [ -d "$dir" ]; then
       dirname=$(basename "$dir")
       echo "Copying $dirname to outputs/"
-      rsync -q -tr --delete --exclude=node_modules --exclude=dist --exclude=bun.lock "$dir" "outputs/$dirname"
+      rsync -q -tr --delete --exclude=node_modules --exclude=dist --exclude=bun.lock --exclude=.angular --exclude='*.tgz' "$dir" "outputs/$dirname"
+      find "outputs/$dirname" -name '.angular' -type d -prune -exec rm -rf {} +
+      find "outputs/$dirname" -name '*.tgz' -type f -delete
     fi
   done
 
