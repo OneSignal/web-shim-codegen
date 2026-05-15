@@ -9,7 +9,9 @@
     <h3>Essential Links</h3>
     <ul>
       <li>
-        <a href="https://vuejs.org" target="_blank" rel="noopener">Vue 3 Docs</a>
+        <a href="https://v2.vuejs.org" target="_blank" rel="noopener"
+          >Vue 2 Docs</a
+        >
       </li>
       <li>
         <a href="https://vitejs.dev" target="_blank" rel="noopener">Vite</a>
@@ -27,9 +29,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import Vue from 'vue';
 
-export default defineComponent({
+export default Vue.extend({
   name: 'HelloWorld',
   props: {
     msg: {

@@ -1,6 +1,6 @@
-# example-vue3
+# example-vue2
 
-A minimal Vue 3 app showcasing `@onesignal/onesignal-vue3`.
+A minimal Vue 2 app showcasing `onesignal-vue`.
 
 ## Setup
 
@@ -12,8 +12,8 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Builds the parent `@onesignal/onesignal-vue3` package, packs it as a tarball,
-installs it locally, and runs the dev server. Open
+Builds the parent `onesignal-vue` package, packs it as a tarball, installs it
+locally, and runs the dev server. Open
 [http://localhost:3000](http://localhost:3000) to view the app.
 
 The page will reload if you make edits.
