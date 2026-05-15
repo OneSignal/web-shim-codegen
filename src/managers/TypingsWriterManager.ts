@@ -1,4 +1,7 @@
+import * as path from 'path';
+
 import { CodeWriter } from '@yellicode/core';
+
 import { IFunctionSignature } from '../models/FunctionSignature';
 import IOneSignalApi from '../models/OneSignalApi';
 import {
@@ -32,8 +35,7 @@ export class TypingsWriterManager extends CodeWriter {
     if (sig.args) {
       sig.args.forEach((arg) => {
         const optionalValue = arg.optional ? '?' : '';
-        argumentsString =
-          argumentsString + arg.name + optionalValue + ': ' + arg.type + ', ';
+        argumentsString = argumentsString + arg.name + optionalValue + ': ' + arg.type + ', ';
       });
       argumentsString = argumentsString.trim();
     }
@@ -41,10 +43,7 @@ export class TypingsWriterManager extends CodeWriter {
     return `${sig.name}${sig.genericTypeParameter ?? ''}(${argumentsString.slice(0, -1)}): ${sig.returnType}`;
   }
 
-  public writeFunctionTypes(
-    functions: IFunctionSignature[],
-    tabs?: number,
-  ): void {
+  public writeFunctionTypes(functions: IFunctionSignature[], tabs?: number): void {
     const prefix = '\t'.repeat(tabs || 1);
     [...functions].forEach((func) => {
       this.writeLine(`${prefix}${this.getFunctionSignatureString(func)};`);
@@ -87,7 +86,7 @@ export class TypingsWriterManager extends CodeWriter {
    */
   public async writeInterfaces(tabs: number): Promise<void> {
     const initObjectInterfaceContents = await ReaderManager.readFile(
-      __dirname.replace('ts-to-es6/', '') + `/../snippets/InitObject.ts`,
+      path.resolve(__dirname, '..', 'src', 'snippets', 'InitObject.ts'),
     );
 
     const prefix = '\t'.repeat(tabs);

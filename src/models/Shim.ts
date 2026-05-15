@@ -1,5 +1,5 @@
 export enum Shim {
-  React = "react",
-  Vue = "vue",
-  Angular = "angular",
+  React = 'react',
+  Vue = 'vue',
+  Angular = 'angular',
 }

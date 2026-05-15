@@ -9,7 +9,7 @@ if [ -d "build" ]; then
     if [ -d "$dir" ]; then
       dirname=$(basename "$dir")
       echo "Copying $dirname to outputs/"
-      rsync -q -tr --exclude=node_modules --exclude=dist "$dir" "outputs/$dirname"
+      rsync -q -tr --delete --exclude=node_modules --exclude=dist --exclude=bun.lock "$dir" "outputs/$dirname"
     fi
   done
 

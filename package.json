@@ -2,33 +2,33 @@
   "name": "web-shim-codegen",
   "version": "3.0.8",
   "description": "Used to build Web SDK libraries for various web frameworks",
+  "keywords": [
+    "codegen",
+    "sdk",
+    "web"
+  ],
+  "license": "MIT",
+  "author": "Rodrigo Gomez-Palacio",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint . --ext .ts",
+    "lint": "vp check",
+    "lint:fix": "vp check --fix",
     "build": "./scripts/build.sh",
-    "build:outputs": "npm run build && ./scripts/copy-build-to-outputs.sh",
-    "prepare": "husky"
+    "build:outputs": "vp run build && ./scripts/copy-build-to-outputs.sh",
+    "prepare": "vp config"
   },
-  "keywords": [
-    "web",
-    "sdk",
-    "codegen"
-  ],
-  "author": "Rodrigo Gomez-Palacio",
-  "license": "MIT",
   "devDependencies": {
-    "@types/node": "18.19.50",
-    "@typescript-eslint/eslint-plugin": "^5.54.0",
-    "@typescript-eslint/parser": "^5.54.0",
+    "@types/node": "^25.8.0",
     "@yellicode/cli": "^1.3.0",
     "@yellicode/core": "^1.5.0",
     "@yellicode/templating": "^1.8.0",
     "concurrently": "^9.1.2",
-    "eslint": "^8.46.0",
-    "husky": "^9.1.7",
-    "typescript": "4.9.5"
+    "typescript": "^6.0.3",
+    "vite-plus": "0.1.21"
   },
-  "dependencies": {
-    "curlrequest": "^1.0.1"
-  }
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.1.21",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@0.1.21"
+  },
+  "packageManager": "bun@1.3.13"
 }

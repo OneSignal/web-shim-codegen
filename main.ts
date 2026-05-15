@@ -1,11 +1,15 @@
-import { CodeGenManager } from "./src/managers/CodeGenManager";
-import { Shim } from "./src/models/Shim";
-import { VueVersion } from "./src/models/BuildSubdirectory";
+import { CodeGenManager } from './src/managers/CodeGenManager';
+import { VueVersion } from './src/models/BuildSubdirectory';
+import { Shim } from './src/models/Shim';
 
-CodeGenManager.fetchApi()
-  .then(api => {
+void CodeGenManager.fetchApi()
+  .then((api) => {
     new CodeGenManager(Shim.React, api).write();
     new CodeGenManager(Shim.Vue, api, VueVersion.v2).write();
     new CodeGenManager(Shim.Vue, api, VueVersion.v3).write();
     new CodeGenManager(Shim.Angular, api).write();
   })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

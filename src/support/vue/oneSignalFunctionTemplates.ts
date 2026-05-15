@@ -27,11 +27,9 @@ function ${uniqueFunctionName}${
 
     window.OneSignalDeferred?.push((OneSignal) => {
       OneSignal.${chainedNamespaceString}${
-    chainedNamespaceString !== '' ? '.' : ''
-  }${sig.name}(${spreadArgs(args)})
-        .then(${
-          needsNonVoidPromise ? 'result => resolve(result)' : '() => resolve()'
-        })
+        chainedNamespaceString !== '' ? '.' : ''
+      }${sig.name}(${spreadArgs(args)})
+        .then(${needsNonVoidPromise ? 'result => resolve(result)' : '() => resolve()'})
         .catch(error => reject(error));
     });
   });
@@ -54,9 +52,7 @@ export const vueOneSignalFunctionTemplate = (
   // const returnTypeSuffix = needsPromise ? '>' : '';
   const returnTypeSuffix = needsPromise ? '' : '';
   // const retValDeclaration = needsPromise ? `let retVal: Promise<${sig.returnType}>;` : '';
-  const retValDeclaration = needsPromise
-    ? `let retVal: ${sig.returnType};`
-    : '';
+  const retValDeclaration = needsPromise ? `let retVal: ${sig.returnType};` : '';
   const retValAssignment = needsPromise ? 'retVal = ' : '';
   const retValReturn = needsPromise ? 'return retVal;' : '';
   const deferredAwait = needsPromise ? 'await ' : '';
@@ -75,8 +71,8 @@ ${asyncModifier}function ${uniqueFunctionName}${
   ${retValDeclaration}
   ${deferredAwait}window.OneSignalDeferred?.push((OneSignal) => {
     ${retValAssignment}OneSignal.${chainedNamespaceString}${
-    chainedNamespaceString !== '' ? '.' : ''
-  }${sig.name}(${spreadArgs(args)});
+      chainedNamespaceString !== '' ? '.' : ''
+    }${sig.name}(${spreadArgs(args)});
   });
   ${retValReturn}
 }
