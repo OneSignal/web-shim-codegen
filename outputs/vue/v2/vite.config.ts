@@ -5,14 +5,14 @@ export default defineConfig({
     '*': 'vp check --fix',
   },
   fmt: {
-    ignorePatterns: ['dist', 'node_modules'],
+    ignorePatterns: ['dist', 'example', 'node_modules'],
     singleQuote: true,
     sortImports: {
       enabled: true,
     },
   },
   lint: {
-    ignorePatterns: ['dist', 'node_modules'],
+    ignorePatterns: ['dist', 'example', 'node_modules'],
     rules: {
       'typescript/require-await': 'error',
     },
