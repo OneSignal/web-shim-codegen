@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@onesignal/onesignal-vue3": "file:./onesignal-vue3.tgz",
     "vue": "^3.5.0"
   },
   "scripts": {

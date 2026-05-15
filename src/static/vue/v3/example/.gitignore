@@ -4,7 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
-onesignal-onesignal-vue3-*.tgz
+onesignal-vue3.tgz
 
 # production
 /dist

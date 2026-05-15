@@ -5,8 +5,7 @@
     "": {
       "name": "example-vue2",
       "dependencies": {
-        "onesignal-vue": "./onesignal-vue-2.7.0.tgz",
-        "onesignal-vue": "./onesignal-vue-2.7.0.tgz",
+        "onesignal-vue": "file:./onesignal-vue.tgz",
         "vue": "^2.7.16",
       },
       "devDependencies": {
@@ -147,7 +146,7 @@
 
     "nanoid": ["nanoid@3.3.12", "", { "bin": { "nanoid": "bin/nanoid.cjs" } }, "sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ=="],
 
-    "onesignal-vue": ["onesignal-vue@./onesignal-vue-2.7.0.tgz", { "dependencies": { "vue": "^2.6.14" } }, "sha512-J73JFZJ/EsofL52uHtwJ8Hu/OmPnsCsgplfvzb2wh/LvRxOGfZEkg1MGE23dCPrk6a/bGrR7aU5zLkagTN4n/w=="],
+    "onesignal-vue": ["onesignal-vue@./onesignal-vue.tgz", { "dependencies": { "vue": "^2.6.14" } }, "sha512-J73JFZJ/EsofL52uHtwJ8Hu/OmPnsCsgplfvzb2wh/LvRxOGfZEkg1MGE23dCPrk6a/bGrR7aU5zLkagTN4n/w=="],
 
     "picocolors": ["picocolors@1.1.1", "", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 
