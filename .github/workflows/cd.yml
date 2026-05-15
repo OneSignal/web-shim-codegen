@@ -32,7 +32,7 @@ jobs:
         run: vp run build
 
       - name: 'Upload dist artifacts'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -74,7 +74,7 @@ jobs:
           git config --global user.name "OneSignal"
 
       - name: 'Download dist artifacts'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
@@ -94,7 +94,7 @@ jobs:
           PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
 
       - name: '[${{ matrix.repo }}] Push'
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@v1.1.0
         with:
           repository: OneSignal/${{ matrix.repo }}
           directory: ${{ matrix.clone_path }}

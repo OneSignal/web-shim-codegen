@@ -27,7 +27,7 @@ runs:
   using: 'composite'
   steps:
     - name: Create or Update Pull Request
-      uses: actions/github-script@v7
+      uses: actions/github-script@v9
       continue-on-error: true
       with:
         github-token: ${{ inputs.github_token }}
