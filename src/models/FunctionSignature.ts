@@ -1,4 +1,4 @@
-import { IArgument } from "./Argument";
+import { IArgument } from './Argument';
 
 export interface IFunctionSignature {
   name: string;

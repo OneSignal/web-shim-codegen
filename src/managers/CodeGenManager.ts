@@ -1,14 +1,15 @@
-import { TextWriter } from "@yellicode/core";
-import { Generator } from "@yellicode/templating";
-import { FileFetchManager } from "./FileFetchManager";
-import { Shim } from "../models/Shim";
-import { ReactOneSignalWriterManager } from "./shims/react/ReactOneSignalWriterManager";
-import { VueOneSignalWriterManager } from "./shims/vue/VueOneSignalWriterManager";
-import { OneSignalWriterManagerBase } from "./bases/OneSignalWriterManagerBase";
-import { NgOneSignalWriterManager } from "./shims/angular/NgOneSignalWriterManager";
-import { BuildSubdirectory } from "../models/BuildSubdirectory";
-import IOneSignalApi from "../models/OneSignalApi";
-import { TypingsWriterManager } from "./TypingsWriterManager";
+import { TextWriter } from '@yellicode/core';
+import { Generator } from '@yellicode/templating';
+
+import { BuildSubdirectory } from '../models/BuildSubdirectory';
+import IOneSignalApi from '../models/OneSignalApi';
+import { Shim } from '../models/Shim';
+import { OneSignalWriterManagerBase } from './bases/OneSignalWriterManagerBase';
+import { FileFetchManager } from './FileFetchManager';
+import { NgOneSignalWriterManager } from './shims/angular/NgOneSignalWriterManager';
+import { ReactOneSignalWriterManager } from './shims/react/ReactOneSignalWriterManager';
+import { VueOneSignalWriterManager } from './shims/vue/VueOneSignalWriterManager';
+import { TypingsWriterManager } from './TypingsWriterManager';
 
 export class CodeGenManager {
   /**
@@ -19,7 +20,7 @@ export class CodeGenManager {
   constructor(
     readonly shim: Shim,
     readonly api: IOneSignalApi,
-    readonly subdir: BuildSubdirectory = "",
+    readonly subdir: BuildSubdirectory = '',
   ) {}
 
   static async fetchApi(): Promise<IOneSignalApi> {
@@ -57,7 +58,7 @@ export class CodeGenManager {
             throw new Error(`writeIndexFile: unsupported shim '${this.shim}'.`);
         }
         await oneSignalWriter.writeSupportCode();
-        oneSignalWriter.writeOneSignalFunctions(this.api, ["OneSignal"]);
+        oneSignalWriter.writeOneSignalFunctions(this.api, ['OneSignal']);
         await oneSignalWriter.writeExportCode(this.api);
       },
     );
@@ -81,7 +82,7 @@ export class CodeGenManager {
         await typingsWriter.writeInterfaces(0);
         typingsWriter.writeOneSignalInterfaces(this.api);
         // write all the OneSignal functions we need to the outer-most scope of the file
-        oneSignalWriter.writeOneSignalFunctions(this.api, ["OneSignal"]);
+        oneSignalWriter.writeOneSignalFunctions(this.api, ['OneSignal']);
         oneSignalWriter.writeLine();
         // write the individual namespaces like User, Notification, etc. containing the previously written functions
         oneSignalWriter.defineFunctionNamespaces();
@@ -92,7 +93,7 @@ export class CodeGenManager {
         // assign the previously written functions to the OneSignal class
         oneSignalWriter.assignOneSignalFunctions();
         // close the OneSignal class
-        oneSignalWriter.writeLine("}");
+        oneSignalWriter.writeLine('}');
       },
     );
   }

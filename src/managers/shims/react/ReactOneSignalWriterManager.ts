@@ -1,12 +1,14 @@
-import * as path from "path";
-import { Shim } from "../../../models/Shim";
-import { ReaderManager } from "../../ReaderManager";
-import { OneSignalWriterManagerBase } from "../../bases/OneSignalWriterManagerBase";
-import { TextWriter } from "@yellicode/core";
-import IOneSignalApi from "../../../models/OneSignalApi";
-import { TypingsWriterManager } from "../../TypingsWriterManager";
+import * as path from 'path';
 
-const SNIPPETS_DIR = path.resolve(__dirname, "..", "src", "snippets");
+import { TextWriter } from '@yellicode/core';
+
+import IOneSignalApi from '../../../models/OneSignalApi';
+import { Shim } from '../../../models/Shim';
+import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
+import { ReaderManager } from '../../ReaderManager';
+import { TypingsWriterManager } from '../../TypingsWriterManager';
+
+const SNIPPETS_DIR = path.resolve(__dirname, '..', 'src', 'snippets');
 
 export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
   constructor(
@@ -20,7 +22,7 @@ export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
   async writeSupportCode(): Promise<void> {
     const typingsWriter = new TypingsWriterManager(this);
     const supportFileContents = await ReaderManager.readFile(
-      path.join(SNIPPETS_DIR, Shim.React, "support.ts"),
+      path.join(SNIPPETS_DIR, Shim.React, 'support.ts'),
     );
     this.writeLine(supportFileContents);
     await typingsWriter.writeInterfaces(0);
@@ -35,7 +37,7 @@ export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
         await this.writeNamespaceExport(api, key);
       });
 
-    this.writeLine("const OneSignal = OneSignalNamespace;");
-    this.writeLine("export default OneSignal;");
+    this.writeLine('const OneSignal = OneSignalNamespace;');
+    this.writeLine('export default OneSignal;');
   }
 }

@@ -1,5 +1,5 @@
-import { PATHS } from "../support/constants";
-import { remoteFetchFile } from "../support/utils";
+import { PATHS } from '../support/constants';
+import { remoteFetchFile } from '../support/utils';
 
 export class FileFetchManager {
   static async getApiSpec(): Promise<string> {

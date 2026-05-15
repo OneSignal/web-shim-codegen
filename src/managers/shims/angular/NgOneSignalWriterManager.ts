@@ -1,13 +1,15 @@
-import * as path from "path";
-import { ReaderManager } from "../../ReaderManager";
-import { Shim } from "../../../models/Shim";
-import { OneSignalWriterManagerBase } from "../../bases/OneSignalWriterManagerBase";
-import { TextWriter } from "@yellicode/core";
-import IOneSignalApi from "../../../models/OneSignalApi";
-import { generateUniqueFunctionName } from "../../../support/utils";
-import { FUNCTION_IGNORE, NAMESPACE_IGNORE } from "../../../support/constants";
+import * as path from 'path';
 
-const SNIPPETS_DIR = path.resolve(__dirname, "..", "src", "snippets");
+import { TextWriter } from '@yellicode/core';
+
+import IOneSignalApi from '../../../models/OneSignalApi';
+import { Shim } from '../../../models/Shim';
+import { FUNCTION_IGNORE, NAMESPACE_IGNORE } from '../../../support/constants';
+import { generateUniqueFunctionName } from '../../../support/utils';
+import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
+import { ReaderManager } from '../../ReaderManager';
+
+const SNIPPETS_DIR = path.resolve(__dirname, '..', 'src', 'snippets');
 
 export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
   constructor(
@@ -20,7 +22,7 @@ export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
   // implements abstract function
   async writeSupportCode(): Promise<void> {
     const supportFileContents = await ReaderManager.readFile(
-      path.join(SNIPPETS_DIR, Shim.Angular, "support.ts"),
+      path.join(SNIPPETS_DIR, Shim.Angular, 'support.ts'),
     );
 
     this.writeLine(supportFileContents);
@@ -56,7 +58,7 @@ export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
         return;
       }
 
-      this.writeLine(`\t${sig.name} = ${generateUniqueFunctionName("OneSignal", sig.name)};`);
+      this.writeLine(`\t${sig.name} = ${generateUniqueFunctionName('OneSignal', sig.name)};`);
     });
   }
 

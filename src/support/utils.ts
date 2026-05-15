@@ -1,6 +1,6 @@
-import { IArgument } from "../models/Argument";
-import { IFunctionSignature } from "../models/FunctionSignature";
-import { GITHUB_URL } from "./constants";
+import { IArgument } from '../models/Argument';
+import { IFunctionSignature } from '../models/FunctionSignature';
+import { GITHUB_URL } from './constants';
 
 export async function remoteFetchFile(path: string): Promise<string> {
   const res = await fetch(GITHUB_URL + path);
@@ -11,20 +11,20 @@ export async function remoteFetchFile(path: string): Promise<string> {
  * Creates regex used for finding function in OneSignal.js WebSDK file
  */
 export function createRegex(functionName: string): RegExp {
-  return new RegExp("(async)?\\s*" + functionName + "\\s*\\((.*)\\)\\s*:?\\s*(.*)\\s*{");
+  return new RegExp('(async)?\\s*' + functionName + '\\s*\\((.*)\\)\\s*:?\\s*(.*)\\s*{');
 }
 
 /**
  * Parses function signature returning an object with function meta data like args, return type, etc...
  */
 export function parseFunctionSig(signature: string): IFunctionSignature {
-  const functionSig: IFunctionSignature = { name: "", isAsync: false };
+  const functionSig: IFunctionSignature = { name: '', isAsync: false };
   const matches = signature.match(/(\S*)\s*\((.*)\)\s*:?\s*(.*)\s*{/);
 
   if (matches) {
     functionSig.name = matches[1];
 
-    if (signature.includes("async")) {
+    if (signature.includes('async')) {
       functionSig.isAsync = true;
     }
 
@@ -33,7 +33,7 @@ export function parseFunctionSig(signature: string): IFunctionSignature {
       functionSig.args = parsedArgs;
     }
 
-    const defaultReturnType = functionSig.isAsync ? "Promise<void>" : "void";
+    const defaultReturnType = functionSig.isAsync ? 'Promise<void>' : 'void';
     functionSig.returnType = matches[3]
       ? matches[3].trim() || defaultReturnType
       : defaultReturnType;
@@ -46,10 +46,10 @@ export function parseFunctionSig(signature: string): IFunctionSignature {
  * Formats argument list for invocation e.g: [arg1, arg2] = "arg1, arg2"
  */
 export function spreadArgs(args: string[] | undefined): string {
-  let acc = "";
+  let acc = '';
   if (args) {
     args.forEach((elem) => {
-      acc = acc + elem + ", ";
+      acc = acc + elem + ', ';
     });
     acc = acc.slice(0, -2);
   }
@@ -57,11 +57,11 @@ export function spreadArgs(args: string[] | undefined): string {
 }
 
 export function spreadArgsWithTypes(signature: IFunctionSignature): string {
-  let acc = "";
+  let acc = '';
   if (signature.args) {
     signature.args.forEach((arg) => {
-      const optionalChar = arg.optional ? "?" : "";
-      acc = acc + arg.name + optionalChar + ": " + arg.type + ", ";
+      const optionalChar = arg.optional ? '?' : '';
+      acc = acc + arg.name + optionalChar + ': ' + arg.type + ', ';
     });
     acc = acc.slice(0, -2);
   }
@@ -72,7 +72,7 @@ export function getChainedNamespaceString(chainedNamespaces: string[]): string {
   // remove 'OneSignal' from front
   const copy = [...chainedNamespaces];
   copy.shift();
-  return copy.join(".");
+  return copy.join('.');
 }
 
 /**
@@ -84,14 +84,14 @@ export function parseArguments(rawArgs: string): IArgument[] | undefined {
   }
 
   const parsedArgs: IArgument[] = [];
-  rawArgs.split(",").forEach((arg) => {
-    const name = arg.split(":")[0];
-    const type = arg.split(":")[1];
+  rawArgs.split(',').forEach((arg) => {
+    const name = arg.split(':')[0];
+    const type = arg.split(':')[1];
 
     parsedArgs.push({
-      name: name.split("?")[0].trim(),
+      name: name.split('?')[0].trim(),
       type: type.trim(),
-      optional: name.includes("?"),
+      optional: name.includes('?'),
     });
   });
   return parsedArgs;
@@ -115,7 +115,7 @@ export function generateUniqueFunctionName(namespaceName: string, functionName: 
 
 export function hasNonVoidReturnType(sig: IFunctionSignature): boolean {
   if (sig.isAsync) {
-    return sig.returnType !== "Promise<void>";
+    return sig.returnType !== 'Promise<void>';
   }
-  return sig.returnType !== "void" && sig.returnType !== "Promise<void>";
+  return sig.returnType !== 'void' && sig.returnType !== 'Promise<void>';
 }

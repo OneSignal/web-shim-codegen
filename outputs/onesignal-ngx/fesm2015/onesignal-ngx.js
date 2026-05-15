@@ -45,9 +45,17 @@ function oneSignalSetConsentGiven(consent) {
     });
 }
 function oneSignalSetConsentRequired(requiresConsent) {
-    var _a;
-    (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push((oneSignal) => {
-        oneSignal.setConsentRequired(requiresConsent);
+    return new Promise((resolve, reject) => {
+        var _a;
+        if (isOneSignalScriptFailed) {
+            reject(new Error('OneSignal script failed to load.'));
+            return;
+        }
+        (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push((oneSignal) => {
+            oneSignal.setConsentRequired(requiresConsent)
+                .then(() => resolve())
+                .catch(error => reject(error));
+        });
     });
 }
 function slidedownPromptPush(options) {

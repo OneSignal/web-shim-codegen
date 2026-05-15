@@ -27,11 +27,9 @@ function ${uniqueFunctionName}${
 
     window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
       oneSignal.${chainedNamespaceString}${
-    chainedNamespaceString !== '' ? '.' : ''
-  }${sig.name}(${spreadArgs(args)})
-        .then(${
-          needsNonVoidPromise ? 'result => resolve(result)' : '() => resolve()'
-        })
+        chainedNamespaceString !== '' ? '.' : ''
+      }${sig.name}(${spreadArgs(args)})
+        .then(${needsNonVoidPromise ? 'result => resolve(result)' : '() => resolve()'})
         .catch(error => reject(error));
     });
   });
@@ -51,9 +49,7 @@ export const ngOneSignalFunctionTemplate = (
   const asyncModifier = needsPromise ? 'async ' : '';
   const returnTypePrefix = needsPromise ? '' : '';
   const returnTypeSuffix = needsPromise ? '' : '';
-  const retValDeclaration = needsPromise
-    ? `let retVal: ${sig.returnType};`
-    : '';
+  const retValDeclaration = needsPromise ? `let retVal: ${sig.returnType};` : '';
   const retValAssignment = needsPromise ? 'retVal = ' : '';
   const retValReturn = needsPromise ? `// @ts-ignore\n  return retVal;` : '';
   const deferredAwait = needsPromise ? 'await ' : '';
@@ -72,8 +68,8 @@ ${asyncModifier}function ${uniqueFunctionName}${
   ${retValDeclaration}
   ${deferredAwait}window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
     ${retValAssignment}oneSignal.${chainedNamespaceString}${
-    chainedNamespaceString !== '' ? '.' : ''
-  }${sig.name}(${spreadArgs(args)});
+      chainedNamespaceString !== '' ? '.' : ''
+    }${sig.name}(${spreadArgs(args)});
   });
   ${retValReturn}
 }

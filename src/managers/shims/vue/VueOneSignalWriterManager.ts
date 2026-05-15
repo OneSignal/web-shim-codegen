@@ -1,13 +1,15 @@
-import * as path from "path";
-import { ReaderManager } from "../../ReaderManager";
-import { Shim } from "../../../models/Shim";
-import { OneSignalWriterManagerBase } from "../../bases/OneSignalWriterManagerBase";
-import { TextWriter } from "@yellicode/core";
-import { BuildSubdirectory } from "../../../models/BuildSubdirectory";
-import IOneSignalApi from "../../../models/OneSignalApi";
-import { TypingsWriterManager } from "../../TypingsWriterManager";
+import * as path from 'path';
 
-const SNIPPETS_DIR = path.resolve(__dirname, "..", "src", "snippets");
+import { TextWriter } from '@yellicode/core';
+
+import { BuildSubdirectory } from '../../../models/BuildSubdirectory';
+import IOneSignalApi from '../../../models/OneSignalApi';
+import { Shim } from '../../../models/Shim';
+import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
+import { ReaderManager } from '../../ReaderManager';
+import { TypingsWriterManager } from '../../TypingsWriterManager';
+
+const SNIPPETS_DIR = path.resolve(__dirname, '..', 'src', 'snippets');
 
 export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
   constructor(
@@ -22,7 +24,7 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
   async writeSupportCode(): Promise<void> {
     const typingsWriter = new TypingsWriterManager(this);
     const supportFileContents = await ReaderManager.readFile(
-      path.join(SNIPPETS_DIR, Shim.Vue, this.subdir ?? "", "support.ts"),
+      path.join(SNIPPETS_DIR, Shim.Vue, this.subdir ?? '', 'support.ts'),
     );
 
     this.writeLine(supportFileContents);
@@ -43,7 +45,7 @@ export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
 
   async writePluginCode(): Promise<void> {
     const pluginFileContents = await ReaderManager.readFile(
-      path.join(SNIPPETS_DIR, Shim.Vue, this.subdir ?? "", "plugin.ts"),
+      path.join(SNIPPETS_DIR, Shim.Vue, this.subdir ?? '', 'plugin.ts'),
     );
     this.write(pluginFileContents);
   }

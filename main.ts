@@ -1,6 +1,6 @@
-import { CodeGenManager } from "./src/managers/CodeGenManager";
-import { Shim } from "./src/models/Shim";
-import { VueVersion } from "./src/models/BuildSubdirectory";
+import { CodeGenManager } from './src/managers/CodeGenManager';
+import { VueVersion } from './src/models/BuildSubdirectory';
+import { Shim } from './src/models/Shim';
 
 void CodeGenManager.fetchApi()
   .then((api) => {

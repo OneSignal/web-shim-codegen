@@ -575,9 +575,17 @@
       });
   }
   function oneSignalSetConsentRequired(requiresConsent) {
-      var _a;
-      (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
-          oneSignal.setConsentRequired(requiresConsent);
+      return new Promise(function (resolve, reject) {
+          var _a;
+          if (isOneSignalScriptFailed) {
+              reject(new Error('OneSignal script failed to load.'));
+              return;
+          }
+          (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
+              oneSignal.setConsentRequired(requiresConsent)
+                  .then(function () { return resolve(); })
+                  .catch(function (error) { return reject(error); });
+          });
       });
   }
   function slidedownPromptPush(options) {
