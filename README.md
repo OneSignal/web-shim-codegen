@@ -76,7 +76,20 @@ Set up a new React, Vue, or Angular App so the new app and final package repo is
 
 ## Creating Test Apps
 
-### React Example App
+Each shim ships with a ready-to-run example under its `example/` folder. After
+building the codegen (`npm run build`), the easiest way to try the shims
+locally is:
+
+```
+cd build/react/example         # or build/vue/v2/example, build/vue/v3/example, build/onesignal-ngx/example
+vp run start
+```
+
+The `prestart` hook invokes `scripts/setup.sh`, which builds the parent shim,
+packs it as a tarball, and installs it into the example before launching the
+dev server on http://localhost:4000.
+
+### React Example App (alternative)
 
 ```
 cd ~/tmp
@@ -85,7 +98,7 @@ cd web-shim-test-react
 npm link {YOUR_PATH_HERE}/web-shim-codegen/build/react
 ```
 
-### Vue Example App
+### Vue Example App (alternative)
 
 ```
 cd ~/tmp
