@@ -876,6 +876,7 @@ const DEFAULT_SCRIPT_SRC =
 
 let isOneSignalInitialized = false;
 let isOneSignalScriptFailed = false;
+let pendingInitReject: ((reason?: unknown) => void) | undefined;
 
 if (typeof window !== 'undefined') {
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -919,6 +920,8 @@ function supportsVapidPush(): boolean {
 
 function handleOnError(): void {
   isOneSignalScriptFailed = true;
+  pendingInitReject?.(new Error('OneSignal script failed to load.'));
+  pendingInitReject = undefined;
 }
 
 function addSDKScript(scriptSrc?: string): void {
@@ -980,6 +983,14 @@ export class OneSignal implements IOneSignalOneSignal {
       return Promise.reject(`Document is not defined.`);
     }
 
+    // Required: the CDN script silently exits on unsupported browsers without
+    // draining OneSignalDeferred, so init() would hang forever otherwise.
+    if (!isPushNotificationsSupported()) {
+      return Promise.reject(
+        new Error('This browser does not support Web Push notifications.'),
+      );
+    }
+
     // Handle both disabled and disable keys for welcome notification
     if (options.welcomeNotification?.disabled !== undefined) {
       options.welcomeNotification.disable = options.welcomeNotification.disabled;
@@ -988,14 +999,19 @@ export class OneSignal implements IOneSignalOneSignal {
     addSDKScript(options.scriptSrc);
 
     return new Promise<void>((resolve, reject) => {
+      pendingInitReject = reject;
       window.OneSignalDeferred?.push((oneSignal: IOneSignalOneSignal) => {
         oneSignal
           .init(options)
           .then(() => {
             isOneSignalInitialized = true;
+            pendingInitReject = undefined;
             resolve();
           })
-          .catch(reject);
+          .catch((err) => {
+            pendingInitReject = undefined;
+            reject(err);
+          });
       });
     });
   }
