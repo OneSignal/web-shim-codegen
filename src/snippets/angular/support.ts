@@ -151,14 +151,3 @@ export class OneSignal implements IOneSignalOneSignal {
       });
     });
   }
-
-	User = UserNamespace;
-	Session = SessionNamespace;
-	Debug = DebugNamespace;
-	Slidedown = SlidedownNamespace;
-	Notifications = NotificationsNamespace;
-	login = oneSignalLogin;
-	logout = oneSignalLogout;
-	setConsentGiven = oneSignalSetConsentGiven;
-	setConsentRequired = oneSignalSetConsentRequired;
-}
