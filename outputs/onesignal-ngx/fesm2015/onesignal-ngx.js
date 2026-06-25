@@ -487,8 +487,6 @@ function supportsVapidPush() {
 /* E N D */
 function handleOnError() {
     isOneSignalScriptFailed = true;
-    // Without this the init() Promise hangs forever when the CDN script can't
-    // load (adblock, CSP, offline) since the deferred queue never drains.
     pendingInitReject === null || pendingInitReject === void 0 ? void 0 : pendingInitReject(new Error('OneSignal script failed to load.'));
     pendingInitReject = undefined;
 }
@@ -534,8 +532,8 @@ class OneSignal {
         if (!document) {
             return Promise.reject(`Document is not defined.`);
         }
-        // The CDN script silently exits on incompatible browsers without draining
-        // OneSignalDeferred, which would otherwise leave init() pending forever.
+        // Required: the CDN script silently exits on unsupported browsers without
+        // draining OneSignalDeferred, so init() would hang forever otherwise.
         if (!isPushNotificationsSupported()) {
             return Promise.reject(new Error('This browser does not support Web Push notifications.'));
         }
