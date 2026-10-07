@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import { CodeWriter, TextWriter } from '@yellicode/core';
 
 import { IFunctionSignature } from '../../models/FunctionSignature';
@@ -18,6 +20,7 @@ import {
   vueOneSignalAsyncFunctionTemplate,
   vueOneSignalFunctionTemplate,
 } from '../../support/vue/oneSignalFunctionTemplates';
+import { ReaderManager } from '../ReaderManager';
 
 const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
   [Shim.React]: {
@@ -53,6 +56,13 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
     readonly shim: Shim,
   ) {
     super(writer);
+  }
+
+  public async writeIdentityGuards(): Promise<void> {
+    const snippet = await ReaderManager.readFile(
+      path.resolve(__dirname, '..', 'src', 'snippets', 'identityGuard.ts'),
+    );
+    this.writeLine(snippet);
   }
 
   public writeOneSignalFunctions(api: IOneSignalApi, namespaceChain: string[]): void {

@@ -81,6 +81,7 @@ export class CodeGenManager {
         const typingsWriter = new TypingsWriterManager(writer);
         await typingsWriter.writeInterfaces(0);
         typingsWriter.writeOneSignalInterfaces(this.api);
+        await oneSignalWriter.writeIdentityGuards();
         // write all the OneSignal functions we need to the outer-most scope of the file
         oneSignalWriter.writeOneSignalFunctions(this.api, ['OneSignal']);
         oneSignalWriter.writeLine();

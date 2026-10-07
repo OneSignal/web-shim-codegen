@@ -1,4 +1,5 @@
 import { IFunctionSignature } from '../../models/FunctionSignature';
+import { identityGuardLine } from '../../support/identityGuards';
 import {
   getChainedNamespaceString,
   hasNonVoidReturnType,
@@ -14,12 +15,13 @@ export const reactOneSignalAsyncFunctionTemplate = (
   const args = sig.args?.map((arg) => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   const needsNonVoidPromise = hasNonVoidReturnType(sig);
+  const guard = identityGuardLine(uniqueFunctionName);
 
   return `
 function ${uniqueFunctionName}${
     sig.genericTypeParameter ?? ''
   }(${spreadArgsWithTypes(sig)}): ${sig.returnType} {
-  return new Promise((resolve, reject) => {
+  ${guard ? `${guard}\n  ` : ''}return new Promise((resolve, reject) => {
     if (isOneSignalScriptFailed) {
       reject(new Error('OneSignal script failed to load.'));
       return;
@@ -56,6 +58,7 @@ export const reactOneSignalFunctionTemplate = (
   const retValAssignment = needsPromise ? 'retVal = ' : '';
   const retValReturn = needsPromise ? 'return retVal;' : '';
   const deferredAwait = needsPromise ? 'await ' : '';
+  const guard = identityGuardLine(uniqueFunctionName);
 
   return `
 ${
@@ -68,7 +71,7 @@ ${asyncModifier}function ${uniqueFunctionName}${
   }(${spreadArgsWithTypes(sig)}): ${returnTypePrefix}${
     sig.returnType || 'void'
   }${returnTypeSuffix} {
-  ${retValDeclaration}
+  ${guard ? `${guard}\n  ` : ''}${retValDeclaration}
   ${deferredAwait}window.OneSignalDeferred?.push((OneSignal) => {
     ${retValAssignment}OneSignal.${chainedNamespaceString}${
       chainedNamespaceString !== '' ? '.' : ''

@@ -532,7 +532,58 @@
       __rewriteRelativeImportExtension: __rewriteRelativeImportExtension,
   };
 
+  /**
+   * Returns true and logs when [value] is null, empty, or contains a null byte.
+   * Whitespace is still a value.
+   */
+  function isMissing(value, api) {
+      // A NUL cannot be stored in a text column, so it is never a usable value.
+      if (typeof value === 'string' && value.includes('\u0000')) {
+          console.error('[OneSignal] ' + api + ' contains a null byte');
+          return true;
+      }
+      if (typeof value === 'string' && value.length > 0)
+          return false;
+      console.error('[OneSignal] ' + api + ' is required');
+      return true;
+  }
+  function hasMissingItems(values, api) {
+      if (!Array.isArray(values))
+          return isMissing(values, api);
+      return values.some(function (value) { return isMissing(value, api); });
+  }
+  /**
+   * With [allowEmptyValue], "" and a value containing a null byte are kept.
+   * A null value is still rejected.
+   */
+  function hasMissingEntries(values, api, allowEmptyValue) {
+      if (allowEmptyValue === void 0) { allowEmptyValue = false; }
+      if (values == null || typeof values !== 'object' || Array.isArray(values)) {
+          return isMissing(values, api);
+      }
+      return Object.entries(values).some(function (_d) {
+          var _e = __read(_d, 2), key = _e[0], item = _e[1];
+          if (isMissing(key, api + ': key'))
+              return true;
+          if (allowEmptyValue)
+              return item == null && isMissing(item, api + ': value');
+          return isMissing(item, api + ': value');
+      });
+  }
+  function keepsLanguage(language) {
+      if (typeof language !== 'string') {
+          console.error('[OneSignal] setLanguage: language is required');
+          return false;
+      }
+      if (language.includes('\u0000')) {
+          console.error('[OneSignal] setLanguage: language contains a null byte');
+          return false;
+      }
+      return true;
+  }
   function oneSignalLogin(externalId, jwtToken) {
+      if (isMissing(externalId, 'login: externalId'))
+          return Promise.resolve();
       return new Promise(function (resolve, reject) {
           var _a;
           if (isOneSignalScriptFailed) {
@@ -754,72 +805,96 @@
   }
   function userAddAlias(label, id) {
       var _a;
+      if (isMissing(label, 'addAlias: label') || isMissing(id, 'addAlias: id'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.addAlias(label, id);
       });
   }
   function userAddAliases(aliases) {
       var _a;
+      if (hasMissingEntries(aliases, 'addAliases'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.addAliases(aliases);
       });
   }
   function userRemoveAlias(label) {
       var _a;
+      if (isMissing(label, 'removeAlias: label'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.removeAlias(label);
       });
   }
   function userRemoveAliases(labels) {
       var _a;
+      if (hasMissingItems(labels, 'removeAliases: label'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.removeAliases(labels);
       });
   }
   function userAddEmail(email) {
       var _a;
+      if (isMissing(email, 'addEmail: email'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.addEmail(email);
       });
   }
   function userRemoveEmail(email) {
       var _a;
+      if (isMissing(email, 'removeEmail: email'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.removeEmail(email);
       });
   }
   function userAddSms(smsNumber) {
       var _a;
+      if (isMissing(smsNumber, 'addSms: smsNumber'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.addSms(smsNumber);
       });
   }
   function userRemoveSms(smsNumber) {
       var _a;
+      if (isMissing(smsNumber, 'removeSms: smsNumber'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.removeSms(smsNumber);
       });
   }
   function userAddTag(key, value) {
       var _a;
+      if (isMissing(key, 'addTag: key') || (value == null && isMissing(value, 'addTag: value')))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.addTag(key, value);
       });
   }
   function userAddTags(tags) {
       var _a;
+      if (hasMissingEntries(tags, 'addTags', true))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.addTags(tags);
       });
   }
   function userRemoveTag(key) {
       var _a;
+      if (isMissing(key, 'removeTag: key'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.removeTag(key);
       });
   }
   function userRemoveTags(keys) {
       var _a;
+      if (hasMissingItems(keys, 'removeTags: key'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.removeTags(keys);
       });
@@ -856,6 +931,8 @@
   }
   function userSetLanguage(language) {
       var _a;
+      if (!keepsLanguage(language))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.setLanguage(language);
       });
@@ -880,6 +957,8 @@
   }
   function userTrackEvent(name, properties) {
       var _a;
+      if (isMissing(name, 'trackEvent: name'))
+          return;
       (_a = window.OneSignalDeferred) === null || _a === void 0 ? void 0 : _a.push(function (oneSignal) {
           oneSignal.User.trackEvent(name, properties);
       });
@@ -1068,7 +1147,7 @@
           if (isOneSignalInitialized) {
               return Promise.reject("OneSignal is already initialized.");
           }
-          if (!options || !options.appId) {
+          if (!options || !options.appId || isMissing(options.appId, 'init: appId')) {
               return Promise.reject('You need to provide your OneSignal appId.');
           }
           if (!document) {

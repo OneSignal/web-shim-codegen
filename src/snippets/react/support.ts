@@ -101,7 +101,7 @@ const init = (options: IInitObject): Promise<void> => {
     return Promise.reject(`OneSignal is already initialized.`);
   }
 
-  if (!options || !options.appId) {
+  if (!options || !options.appId || isMissing(options.appId, 'init: appId')) {
     return Promise.reject('You need to provide your OneSignal appId.');
   }
 

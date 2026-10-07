@@ -25,6 +25,7 @@ export class ReactOneSignalWriterManager extends OneSignalWriterManagerBase {
       path.join(SNIPPETS_DIR, Shim.React, 'support.ts'),
     );
     this.writeLine(supportFileContents);
+    await this.writeIdentityGuards();
     await typingsWriter.writeInterfaces(0);
     typingsWriter.writeOneSignalInterfaces(this.api);
   }
