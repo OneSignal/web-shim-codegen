@@ -1,5 +1,5 @@
 import { IFunctionSignature } from '../../models/FunctionSignature';
-import { identityGuardLine } from '../identityGuards';
+import { identityGuard } from '../identityGuards';
 import {
   getChainedNamespaceString,
   hasNonVoidReturnType,
@@ -15,7 +15,7 @@ export const ngOneSignalAsyncFunctionTemplate = (
   const args = sig.args?.map((arg) => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   const needsNonVoidPromise = hasNonVoidReturnType(sig);
-  const guard = identityGuardLine(uniqueFunctionName);
+  const guard = identityGuard(sig, namespaceChain, 'async');
 
   return `
 function ${uniqueFunctionName}${
@@ -55,7 +55,7 @@ export const ngOneSignalFunctionTemplate = (
   const retValAssignment = needsPromise ? 'retVal = ' : '';
   const retValReturn = needsPromise ? `// @ts-ignore\n  return retVal;` : '';
   const deferredAwait = needsPromise ? 'await ' : '';
-  const guard = identityGuardLine(uniqueFunctionName);
+  const guard = identityGuard(sig, namespaceChain, 'sync');
 
   return `
 ${

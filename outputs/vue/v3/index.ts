@@ -150,54 +150,33 @@ const isPushSupported = (): boolean => {
 };
 
 /**
- * Returns true and logs when [value] is null, empty, or contains a null byte.
- * Whitespace is still a value.
+ * Returns true and logs when [value] is a string that is "" (unless [allowEmpty]) or has a NUL.
+ * Non-strings return false so the SDK still validates their type.
  */
-function isMissing(value: unknown, api: string): boolean {
+function isMissing(value: unknown, api: string, allowEmpty = false): boolean {
+  if (typeof value !== 'string') return false;
   // A NUL cannot be stored in a text column, so it is never a usable value.
-  if (typeof value === 'string' && value.includes('\u0000')) {
+  if (value.includes('\u0000')) {
     console.error('[OneSignal] ' + api + ' contains a null byte');
     return true;
   }
-  if (typeof value === 'string' && value.length > 0) return false;
-  console.error('[OneSignal] ' + api + ' is required');
-  return true;
+  if (value === '' && !allowEmpty) {
+    console.error('[OneSignal] ' + api + ' is required');
+    return true;
+  }
+  return false;
 }
 
 function hasMissingItems(values: unknown, api: string): boolean {
-  if (!Array.isArray(values)) return isMissing(values, api);
-  return values.some((value) => isMissing(value, api));
+  return Array.isArray(values) && values.some((value) => isMissing(value, api));
 }
 
-/**
- * With [allowEmptyValue], "" and a value containing a null byte are kept.
- * A null value is still rejected.
- */
-function hasMissingEntries(
-  values: unknown,
-  api: string,
-  allowEmptyValue = false,
-): boolean {
-  if (values == null || typeof values !== 'object' || Array.isArray(values)) {
-    return isMissing(values, api);
-  }
-  return Object.entries(values as Record<string, unknown>).some(([key, item]) => {
-    if (isMissing(key, api + ': key')) return true;
-    if (allowEmptyValue) return item == null && isMissing(item, api + ': value');
-    return isMissing(item, api + ': value');
-  });
-}
-
-function keepsLanguage(language: unknown): boolean {
-  if (typeof language !== 'string') {
-    console.error('[OneSignal] setLanguage: language is required');
-    return false;
-  }
-  if (language.includes('\u0000')) {
-    console.error('[OneSignal] setLanguage: language contains a null byte');
-    return false;
-  }
-  return true;
+function hasMissingEntries(values: unknown, api: string, checkValues: boolean): boolean {
+  if (typeof values !== 'object' || values === null || Array.isArray(values)) return false;
+  return Object.entries(values).some(
+    ([key, value]) =>
+      isMissing(key, api + ': key') || (checkValues && isMissing(value, api + ': value')),
+  );
 }
 
 export interface AutoPromptOptions { force?: boolean; forceSlidedownOverNative?: boolean; slidedownPromptOptions?: IOneSignalAutoPromptOptions; }
@@ -851,7 +830,7 @@ function userAddAlias(label: string, id: string): void {
   
 }
 function userAddAliases(aliases: { [key: string]: string }): void {
-  if (hasMissingEntries(aliases, 'addAliases')) return;
+  if (hasMissingEntries(aliases, 'addAliases', true)) return;
   
   window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.User.addAliases(aliases);
@@ -867,7 +846,7 @@ function userRemoveAlias(label: string): void {
   
 }
 function userRemoveAliases(labels: string[]): void {
-  if (hasMissingItems(labels, 'removeAliases: label')) return;
+  if (hasMissingItems(labels, 'removeAliases: labels')) return;
   
   window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.User.removeAliases(labels);
@@ -907,7 +886,7 @@ function userRemoveSms(smsNumber: string): void {
   
 }
 function userAddTag(key: string, value: string): void {
-  if (isMissing(key, 'addTag: key') || (value == null && isMissing(value, 'addTag: value'))) return;
+  if (isMissing(key, 'addTag: key')) return;
   
   window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.User.addTag(key, value);
@@ -915,7 +894,7 @@ function userAddTag(key: string, value: string): void {
   
 }
 function userAddTags(tags: { [key: string]: string }): void {
-  if (hasMissingEntries(tags, 'addTags', true)) return;
+  if (hasMissingEntries(tags, 'addTags', false)) return;
   
   window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.User.addTags(tags);
@@ -931,7 +910,7 @@ function userRemoveTag(key: string): void {
   
 }
 function userRemoveTags(keys: string[]): void {
-  if (hasMissingItems(keys, 'removeTags: key')) return;
+  if (hasMissingItems(keys, 'removeTags: keys')) return;
   
   window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.User.removeTags(keys);
@@ -961,7 +940,7 @@ function userRemoveEventListener(event: 'change', listener: (change: UserChangeE
   
 }
 function userSetLanguage(language: string): void {
-  if (!keepsLanguage(language)) return;
+  if (isMissing(language, 'setLanguage: language', true)) return;
   
   window.OneSignalDeferred?.push((OneSignal) => {
     OneSignal.User.setLanguage(language);

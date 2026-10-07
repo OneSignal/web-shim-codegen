@@ -1,5 +1,6 @@
 import { IArgument } from '../models/Argument';
 import { IFunctionSignature } from '../models/FunctionSignature';
+import { TemplateVariant } from '../models/TemplateFunctionMap';
 import { GITHUB_URL } from './constants';
 
 export async function remoteFetchFile(path: string): Promise<string> {
@@ -118,4 +119,8 @@ export function hasNonVoidReturnType(sig: IFunctionSignature): boolean {
     return sig.returnType !== 'Promise<void>';
   }
   return sig.returnType !== 'void' && sig.returnType !== 'Promise<void>';
+}
+
+export function templateVariant(sig: IFunctionSignature): TemplateVariant {
+  return sig.isAsync ? 'async' : 'sync';
 }

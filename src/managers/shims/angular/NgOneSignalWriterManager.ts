@@ -6,10 +6,8 @@ import IOneSignalApi from '../../../models/OneSignalApi';
 import { Shim } from '../../../models/Shim';
 import { FUNCTION_IGNORE, NAMESPACE_IGNORE } from '../../../support/constants';
 import { generateUniqueFunctionName } from '../../../support/utils';
-import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
+import { OneSignalWriterManagerBase, SNIPPETS_DIR } from '../../bases/OneSignalWriterManagerBase';
 import { ReaderManager } from '../../ReaderManager';
-
-const SNIPPETS_DIR = path.resolve(__dirname, '..', 'src', 'snippets');
 
 export class NgOneSignalWriterManager extends OneSignalWriterManagerBase {
   constructor(

@@ -35,6 +35,12 @@ vp pack main.ts -d ts-to-es6 -f cjs
 
 log "⚡️ Code generation"
 vp exec yellicode
+# yellicode exits 0 even when the template fails; main.ts writes this file only on success.
+[ -f build/.codegen-ok ] || {
+  echo "❌ Code generation failed." >&2
+  exit 1
+}
+rm build/.codegen-ok
 
 log '🧶 Bundling Angular SDK'
 (cd src/scaffolds/angular-workspace &&

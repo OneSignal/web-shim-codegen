@@ -1,5 +1,5 @@
 import { IFunctionSignature } from '../../models/FunctionSignature';
-import { identityGuardLine } from '../../support/identityGuards';
+import { identityGuard } from '../../support/identityGuards';
 import {
   getChainedNamespaceString,
   hasNonVoidReturnType,
@@ -15,7 +15,7 @@ export const reactOneSignalAsyncFunctionTemplate = (
   const args = sig.args?.map((arg) => arg.name);
   const chainedNamespaceString = getChainedNamespaceString(namespaceChain);
   const needsNonVoidPromise = hasNonVoidReturnType(sig);
-  const guard = identityGuardLine(uniqueFunctionName);
+  const guard = identityGuard(sig, namespaceChain, 'async');
 
   return `
 function ${uniqueFunctionName}${
@@ -58,7 +58,7 @@ export const reactOneSignalFunctionTemplate = (
   const retValAssignment = needsPromise ? 'retVal = ' : '';
   const retValReturn = needsPromise ? 'return retVal;' : '';
   const deferredAwait = needsPromise ? 'await ' : '';
-  const guard = identityGuardLine(uniqueFunctionName);
+  const guard = identityGuard(sig, namespaceChain, 'sync');
 
   return `
 ${

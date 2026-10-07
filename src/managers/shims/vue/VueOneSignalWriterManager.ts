@@ -5,11 +5,9 @@ import { TextWriter } from '@yellicode/core';
 import { BuildSubdirectory } from '../../../models/BuildSubdirectory';
 import IOneSignalApi from '../../../models/OneSignalApi';
 import { Shim } from '../../../models/Shim';
-import { OneSignalWriterManagerBase } from '../../bases/OneSignalWriterManagerBase';
+import { OneSignalWriterManagerBase, SNIPPETS_DIR } from '../../bases/OneSignalWriterManagerBase';
 import { ReaderManager } from '../../ReaderManager';
 import { TypingsWriterManager } from '../../TypingsWriterManager';
-
-const SNIPPETS_DIR = path.resolve(__dirname, '..', 'src', 'snippets');
 
 export class VueOneSignalWriterManager extends OneSignalWriterManagerBase {
   constructor(

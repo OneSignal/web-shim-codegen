@@ -15,12 +15,14 @@ import {
   reactOneSignalAsyncFunctionTemplate,
   reactOneSignalFunctionTemplate,
 } from '../../support/react/oneSignalFunctionTemplates';
-import { generateUniqueFunctionName } from '../../support/utils';
+import { generateUniqueFunctionName, templateVariant } from '../../support/utils';
 import {
   vueOneSignalAsyncFunctionTemplate,
   vueOneSignalFunctionTemplate,
 } from '../../support/vue/oneSignalFunctionTemplates';
 import { ReaderManager } from '../ReaderManager';
+
+export const SNIPPETS_DIR = path.resolve(__dirname, '..', 'src', 'snippets');
 
 const TEMPLATE_FUNCTION_MAP: ITemplateFunctionMap = {
   [Shim.React]: {
@@ -59,9 +61,7 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
   }
 
   public async writeIdentityGuards(): Promise<void> {
-    const snippet = await ReaderManager.readFile(
-      path.resolve(__dirname, '..', 'src', 'snippets', 'identityGuard.ts'),
-    );
+    const snippet = await ReaderManager.readFile(path.join(SNIPPETS_DIR, 'identityGuard.ts'));
     this.writeLine(snippet);
   }
 
@@ -85,8 +85,7 @@ export abstract class OneSignalWriterManagerBase extends CodeWriter {
       // prefix with the namespace to avoid function name conflicts
       const uniqueFunctionName = generateUniqueFunctionName(currentNamespace, sig.name);
 
-      const mapKey = sig.isAsync ? 'async' : 'sync';
-      const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][mapKey];
+      const templateFunction = TEMPLATE_FUNCTION_MAP[this.shim][templateVariant(sig)];
       this.writeLine(templateFunction(sig, uniqueFunctionName, namespaceChain));
     });
 

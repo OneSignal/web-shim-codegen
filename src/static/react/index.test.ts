@@ -61,17 +61,36 @@ describe('React OneSignal', () => {
 });
 
 describe('identity guards', () => {
-  const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  let error: ReturnType<typeof vi.spyOn>;
+  let user: Record<string, ReturnType<typeof vi.fn>>;
 
   beforeEach(() => {
-    error.mockClear();
+    error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    user = {
+      addAlias: vi.fn(),
+      addAliases: vi.fn(),
+      removeAliases: vi.fn(),
+      addEmail: vi.fn(),
+      addSms: vi.fn(),
+      addTag: vi.fn(),
+      addTags: vi.fn(),
+      removeTags: vi.fn(),
+      setLanguage: vi.fn(),
+      trackEvent: vi.fn(),
+    };
+    window.OneSignal = { User: user } as unknown as typeof window.OneSignal;
   });
 
-  test('login rejects empty and a null byte and keeps whitespace', async () => {
+  afterEach(() => {
+    error.mockRestore();
+  });
+
+  test('login skips empty and a null byte, resolves, and keeps whitespace', async () => {
     const login = vi.fn().mockResolvedValue(undefined);
     window.OneSignal = { login } as unknown as typeof window.OneSignal;
-    await OneSignal.login('');
-    await OneSignal.login('ab\u0000c');
+    await expect(OneSignal.login('')).resolves.toBeUndefined();
+    await expect(OneSignal.login('ab\u0000c')).resolves.toBeUndefined();
+    expect(login).not.toHaveBeenCalled();
     await OneSignal.login(' user ');
     expect(login).toHaveBeenCalledTimes(1);
     expect(login).toHaveBeenCalledWith(' user ', undefined);
@@ -79,26 +98,81 @@ describe('identity guards', () => {
     expect(error).toHaveBeenCalledWith('[OneSignal] login: externalId contains a null byte');
   });
 
-  test('empty tag values are kept and a null byte in a key is rejected', () => {
-    const addTag = vi.fn();
-    const addTags = vi.fn();
-    const setLanguage = vi.fn();
-    window.OneSignal = {
-      User: { addTag, addTags, setLanguage },
-    } as unknown as typeof window.OneSignal;
+  test('login passes non-strings through to the SDK', async () => {
+    const login = vi.fn().mockRejectedValue(new Error('sdk error'));
+    window.OneSignal = { login } as unknown as typeof window.OneSignal;
+    await expect(OneSignal.login(undefined as unknown as string)).rejects.toThrow('sdk error');
+    expect(login).toHaveBeenCalledWith(undefined, undefined);
+  });
+
+  test('aliases skip empty or null-byte labels, ids, keys and values', () => {
+    OneSignal.User.addAlias('', 'id');
+    OneSignal.User.addAlias('label', 'a\u0000');
+    OneSignal.User.addAlias('label', 'id');
+    OneSignal.User.addAliases({ '': 'id' });
+    OneSignal.User.addAliases({ label: '' });
+    OneSignal.User.addAliases({ label: 'id' });
+    OneSignal.User.removeAliases(['ok', '']);
+    OneSignal.User.removeAliases(['ok']);
+    expect(user.addAlias).toHaveBeenCalledTimes(1);
+    expect(user.addAlias).toHaveBeenCalledWith('label', 'id');
+    expect(user.addAliases).toHaveBeenCalledTimes(1);
+    expect(user.addAliases).toHaveBeenCalledWith({ label: 'id' });
+    expect(user.removeAliases).toHaveBeenCalledTimes(1);
+    expect(user.removeAliases).toHaveBeenCalledWith(['ok']);
+    expect(error).toHaveBeenCalledWith('[OneSignal] addAlias: label is required');
+    expect(error).toHaveBeenCalledWith('[OneSignal] addAlias: id contains a null byte');
+    expect(error).toHaveBeenCalledWith('[OneSignal] addAliases: key is required');
+    expect(error).toHaveBeenCalledWith('[OneSignal] addAliases: value is required');
+    expect(error).toHaveBeenCalledWith('[OneSignal] removeAliases: labels is required');
+  });
+
+  test('email and sms skip empty values', () => {
+    OneSignal.User.addEmail('');
+    OneSignal.User.addSms('');
+    OneSignal.User.addEmail('a@b.co');
+    OneSignal.User.addSms('+15551234567');
+    expect(user.addEmail).toHaveBeenCalledTimes(1);
+    expect(user.addEmail).toHaveBeenCalledWith('a@b.co');
+    expect(user.addSms).toHaveBeenCalledTimes(1);
+    expect(user.addSms).toHaveBeenCalledWith('+15551234567');
+  });
+
+  test('tags check keys only, so empty and null-byte values are kept', () => {
     OneSignal.User.addTag('kept', '');
     OneSignal.User.addTag('nul-value', 'a\u0000b');
     OneSignal.User.addTag('', 'nope');
+    OneSignal.User.addTag('k\u0000', 'nope');
     OneSignal.User.addTags({ '\u0000': 'nope', sibling: 'nope' });
-    OneSignal.User.addTags({ ok: null as unknown as string });
+    OneSignal.User.addTags({ k: '' });
+    OneSignal.User.removeTags(['ok', 'a\u0000']);
+    OneSignal.User.removeTags(['ok']);
+    expect(user.addTag).toHaveBeenCalledTimes(2);
+    expect(user.addTag).toHaveBeenCalledWith('kept', '');
+    expect(user.addTag).toHaveBeenCalledWith('nul-value', 'a\u0000b');
+    expect(user.addTags).toHaveBeenCalledTimes(1);
+    expect(user.addTags).toHaveBeenCalledWith({ k: '' });
+    expect(user.removeTags).toHaveBeenCalledTimes(1);
+    expect(user.removeTags).toHaveBeenCalledWith(['ok']);
+    expect(error).toHaveBeenCalledWith('[OneSignal] addTag: key is required');
+    expect(error).toHaveBeenCalledWith('[OneSignal] addTags: key contains a null byte');
+    expect(error).toHaveBeenCalledWith('[OneSignal] removeTags: keys contains a null byte');
+  });
+
+  test('setLanguage keeps empty and skips a null byte', () => {
     OneSignal.User.setLanguage('');
     OneSignal.User.setLanguage('en\u0000');
-    expect(addTag).toHaveBeenCalledTimes(2);
-    expect(addTag).toHaveBeenCalledWith('kept', '');
-    expect(addTag).toHaveBeenCalledWith('nul-value', 'a\u0000b');
-    expect(addTags).not.toHaveBeenCalled();
-    expect(setLanguage).toHaveBeenCalledTimes(1);
-    expect(setLanguage).toHaveBeenCalledWith('');
+    expect(user.setLanguage).toHaveBeenCalledTimes(1);
+    expect(user.setLanguage).toHaveBeenCalledWith('');
+    expect(error).toHaveBeenCalledWith('[OneSignal] setLanguage: language contains a null byte');
+  });
+
+  test('trackEvent skips an empty name', () => {
+    OneSignal.User.trackEvent('');
+    OneSignal.User.trackEvent('purchase');
+    expect(user.trackEvent).toHaveBeenCalledTimes(1);
+    expect(user.trackEvent).toHaveBeenCalledWith('purchase', undefined);
+    expect(error).toHaveBeenCalledWith('[OneSignal] trackEvent: name is required');
   });
 });
 
@@ -133,6 +207,13 @@ describe('init() rejects instead of hanging', () => {
       (globalThis as unknown as { PushSubscriptionOptions: unknown }).PushSubscriptionOptions =
         originalPushSubscriptionOptions;
     }
+  });
+
+  test('rejects an appId with a null byte', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    await expect(OneSignalModule.init({ appId: 'ab\u0000c' })).rejects.toThrow(
+      'You need to provide your OneSignal appId.',
+    );
   });
 
   test('rejects when the SDK script fails to load', async () => {

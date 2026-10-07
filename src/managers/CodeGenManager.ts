@@ -28,23 +28,35 @@ export class CodeGenManager {
     return JSON.parse(rawJson) as IOneSignalApi;
   }
 
-  public write(): void {
+  public write(): Promise<void> {
     switch (this.shim) {
       case Shim.React:
       case Shim.Vue:
-        this.writeIndexFile();
-        break;
+        return this.writeIndexFile();
       case Shim.Angular:
-        this.writeNgServiceFile();
-        break;
+        return this.writeNgServiceFile();
       default:
-        break;
+        return Promise.resolve();
     }
   }
 
-  private writeIndexFile(): void {
-    Generator.generateAsync(
-      { outputFile: `../build/${this.shim}/${this.subdir}/index.ts` },
+  /**
+   * Settles when [template] finishes. Generator.generateAsync only logs a template error.
+   */
+  private generate(
+    outputFile: string,
+    template: (writer: TextWriter) => Promise<void>,
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      Generator.generateAsync({ outputFile }, (writer: TextWriter) =>
+        template(writer).then(resolve, reject),
+      );
+    });
+  }
+
+  private writeIndexFile(): Promise<void> {
+    return this.generate(
+      `../build/${this.shim}/${this.subdir}/index.ts`,
       async (writer: TextWriter) => {
         let oneSignalWriter: OneSignalWriterManagerBase;
         switch (this.shim) {
@@ -64,11 +76,9 @@ export class CodeGenManager {
     );
   }
 
-  public writeNgServiceFile(): void {
-    Generator.generateAsync(
-      {
-        outputFile: `../src/scaffolds/angular-workspace/projects/onesignal-ngx/src/lib/onesignal-ngx.service.ts`,
-      },
+  public writeNgServiceFile(): Promise<void> {
+    return this.generate(
+      `../src/scaffolds/angular-workspace/projects/onesignal-ngx/src/lib/onesignal-ngx.service.ts`,
       async (writer: TextWriter) => {
         if (this.shim !== Shim.Angular) {
           console.error(
