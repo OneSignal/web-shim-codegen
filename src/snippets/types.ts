@@ -124,6 +124,14 @@ export const NOTIFICATION_CLICK_EVENT = `export interface NotificationClickEvent
 export const USER_CHANGE_EVENT = `export type UserChangeEvent = {
   current: UserNamespaceProperties;
 };`;
+export const USER_JWT_INVALIDATED_EVENT = `export type UserJwtInvalidatedEvent = {
+  externalId: string;
+};`;
+export const USER_EVENT_NAME = `export type UserEventName = 'change' | 'userJwtInvalidated';`;
+export const USER_EVENT_TYPE_MAP = `export type UserEventTypeMap = {
+  change: UserChangeEvent;
+  userJwtInvalidated: UserJwtInvalidatedEvent;
+};`;
 export const USER_NAMESPACE_PROPERTIES = `export type UserNamespaceProperties = {
   onesignalId: string | undefined;
   externalId: string | undefined;
