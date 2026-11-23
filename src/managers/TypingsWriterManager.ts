@@ -23,6 +23,9 @@ import {
   SUBSCRIPTION_CHANGE_EVENT,
   TAG_CATEGORY,
   USER_CHANGE_EVENT,
+  USER_EVENT_NAME,
+  USER_EVENT_TYPE_MAP,
+  USER_JWT_INVALIDATED_EVENT,
   USER_NAMESPACE_PROPERTIES,
 } from '../snippets/types';
 import { INTERFACE_PREFIX } from '../support/constants';
@@ -108,6 +111,9 @@ export class TypingsWriterManager extends CodeWriter {
     this.writeLine(prefix + NOTIFICATION_DISMISS_EVENT);
     this.writeLine(prefix + NOTIFICATION_CLICK_EVENT);
     this.writeLine(prefix + USER_CHANGE_EVENT);
+    this.writeLine(prefix + USER_JWT_INVALIDATED_EVENT);
+    this.writeLine(prefix + USER_EVENT_NAME);
+    this.writeLine(prefix + USER_EVENT_TYPE_MAP);
     this.writeLine(prefix + USER_NAMESPACE_PROPERTIES);
     this.writeLine();
     this.writeLine(initObjectInterfaceContents);
