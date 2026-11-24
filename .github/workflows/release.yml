@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  version:
+    if: |
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.title, 'chore: Release')
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      title_prefix: ${{ steps.version.outputs.title_prefix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+
+      - name: Get version and release bump
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          PREVIOUS=$(git describe --tags --abbrev=0 --match '[0-9]*.[0-9]*.[0-9]*' HEAD^)
+          IFS=. read -r MAJOR MINOR _ <<< "$VERSION"
+          IFS=. read -r PREV_MAJOR PREV_MINOR _ <<< "$PREVIOUS"
+          if [ "$MAJOR" != "$PREV_MAJOR" ] || [ "$MINOR" != "$PREV_MINOR" ]; then
+            TITLE_PREFIX=feat
+          else
+            TITLE_PREFIX=fix
+          fi
+          echo "Release $PREVIOUS -> $VERSION, wrapper PR prefix: $TITLE_PREFIX"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "title_prefix=$TITLE_PREFIX" >> "$GITHUB_OUTPUT"
+
+  github_release:
+    needs: version
+    uses: OneSignal/sdk-shared/.github/workflows/github-release.yml@main
+    secrets:
+      GH_PUSH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
+    with:
+      version: ${{ needs.version.outputs.version }}
+
+  sync_wrappers:
+    needs: version
+    uses: ./.github/workflows/cd.yml
+    secrets: inherit
+    with:
+      ref: ${{ github.event.pull_request.merge_commit_sha }}
+      title_prefix: ${{ needs.version.outputs.title_prefix }}
+      close_existing: true
