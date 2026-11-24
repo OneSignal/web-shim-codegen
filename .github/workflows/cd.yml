@@ -4,18 +4,40 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: 'Commit of web-shim-codegen to build'
+        required: true
+        type: string
+      title_prefix:
+        description: 'Conventional commit type for the downstream PR titles and commits'
+        required: true
+        type: string
+      close_existing:
+        description: 'Close open downstream PRs before a new PR is opened'
+        required: false
+        type: boolean
+        default: false
 
 env:
   TERM: xterm-256color
 
 jobs:
   setup:
+    # release.yml syncs the downstream repos after a release PR merges
+    if: |
+      github.event_name != 'push' ||
+      !startsWith(github.event.head_commit.message, 'chore: Release')
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.version.outputs.version }}
+      title_prefix: ${{ steps.title_prefix.outputs.title_prefix }}
     steps:
       - name: '[Setup] Checkout Repository'
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: '[Setup] Vite+'
         uses: voidzero-dev/setup-vp@v1
@@ -27,6 +49,20 @@ jobs:
         id: version
         run: |
           echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: 'Get downstream PR title prefix'
+        id: title_prefix
+        env:
+          TITLE_PREFIX: ${{ inputs.title_prefix }}
+        run: |
+          if [ -z "$TITLE_PREFIX" ]; then
+            case "$(git log -1 --format=%s)" in
+              feat:* | feat\(* | feat!:*) TITLE_PREFIX=feat ;;
+              fix:* | fix\(* | fix!:* | perf:* | perf\(* | perf!:*) TITLE_PREFIX=fix ;;
+              *) TITLE_PREFIX=build ;;
+            esac
+          fi
+          echo "title_prefix=$TITLE_PREFIX" >> "$GITHUB_OUTPUT"
 
       - name: '[Setup] Build'
         run: vp run build
@@ -67,6 +103,8 @@ jobs:
     steps:
       - name: '[Setup] Checkout Repository'
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: '[Setup] Git'
         run: |
@@ -92,6 +130,7 @@ jobs:
           bash scripts/patch-repo.sh ${{ matrix.dist_path }} ${{ matrix.clone_path }} ${{ matrix.repo }}
         env:
           PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+          TITLE_PREFIX: ${{ needs.setup.outputs.title_prefix }}
 
       - name: '[${{ matrix.repo }}] Push'
         uses: ad-m/github-push-action@v1.1.0
@@ -108,4 +147,6 @@ jobs:
           owner: 'OneSignal'
           repo: ${{ matrix.repo }}
           package_version: ${{ needs.setup.outputs.package_version }}
+          title_prefix: ${{ needs.setup.outputs.title_prefix }}
+          close_existing: ${{ inputs.close_existing || false }}
           github_token: ${{ secrets.GH_PUSH_TOKEN }}

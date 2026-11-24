@@ -1,0 +1,66 @@
+name: Create Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Override the auto-detected version (e.g., 3.1.0). Leave blank to auto-detect.'
+        required: false
+        type: string
+
+jobs:
+  determine_version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ inputs.version || steps.next_version.outputs.version }}
+      release_needed: ${{ inputs.version != '' || steps.next_version.outputs.release-needed == 'true' }}
+    steps:
+      - name: Determine web-shim-codegen version
+        if: inputs.version == ''
+        id: next_version
+        uses: OneSignal/sdk-shared/.github/actions/determine-next-version@main
+        with:
+          github-token: ${{ secrets.GH_PUSH_TOKEN || github.token }}
+          target-repo: OneSignal/web-shim-codegen
+
+  prep:
+    needs: determine_version
+    if: needs.determine_version.outputs.release_needed == 'true'
+    uses: OneSignal/sdk-shared/.github/workflows/prep-release.yml@main
+    secrets:
+      GH_PUSH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
+    with:
+      target_repo: OneSignal/web-shim-codegen
+      version: ${{ needs.determine_version.outputs.version }}
+
+  update_version:
+    needs: [determine_version, prep]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          repository: OneSignal/web-shim-codegen
+          ref: ${{ needs.prep.outputs.release_branch }}
+          token: ${{ secrets.GH_PUSH_TOKEN || github.token }}
+
+      - name: Setup Git User
+        uses: OneSignal/sdk-shared/.github/actions/setup-git-user@main
+
+      - name: Update version
+        env:
+          NEW_VERSION: ${{ needs.determine_version.outputs.version }}
+        run: |
+          npm pkg set version="$NEW_VERSION"
+          git add package.json
+          git diff --staged --quiet && exit 0
+          git commit -m "Release $NEW_VERSION" && git push
+
+  create_pr:
+    needs: [prep, update_version]
+    uses: OneSignal/sdk-shared/.github/workflows/create-release.yml@main
+    secrets:
+      GH_PUSH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
+    with:
+      target_repo: OneSignal/web-shim-codegen
+      release_branch: ${{ needs.prep.outputs.release_branch }}

@@ -15,7 +15,7 @@ The generator uses the URL hard-coded as a constant in the `src/support/constant
 ## Making Changes
 
 If you made changes to templates, dependencies or other items that affect the downstream builds. When changes are merged to main, a pr is made to the downstreams prs.
-**PLEASE UPDATE THE COMMIT MESSAGE** to be accurate to the change. E.g. `fix: ...` or `feat: ...` depending on the type of change.
+The downstream PR title and commit use the type of the merged commit: `feat` gives `feat`, `fix` or `perf` gives `fix`, and all other types give `build`. Use the PR title type that matches the release you want in the downstream SDKs.
 
 ## Building For Release
 
@@ -36,6 +36,14 @@ The `settings.json` file in the `.vscode` directory hides all `*.js` files autom
 4. Publish with `npm publish .`
    - For onesignal-vue3 you must pass the `--access public` to the publish command as it is a scoped package.
    - For **beta releases** run `npm publish --tag beta`
+
+The downstream PRs keep the `package.json` version of each SDK repo. semantic-release in each SDK repo sets the version when it releases.
+
+## Releasing web-shim-codegen
+
+1. Run the "Create Release PR" GitHub Actions workflow. It calculates the next version from the PR titles merged since the last release, and opens a `chore: Release <version>` PR.
+2. Merge the release PR. The "Release" workflow creates the tag and the GitHub release.
+3. The "Release" workflow then closes the open downstream PRs and opens new ones. A minor or major release gives `feat` PRs, and a patch release gives `fix` PRs.
 
 ## Special Types File
 
